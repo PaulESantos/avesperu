@@ -1,11 +1,11 @@
 Package: avesperu
-Title: Access To The List Of Birds Species Names Of Peru
-Version: 0.0.0.9001
+Title: Access to the List of Birds Species of Peru
+Version: 0.0.0.1
 Authors@R: 
-    person("Paul Efren", "Santos Andrade", , 
+    person("Paul E.", "Santos Andrade", , 
     "paulefrens@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6635-0375"))
-Description: This package provides access to the data in the species list included in the book "Birds of Peru" and the "List of the Birds of Peru" the most complete and authoritative field guides to Peru's diverse neotropical landscape. The package includes detailed species accounts.The data is organized for easy access and use in R.
+Description: Allows access to the data found in the species list featured in the renowned 'List of the Birds of Peru. Plenge, M. A. 07062023'. This publication stands as one of Peru's most comprehensive reviews of bird diversity. The dataset incorporates detailed species accounts and has been meticulously structured for effortless utilization within the R environment.
 License: MIT + file LICENSE
 Suggests: 
     testthat (>= 3.0.0)
@@ -15,3 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://github.com/PaulESantos/avesperu
 BugReports: https://github.com/PaulESantos/avesperu/issues
+Depends: 
+    R (>= 2.10)
+LazyData: true
+Maintainer: Paul E. Santos Andrade <paulefrens@gmail.com>
