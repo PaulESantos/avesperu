@@ -60,7 +60,15 @@ citation("avesperu")
 
 ## Installation
 
-You can install the development version of avesperu like so:
+You can install the `avesperu` package from CRAN using:
+
+``` r
+install.packages("avesperu")
+# or
+pak::pak("avesperu")
+```
+
+Also you can install the development version of `avesperu` like so:
 
 ``` r
 pak::pak("PaulESantos/avesperu")
