@@ -3,6 +3,8 @@
 
 # avesperu
 
+## <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="370" width="180" /></a>
+
 <!-- badges: start -->
 
 [![Lifecycle:
@@ -82,7 +84,7 @@ Here’s a quick example of how to use the `avesperu` package:
 
 ``` r
 library(avesperu)
-#> This is avesperu 0.0.0.1
+#> This is avesperu 0.0.1
 
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
