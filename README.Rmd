@@ -24,31 +24,34 @@ library(tidyverse)
 [![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 <!-- badges: end -->
 
-The `avesperu` package opens the door to Peru's extraordinary birds, comprising approximately 1,892 species, making it one of the world's most diverse bird-rich countries. This comprehensive R package provides users with access to the meticulously documented "List of the Birds of Peru" by M. A. Plenge. It's worth noting that avian taxonomy is dynamic, with dramatic changes over time. Bird species categorization has been refined based on articles, published photographs, sound recordings from accredited institutions, and more.
+The `avesperu` package opens the door to Peru's extraordinary birds, encompassing a dataset of 1,901 species, highlighting its status as one of the world's most diverse bird-rich countries. This comprehensive R package now leverages the meticulously updated "List of the Birds of Peru" by M. A. Plenge, which has been revised and expanded to reflect the latest data as of 06 - 03 - 2024. However, it's important to recognize that avian taxonomy is dynamic, undergoing significant changes over time.
 
-The species list follows the taxonomic classification endorsed by the South American Checklist Committee (SACC), which assigns species codes reflecting their residency status, endemism, migratory behavior, vagrancy, introductions, extirpation, and hypothetical presence. As of now, SACC is in the process of recognizing certain subspecies as full species, a development that will alter the species count. The "H" category, which signifies hypothetical species, is now ranked fifth in South America, following Argentina, Bolivia, Colombia, and Ecuador. It is anticipated that this ranking could diminish further if well-documented records are published. 
+The species list adheres to the taxonomic classification endorsed by the South American Checklist Committee (SACC), which assigns species codes reflecting various aspects such as residency status, endemism, migratory behavior, vagrancy, introductions, extirpation, and hypothetical presence. As of now, SACC is in the process of recognizing certain subspecies as full species, a development that will inevitably alter the species count.
+
+Of particular note, the "H" category, representing hypothetical species, now holds the fifth position in South America's ranking, following Argentina, Bolivia, Colombia, and Ecuador. However, this ranking may potentially decrease further with the publication of well-documented records, underscoring the ongoing evolution and refinement of avian taxonomy.
 
 ```{r echo=FALSE}
 tibble::tibble(year = c(1968, 1980, 2001, 2007, 
                         2010, 2015, 2020, 2021,
-                        2022, 2023),
+                        2022, 2023, 2024),
                species = c(1491, 1678, 1800, 1800, 
                            1820, 1851, 1870, 1874, 
-                           1888, 1891)) |> 
+                           1888, 1892, 1901)) |> 
   ggplot2::ggplot(ggplot2::aes(year,
              species)) +
   ggplot2::geom_line(ggplot2::aes(group = 1)) +
   ggplot2::geom_point(color = "red") +
-  ggplot2::labs(x = "Year",
+  ggplot2::labs(x = "",
        y = "Number of species") +
   ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(n.dodge = 2),
   breaks = c(1968, 1980, 2001, 2007, 
                         2010, 2015, 2020, 2021,
-                        2022, 2023),
+                        2022, 2023, 2024),
   labels = c(1968, 1980, 2001, 2007, 
                         2010, 2015, 2020, 2021,
-                        2022, 2023)) +
-  ggplot2::theme_bw()
+                        2022, 2023, 2024)) +
+  ggplot2::theme_bw() +
+  ggplot2::coord_flip()
 ```
 
 

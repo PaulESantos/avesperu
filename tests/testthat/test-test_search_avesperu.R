@@ -5,13 +5,12 @@ test_that("search_avesperu returns the correct output", {
     "Falco sparverius",
     "Tinamus osgodi",
     "Crypturellus sooui",
-    "Thraupisa palamarum",
-    "Thamnophilus praecox"
+    "Thraupisa palamarum"
   )
 
   # Call the search_avesperu function
   result <- search_avesperu(splist)
-
+result
   # Define the expected output
   expected <- data.frame(
     name_submitted = c(
@@ -50,7 +49,7 @@ test_that("search_avesperu returns the correct output", {
       "Tinamidae",
       "Thraupidae"
     ),
-    status = c("nill", "nill", "nill", "nill"),
+    status = c("Residente", "Residente", "Residente", "Residente"),
     dist = c("0", "1", "1", "2")
   )
 

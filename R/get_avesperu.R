@@ -59,7 +59,7 @@ search_avesperu <- function(splist, max_distance = 0.1) {
 
     # fuzzy and exact match
     matches <- agrep(splist_std[i],
-                     avesperu::avesperu_tab$scientific_name, # base data column
+                     avesperu::aves_peru_2024$scientific_name, # base data column
                      max.distance = max_distance_fixed,
                      value = TRUE)
 
@@ -76,7 +76,7 @@ search_avesperu <- function(splist, max_distance = 0.1) {
         row_data <- rep("nill", 6)
       }
       else if(length(matches1) != 0){
-        row_data <- as.matrix(avesperu::avesperu_tab[avesperu::avesperu_tab$scientific_name %in% matches1,])
+        row_data <- as.matrix(avesperu::aves_peru_2024[avesperu::aves_peru_2024$scientific_name %in% matches1,])
       }
     }
 
