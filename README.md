@@ -88,7 +88,7 @@ Here’s a quick example of how to use the `avesperu` package:
 
 ``` r
 library(avesperu)
-#> This is avesperu 0.0.1
+#> This is avesperu 0.0.2
 
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
@@ -97,14 +97,16 @@ splist <- c("Falco sparverius",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist, max_distance = 0.05)
-#>       name_submitted     accepted_name     english_name        spanish_name
-#> 1   Falco sparverius  Falco sparverius American Kestrel Cernícalo Americano
-#> 2     Tinamus osgodi   Tinamus osgoodi    Black Tinamou        Perdiz Negra
-#> 3 Crypturellus sooui Crypturellus soui   Little Tinamou        Perdiz Chica
-#>           order     family status dist
-#> 1 Falconiformes Falconidae   nill    0
-#> 2  Tinamiformes  Tinamidae   nill    1
-#> 3  Tinamiformes  Tinamidae   nill    1
+#>         name_submitted        accepted_name     english_name
+#> 1     Falco sparverius     Falco sparverius American Kestrel
+#> 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou
+#> 3   Crypturellus sooui    Crypturellus soui   Little Tinamou
+#> 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike
+#>          spanish_name         order         family    status dist
+#> 1 Cernícalo Americano Falconiformes     Falconidae Residente    0
+#> 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1
+#> 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1
+#> 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0
 ```
 
 - The package not only provides access to the list of bird species
@@ -124,14 +126,16 @@ splist <- c("Falco sparverius",
 
 search_avesperu(splist = splist, max_distance = 0.1)
 #> The following names are repeated in the 'splist': Thraupisa palamarum
-#>        name_submitted     accepted_name     english_name        spanish_name
-#> 1    Falco sparverius  Falco sparverius American Kestrel Cernícalo Americano
-#> 2      Tinamus osgodi   Tinamus osgoodi    Black Tinamou        Perdiz Negra
-#> 3  Crypturellus sooui Crypturellus soui   Little Tinamou        Perdiz Chica
-#> 4 Thraupisa palamarum Thraupis palmarum     Palm Tanager Tangara de Palmeras
-#>           order     family status dist
-#> 1 Falconiformes Falconidae   nill    0
-#> 2  Tinamiformes  Tinamidae   nill    1
-#> 3  Tinamiformes  Tinamidae   nill    1
-#> 4 Passeriformes Thraupidae   nill    2
+#>         name_submitted        accepted_name     english_name
+#> 1     Falco sparverius     Falco sparverius American Kestrel
+#> 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou
+#> 3   Crypturellus sooui    Crypturellus soui   Little Tinamou
+#> 4  Thraupisa palamarum    Thraupis palmarum     Palm Tanager
+#> 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike
+#>          spanish_name         order         family    status dist
+#> 1 Cernícalo Americano Falconiformes     Falconidae Residente    0
+#> 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1
+#> 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1
+#> 4 Tangara de Palmeras Passeriformes     Thraupidae Residente    2
+#> 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0
 ```
