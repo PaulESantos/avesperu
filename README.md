@@ -48,20 +48,20 @@ Suggested citation:
 citation("avesperu")
 #> To cite avesperu in publications use:
 #> 
-#>   Santos - Andrade, PE. (2023). avesperu: Access to the List of Birds
-#>   Species of Peru. R package version 0.0.0.1.
+#>   Santos - Andrade, PE. (2024). avesperu: Access to the List of Birds
+#>   Species of Peru. R package version 0.0.2
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {avesperu: Access to the List of Birds Species of Peru},
 #>     author = {Paul E. Santos - Andrade},
-#>     year = {2023},
-#>     note = {R package version 0.0.0.1},
+#>     year = {2024},
+#>     note = {R package version 0.0.2},
 #>   }
 #> 
 #> To cite the avesperu dataset, please use: Plenge, M. A. Version
-#> [07/06/2023] List of the birds of Peru / Lista de las aves del Perú.
+#> [06/03/2024] List of the birds of Peru / Lista de las aves del Perú.
 #> Unión de Ornitólogos del Perú:
 #> https://sites.google.com/site/boletinunop/checklist
 ```
