@@ -1,18 +1,19 @@
-#' aves_peru_2024 Dataset
+#' aves_peru_2023 Dataset
 #'
-#' The aves_peru_2024 dataset contains a tibble that provides information on bird
-#' species recorded in Peru, based on the "List of the Birds of Peru" by M. A. Plenge
-#' (last updated on March 6, 2024). It includes details such as scientific names,
-#' English names, Spanish names, order, family, and status of each species.
+#' The aves_peru_2023 dataset comprises a tibble containing information
+#' regarding bird species documented in Peru, sourced from the "List of the
+#' Birds of Peru" compiled by M. A. Plenge in 2023. It encompasses various
+#' details, including scientific names, English names, Spanish names, order,
+#'  family, and status of each species.
 #'
-#' @format A tibble with 1,901 rows and 6 columns:
+#' @format A tibble with 1,892 rows and 6 columns:
 #'   \describe{
 #'     \item{scientific_name}{Scientific name of the bird species.}
 #'     \item{english_name}{English common name of the bird species.}
 #'     \item{spanish_name}{Spanish common name of the bird species.}
 #'     \item{order}{The order to which the bird species belongs.}
 #'     \item{family}{The family to which the bird species belongs.}
-#'     \item{status}{Status of the bird species (e.g., resident, endemic,
+#'     \item{status}{Status of the bird species (e.g., resident, endémic,
 #'     migratory, etc.).}
 #'   }
 #'
@@ -27,10 +28,10 @@
 #' library(avesperu)
 #'
 #' # Access the avesperu_tab dataset
-#' data("aves_peru_2024")
+#' data("aves_peru_2023")
 #'
 #' # Display the first few rows
-#' head(aves_peru_2024)
+#' head(aves_peru_2023)
 #'
 #' @seealso
 #' For more information about the "avesperu" package and the data sources, visit
@@ -38,12 +39,9 @@
 #'
 #' @references
 #' The dataset is based on the "List of the Birds of Peru" by M. A. Plenge.
-#' The citation for the list is as follows:
-#' Plenge, M. A. Version (09-03-2024). List of the birds of Peru / Lista de las aves del Perú.
-#' Unión de Ornitólogos del Perú: https://sites.google.com/site/boletinunop/checklist
 #'
 #' @author
 #' Data compilation: M. A. Plenge, Package implementation: Paul Efren Santos Andrade
 #'
 #' @keywords dataset
-"aves_peru_2024"
+"aves_peru_2023"

@@ -17,24 +17,28 @@ status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.o
 <!-- badges: end -->
 
 The `avesperu` package opens the door to Peru’s extraordinary birds,
-comprising approximately 1,892 species, making it one of the world’s
-most diverse bird-rich countries. This comprehensive R package provides
-users with access to the meticulously documented “List of the Birds of
-Peru” by M. A. Plenge. It’s worth noting that avian taxonomy is dynamic,
-with dramatic changes over time. Bird species categorization has been
-refined based on articles, published photographs, sound recordings from
-accredited institutions, and more.
+encompassing a dataset of 1,901 species, highlighting its status as one
+of the world’s most diverse bird-rich countries. This comprehensive R
+package now leverages the meticulously updated “List of the Birds of
+Peru” by M. A. Plenge, which has been revised and expanded to reflect
+the latest data as of 06 - 03 - 2024. However, it’s important to
+recognize that avian taxonomy is dynamic, undergoing significant changes
+over time.
 
-The species list follows the taxonomic classification endorsed by the
+The species list adheres to the taxonomic classification endorsed by the
 South American Checklist Committee (SACC), which assigns species codes
-reflecting their residency status, endemism, migratory behavior,
-vagrancy, introductions, extirpation, and hypothetical presence. As of
-now, SACC is in the process of recognizing certain subspecies as full
-species, a development that will alter the species count. The “H”
-category, which signifies hypothetical species, is now ranked fifth in
-South America, following Argentina, Bolivia, Colombia, and Ecuador. It
-is anticipated that this ranking could diminish further if
-well-documented records are published.
+reflecting various aspects such as residency status, endemism, migratory
+behavior, vagrancy, introductions, extirpation, and hypothetical
+presence. As of now, SACC is in the process of recognizing certain
+subspecies as full species, a development that will inevitably alter the
+species count.
+
+Of particular note, the “H” category, representing hypothetical species,
+now holds the fifth position in South America’s ranking, following
+Argentina, Bolivia, Colombia, and Ecuador. However, this ranking may
+potentially decrease further with the publication of well-documented
+records, underscoring the ongoing evolution and refinement of avian
+taxonomy.
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 

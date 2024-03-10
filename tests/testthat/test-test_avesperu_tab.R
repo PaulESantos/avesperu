@@ -1,7 +1,7 @@
 test_that("avesperu_tab dataset has the expected characteristics", {
   # Check the dimensions of the dataset
-  expect_equal(dim(avesperu_tab), c(1892, 6))
-
+  expect_equal(dim(aves_peru_2023), c(1892, 6))
+  expect_equal(dim(aves_peru_2024), c(1901, 6))
   # Check the first few rows of the dataset
   expected_head <- data.frame(
     scientific_name = c(
@@ -44,8 +44,10 @@ test_that("avesperu_tab dataset has the expected characteristics", {
       "Tinamidae",
       "Tinamidae"
     ),
-    status = c("nill", "nill", "nill", "nill", "nill", "nill")
+    status = c("Residente", "Residente", "Residente", "Residente",
+               "Residente", "Residente")
   )
 
-  expect_equal(avesperu_tab[1:6, ], expected_head)
+  expect_equal(as.data.frame(aves_peru_2024[1:6, ]),
+               expected_head)
 })
