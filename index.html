@@ -110,7 +110,7 @@
 <p>Here’s a quick example of how to use the <code>avesperu</code> package:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; This is avesperu 0.0.1</span></span>
+<span><span class="co">#&gt; This is avesperu 0.0.2</span></span>
 <span></span>
 <span><span class="va">splist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>,</span>
 <span>            <span class="st">"Tinamus osgodi"</span>,</span>
@@ -119,14 +119,16 @@
 <span>            <span class="st">"Thamnophilus praecox"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       name_submitted     accepted_name     english_name        spanish_name</span></span>
-<span><span class="co">#&gt; 1   Falco sparverius  Falco sparverius American Kestrel Cernícalo Americano</span></span>
-<span><span class="co">#&gt; 2     Tinamus osgodi   Tinamus osgoodi    Black Tinamou        Perdiz Negra</span></span>
-<span><span class="co">#&gt; 3 Crypturellus sooui Crypturellus soui   Little Tinamou        Perdiz Chica</span></span>
-<span><span class="co">#&gt;           order     family status dist</span></span>
-<span><span class="co">#&gt; 1 Falconiformes Falconidae   nill    0</span></span>
-<span><span class="co">#&gt; 2  Tinamiformes  Tinamidae   nill    1</span></span>
-<span><span class="co">#&gt; 3  Tinamiformes  Tinamidae   nill    1</span></span></code></pre></div>
+<span><span class="co">#&gt;         name_submitted        accepted_name     english_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius American Kestrel</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui   Little Tinamou</span></span>
+<span><span class="co">#&gt; 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike</span></span>
+<span><span class="co">#&gt;          spanish_name         order         family    status dist</span></span>
+<span><span class="co">#&gt; 1 Cernícalo Americano Falconiformes     Falconidae Residente    0</span></span>
+<span><span class="co">#&gt; 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1</span></span>
+<span><span class="co">#&gt; 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1</span></span>
+<span><span class="co">#&gt; 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0</span></span></code></pre></div>
 <ul>
 <li>The package not only provides access to the list of bird species recorded in Peru but also excels in resolving potential typos or variations in species names through fuzzy matching. It ensures accurate retrieval by intelligently recognizing and accommodating slight discrepancies in the input names, making it a robust tool for working with diverse and sometimes inconsistent datasets.</li>
 </ul>
@@ -140,16 +142,18 @@
 <span></span>
 <span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The following names are repeated in the 'splist': Thraupisa palamarum</span></span>
-<span><span class="co">#&gt;        name_submitted     accepted_name     english_name        spanish_name</span></span>
-<span><span class="co">#&gt; 1    Falco sparverius  Falco sparverius American Kestrel Cernícalo Americano</span></span>
-<span><span class="co">#&gt; 2      Tinamus osgodi   Tinamus osgoodi    Black Tinamou        Perdiz Negra</span></span>
-<span><span class="co">#&gt; 3  Crypturellus sooui Crypturellus soui   Little Tinamou        Perdiz Chica</span></span>
-<span><span class="co">#&gt; 4 Thraupisa palamarum Thraupis palmarum     Palm Tanager Tangara de Palmeras</span></span>
-<span><span class="co">#&gt;           order     family status dist</span></span>
-<span><span class="co">#&gt; 1 Falconiformes Falconidae   nill    0</span></span>
-<span><span class="co">#&gt; 2  Tinamiformes  Tinamidae   nill    1</span></span>
-<span><span class="co">#&gt; 3  Tinamiformes  Tinamidae   nill    1</span></span>
-<span><span class="co">#&gt; 4 Passeriformes Thraupidae   nill    2</span></span></code></pre></div>
+<span><span class="co">#&gt;         name_submitted        accepted_name     english_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius American Kestrel</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui   Little Tinamou</span></span>
+<span><span class="co">#&gt; 4  Thraupisa palamarum    Thraupis palmarum     Palm Tanager</span></span>
+<span><span class="co">#&gt; 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike</span></span>
+<span><span class="co">#&gt;          spanish_name         order         family    status dist</span></span>
+<span><span class="co">#&gt; 1 Cernícalo Americano Falconiformes     Falconidae Residente    0</span></span>
+<span><span class="co">#&gt; 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1</span></span>
+<span><span class="co">#&gt; 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1</span></span>
+<span><span class="co">#&gt; 4 Tangara de Palmeras Passeriformes     Thraupidae Residente    2</span></span>
+<span><span class="co">#&gt; 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
