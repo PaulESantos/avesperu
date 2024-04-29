@@ -106,6 +106,6 @@ splist <- c("Falco sparverius",
             "Thraupisa palamarum",
             "Thamnophilus praecox")
 
-search_avesperu(splist = splist, max_distance = 0.1)
+search_avesperu(splist = splist, max_distance = 0.05)
 
 ```
