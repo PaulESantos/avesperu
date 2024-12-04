@@ -1,6 +1,6 @@
 Package: avesperu
 Title: Access to the List of Birds Species of Peru
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: 
     person("Paul E.", "Santos Andrade", , 
     "paulefrens@gmail.com", role = c("aut", "cre"),
@@ -12,7 +12,7 @@ Suggests:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 URL: https://github.com/PaulESantos/avesperu, https://paulesantos.github.io/avesperu/
 BugReports: https://github.com/PaulESantos/avesperu/issues
 Depends: 
