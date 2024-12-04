@@ -7,3 +7,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^data-raw$
+List of the Birds of Peru 2024 03.pdf
