@@ -2,33 +2,55 @@
 % Please edit documentation in R/get_avesperu.R
 \name{search_avesperu}
 \alias{search_avesperu}
-\title{Retrieve Data from the List of the Birds of Peru}
+\title{Search for Bird Species Data in the Birds of Peru Dataset}
 \usage{
 search_avesperu(splist, max_distance = 0.1)
 }
 \arguments{
-\item{splist}{A character vector containing the names of the species to search for.}
+\item{splist}{A character vector containing the names of bird species to search for.
+Names can include minor variations or typos.}
 
-\item{max_distance}{The maximum allowed distance for fuzzy matching of species names.
-Defaults to 0.1.}
+\item{max_distance}{Numeric. The maximum allowable distance for fuzzy matching,
+which can either be a proportion (0 < max_distance < 1) or an integer representing
+the maximum number of allowed differences. Defaults to 0.1.}
 }
 \value{
-A data frame containing the retrieved information for each species.
+A data frame with the following columns:
+\describe{
+\item{name_submitted}{The species name provided as input.}
+\item{accepted_name}{The closest matching species name from the dataset, or \code{NA} if no match is found.}
+\item{order_name}{The taxonomic order of the species.}
+\item{family_name}{The taxonomic family of the species.}
+\item{english_name}{The common name of the species in English.}
+\item{spanish_name}{The common name of the species in Spanish.}
+\item{status}{The conservation or other status of the species.}
+\item{dist}{The computed distance between the submitted name and the matched name.}
+}
 }
 \description{
-This function takes a list of birds species names, searches for their data in
-the avesperu pacakage dataset, and returns a data frame containing the relevant
-information for each species.
+This function searches for bird species information in the dataset provided by
+the \code{avesperu} package, given a list of species names. It supports approximate
+(fuzzy) matching to handle typographical errors or minor variations in the
+species names. The function returns detailed information for each species,
+including taxonomic data, common names, and status.
 }
 \details{
-The function allows fuzzy matching for species names with a maximum
-distance threshold to handle potential typos or variations in species names.
+The function performs the following steps:
+\enumerate{
+\item Validates the input, ensuring that \code{splist} is a character vector or a factor.
+\item Standardizes species names and identifies duplicate entries in the list.
+\item For each unique species name, it searches for matches in the dataset using
+approximate string matching (\code{agrep}), with a customizable \code{max_distance}.
+\item Retrieves the taxonomic and common name data for the closest matching species.
+}
+
+If no matches are found for a species, the corresponding row in the output will
+contain \code{NA} values.
 }
 \examples{
-
-splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus sooui",
-            "Thraupisa palamarum", "Thamnophilus praecox")
-
+# Example: Search for bird species in the dataset
+splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui",
+            "Thraupis palmarum", "Thamnophilus praecox")
 search_avesperu(splist)
 
 }
