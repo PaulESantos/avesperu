@@ -14,35 +14,67 @@ status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.o
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 [![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-The `avesperu` package opens the door to Peru’s extraordinary birds,
-encompassing a dataset of 1,901 species, highlighting its status as one
-of the world’s most diverse bird-rich countries. This comprehensive R
-package now leverages the meticulously updated “List of the Birds of
-Peru” by M. A. Plenge, which has been revised and expanded to reflect
-the latest data as of 06 - 03 - 2024. However, it’s important to
-recognize that avian taxonomy is dynamic, undergoing significant changes
-over time.
+The `avesperu` package provides access to the most up-to-date and
+comprehensive dataset on Peru’s avian diversity. As of **December 2,
+2024**, the list includes **1,909 bird species**, reflecting significant
+advancements in taxonomy and the validation of species records. These
+updates are based on articles, photographs, and sound recordings
+archived in accredited institutions, and follow the classification
+endorsed by the **South American Checklist Committee (SACC)**.
 
-The species list adheres to the taxonomic classification endorsed by the
-South American Checklist Committee (SACC), which assigns species codes
-reflecting various aspects such as residency status, endemism, migratory
-behavior, vagrancy, introductions, extirpation, and hypothetical
-presence. As of now, SACC is in the process of recognizing certain
-subspecies as full species, a development that will inevitably alter the
-species count.
+### Species Categories
 
-Of particular note, the “H” category, representing hypothetical species,
-now holds the fifth position in South America’s ranking, following
-Argentina, Bolivia, Colombia, and Ecuador. However, this ranking may
-potentially decrease further with the publication of well-documented
-records, underscoring the ongoing evolution and refinement of avian
-taxonomy.
+Each species in the dataset is classified into one of the following
+categories, reflecting its status in Peru:
+
+- **X (Resident)**: 1,542 species  
+- **E (Endemic)**: 117 species  
+- **NB (Migratory)**: 138 species  
+- **V (Vagrant)**: 83 species  
+- **IN (Introduced)**: 3 species  
+- **EX (Extirpated)**: 0 species  
+- **H (Hypothetical)**: 26 species
+
+This results in a total of **1,909 species**, demonstrating Peru’s
+incredible avian richness.
+
+The `avesperu` package is designed to streamline access to this data for
+researchers, conservationists, and bird enthusiasts alike, providing
+tools for taxonomy validation and species data retrieval using advanced
+fuzzy matching capabilities.
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
-Suggested citation:
+Here’s an enhanced analysis of the provided information, focusing on the
+trends and implications for Peru’s avian biodiversity:
+
+- The chart depicts the steady increase in the number of bird species
+  recorded in Peru from 1968 to 2024, showcasing the country’s
+  remarkable progress in avian taxonomy and biodiversity documentation.
+  Over the decades, several key trends emerge:
+
+### Significant Milestones:
+
+The species count grew substantially between 1968 (1,491 species) and
+1980 (1,678 species), reflecting early efforts in exploration and
+classification. Post-2000, the growth rate appears more stable, with key
+updates in 2010, 2020, and culminating in 2024 with 1,909 species.
+
+### Categorical Analysis:
+
+- Most of the species belong to the “Resident” (X) category, accounting
+  for **1,542 species**, while **117 species** are classified as
+  **endemic,** showcasing Peru’s unique biodiversity.
+
+- Hypothetical species (“H”) contribute 26 species, emphasizing the
+  importance of continued validation efforts to solidify their inclusion
+  in the list.
+
+## Suggested citation:
 
 ``` r
 citation("avesperu")
@@ -88,7 +120,7 @@ Here’s a quick example of how to use the `avesperu` package:
 
 ``` r
 library(avesperu)
-#> This is avesperu 0.0.2
+#> This is avesperu 0.0.3
 
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
@@ -97,16 +129,18 @@ splist <- c("Falco sparverius",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist, max_distance = 0.05)
-#>         name_submitted        accepted_name     english_name
-#> 1     Falco sparverius     Falco sparverius American Kestrel
-#> 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou
-#> 3   Crypturellus sooui    Crypturellus soui   Little Tinamou
-#> 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike
-#>          spanish_name         order         family    status dist
-#> 1 Cernícalo Americano Falconiformes     Falconidae Residente    0
-#> 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1
-#> 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1
-#> 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0
+#>         name_submitted        accepted_name    order_name    family_name
+#> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
+#> 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae
+#> 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae
+#> 4  Thraupisa palamarum                 <NA>          <NA>           <NA>
+#> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
+#>       english_name        spanish_name    status dist
+#> 1 American Kestrel Cernícalo Americano Residente    0
+#> 2    Black Tinamou        Perdiz Negra Residente    1
+#> 3   Little Tinamou        Perdiz Chica Residente    1
+#> 4             <NA>                <NA>      <NA> <NA>
+#> 5  Cocha Antshrike     Batará de Cocha Residente    0
 ```
 
 - The package not only provides access to the list of bird species
@@ -126,14 +160,16 @@ splist <- c("Falco sparverius",
 
 search_avesperu(splist = splist, max_distance = 0.05)
 #> The following names are repeated in the 'splist': Thraupisa palamarum
-#>         name_submitted        accepted_name     english_name
-#> 1     Falco sparverius     Falco sparverius American Kestrel
-#> 2       Tinamus osgodi      Tinamus osgoodi    Black Tinamou
-#> 3   Crypturellus sooui    Crypturellus soui   Little Tinamou
-#> 5 Thamnophilus praecox Thamnophilus praecox  Cocha Antshrike
-#>          spanish_name         order         family    status dist
-#> 1 Cernícalo Americano Falconiformes     Falconidae Residente    0
-#> 2        Perdiz Negra  Tinamiformes      Tinamidae Residente    1
-#> 3        Perdiz Chica  Tinamiformes      Tinamidae Residente    1
-#> 5     Batará de Cocha Passeriformes Thamnophilidae Residente    0
+#>         name_submitted        accepted_name    order_name    family_name
+#> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
+#> 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae
+#> 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae
+#> 4  Thraupisa palamarum                 <NA>          <NA>           <NA>
+#> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
+#>       english_name        spanish_name    status dist
+#> 1 American Kestrel Cernícalo Americano Residente    0
+#> 2    Black Tinamou        Perdiz Negra Residente    1
+#> 3   Little Tinamou        Perdiz Chica Residente    1
+#> 4             <NA>                <NA>      <NA> <NA>
+#> 5  Cocha Antshrike     Batará de Cocha Residente    0
 ```
