@@ -59,3 +59,55 @@ test_that("search_avesperu returns expected results for a single species", {
 })
 
 
+
+# Crear un archivo de prueba para la función search_avesperu
+test_that("search_avesperu behaves as expected", {
+
+  # Caso 1: Entrada válida con nombres exactos
+  splist <- c("Falco sparverius", "Crypturellus soui")
+  result <- search_avesperu(splist)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(nrow(result), length(splist))
+  expect_equal(result$name_submitted, splist)
+  expect_true(all(!is.na(result$accepted_name)))
+
+  # Caso 2: Entrada válida con nombres aproximados
+  splist <- c("Falko sparverius", "Crypturelus soui")
+  result <- search_avesperu(splist, max_distance = 0.2)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(nrow(result), length(splist))
+  expect_true(all(!is.na(result$accepted_name)))
+
+  # Caso 3: Nombres no encontrados
+  splist <- c("Nonexistent species", "Another fake bird")
+  result <- search_avesperu(splist)
+
+  expect_s3_class(result, "data.frame")
+  expect_equal(nrow(result), length(splist))
+  expect_true(all(is.na(result$accepted_name)))
+
+  # Caso 4: Validación de entradas incorrectas
+  expect_error(search_avesperu(123), "'splist' must be a character vector or a factor.")
+  expect_error(search_avesperu(list("Falco sparverius")), "'splist' must be a character vector or a factor.")
+
+  # Caso 5: Entrada con duplicados
+  splist <- c("Falco sparverius", "Falco sparverius")
+  result <- search_avesperu(splist)
+
+  expect_equal(nrow(result), 1) # Solo se debe procesar una vez el nombre
+  expect_equal(result$name_submitted, "Falco sparverius")
+
+
+  # Caso 7: Datos de salida correctos
+  splist <- c("Falco sparverius")
+  result <- search_avesperu(splist)
+
+  expect_equal(result$name_submitted[1], "Falco sparverius")
+  expect_true(!is.na(result$order_name[1]))
+  expect_true(!is.na(result$family_name[1]))
+  expect_true(!is.na(result$english_name[1]))
+  expect_true(!is.na(result$spanish_name[1]))
+  expect_true(!is.na(result$status[1]))
+})
