@@ -2,7 +2,9 @@
 library(pdftools)
 library(tidyverse)
 
-text <- pdf_text("List of the Birds of Peru 2024 03.pdf" )
+text <- pdf_text("List of the Birds of Peru 2025 01.pdf" )
+
+length(text)
 
 get_aves_tab <- function(text){
   text_ <- text |>
@@ -59,19 +61,33 @@ get_aves_tab <- function(text){
 
 }
 
-aves_peru_2024_2 <- map_dfr(text[1:34],
+aves_peru_2025_1 <- map_dfr(text[1:29],
                             ~ get_aves_tab(.))
 
-aves_peru_2024_v2 <- aves_peru_2024_2 |>
+aves_peru_2025_v1 <- aves_peru_2025_1 |>
   fill(family_name, .direction = "down") |>
   fill(order_name, .direction = "down") |>
   filter(!is.na(order_name),
          !is.na(family_name))
 
-aves_peru_2024_v2
+aves_peru_2025_v1
+
+
+aves_peru_2025_v1 |>
+  distinct(status)
+
+
+#' (E) = endémico; una especie es considerada endémica para Perú hasta que un registro fuera de sus fronteras ha sido publicado.
+#' (NB) = especies que ocurren regularmente en Perú, pero solo en su período no reproductivo.
+#' (V) = especies [errante] que ocurren ocasionalmente en Perú y no son parte de la avifauna habitual.
+#' (IN) = especies introducidas en Perú por humanos (o se han establecido (colonizado) de poblaciones introducidas en otro lugar) y han
+#' establecido.poblaciones reproductivas auto suficientes.
+#' (H) = hipotéticos (registros basados solamente en observaciones, especímenes de dudosa procedencia, fotografías no publicadas o grabaciones
+#'                    mantenidas en manos privadas).
+#' (EX) = especies extintas o que han sido extirpadas de Perú.
 
 categoria_map <- c(
-  "X" = "residente",
+  "X" = "residente", #
   "E" = "endémico",
   "NB" = "migratorio",
   "V" = "divagante",
@@ -79,13 +95,24 @@ categoria_map <- c(
   "EX" = "extirpado",
   "H" = "hipotético"
 )
+length(categoria_map)
 
-aves_peru_2024_v2 <- aves_peru_2024_v2 |>
+
+
+
+aves_peru_2025_v1 <- aves_peru_2025_v1 |>
   mutate(status = recode(status, !!!categoria_map)) |>
   mutate(status = str_to_sentence(status))
-aves_peru_2024_v2
-aves_peru_2024_v2 |>
+
+aves_peru_2025_v1 |>
+  count(status) |>
+  janitor::adorn_totals()
+
+
+aves_peru_2025_v1 |>
   count(status)
+
+# 2024 v2
 #1#  X = residente:      1542 v
 #2#  E = endémico:       117  v
 #3#  NB = migratorio:    138  v
@@ -93,8 +120,18 @@ aves_peru_2024_v2 |>
 #5#  IN = introducido:   3    v
 #6#  EX = extirpado:     0    v
 #7#  H = hipotético:     26   v
+################################
+# 2025 v1
+# X = residente:      1542
+# E = endémico:       118
+# NB = migratorio:    138
+# V = divagante:      84
+# IN = introducido:   3
+# EX = extirpado:     0
+# H = hipotético:     26
 
 
-usethis::use_data(aves_peru_2024_v2,
+
+usethis::use_data(aves_peru_2025_v1,
                   compress = "xz",
                   overwrite = TRUE)
