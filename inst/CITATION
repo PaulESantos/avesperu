@@ -4,10 +4,10 @@ bibentry(
   bibtype   = "Manual",
   title    = "avesperu: Access to the List of Birds Species of Peru",
   author   = "Paul E. Santos - Andrade",
-  year     = 2024,
-  note     = "R package version 0.0.3",
+  year     = 2025,
+  note     = "R package version 0.0.4",
   textVersion = paste(
-"Santos - Andrade, PE. (2024). avesperu: Access to the List of Birds Species of Peru. R package version 0.0.3"
+"Santos - Andrade, PE. (2025). avesperu: Access to the List of Birds Species of Peru. R package version 0.0.4"
   ),
-  footer = "To cite the avesperu dataset, please use: \nPlenge, M. A. Version [12/02/2024] List of the birds of Peru / Lista de las aves del Perú. Unión de Ornitólogos del Perú: https://sites.google.com/site/boletinunop/checklist"
+  footer = "To cite the avesperu dataset, please use: \nPlenge, M. A. Version [06/02/2025] List of the birds of Peru / Lista de las aves del Perú. Unión de Ornitólogos del Perú: https://sites.google.com/site/boletinunop/checklist"
 )
