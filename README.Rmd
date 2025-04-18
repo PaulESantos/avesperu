@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# avesperu <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="250" width="220" /></a>
+# avesperu <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="200" width="200" /></a>
 
 
 <!-- badges: start -->
@@ -26,26 +26,25 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-
-The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **February 6, 2025**, the list includes **1,911 bird species**, reflecting significant advancements in taxonomy and the validation of species records. These updates are based on articles, photographs, and sound recordings archived in accredited institutions, and follow the classification endorsed by the South American Checklist Committee (SACC).
+The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **April 5, 2025**, the list includes **1,912** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
 
 ### Species Categories
 
 Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:
 
-- **X Resident**: 1,542 species
-- **E Endemic**: 117 species
-- **NB Migratory**: 138 species
-- **V Vagrant**: 83 species
-- **IN Introduced**: 3 species
-- **EX Extirpated**: 0 species
-- **H Hypothetical**: 26 species
+- X Resident: 1,542 species
+- E Endemic: 119 species
+- NB Migratory (non-breeding): 138 species
+- V Vagrant: 84 species
+- IN Introduced: 3 species
+- EX Extirpated: 0 species
+- H Hypothetical: 26 species
 
-This results in a total of 1,911 species, demonstrating Peru's incredible avian richness.
+This results in a total of 1,912 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
 
-### Features
+## Features
 
-- The `avesperu` package is designed to streamline access to this data for researchers, conservationists, and bird enthusiasts alike. It provides:
+The `avesperu` package is designed to streamline access to this data for researchers, conservationists, and bird enthusiasts alike. It provides:
 
 - A comprehensive and updated bird species dataset following the latest SACC classification.
 
@@ -53,13 +52,14 @@ This results in a total of 1,911 species, demonstrating Peru's incredible avian 
 
 - Fuzzy matching capabilities for improved species name retrieval and validation.
 
+
 ```{r echo=FALSE}
 tibble::tibble(year = c(1968, 1980, 2001, 2007, 
                         2010, 2015, 2020, 2021,
                         2022, 2023, 2024, 2025),
                species = c(1491, 1678, 1800, 1800, 
                            1820, 1851, 1870, 1874, 
-                           1888, 1892, 1909, 1911)) |> 
+                           1888, 1892, 1909, 1912)) |> 
   ggplot2::ggplot(ggplot2::aes(year,
              species)) +
   ggplot2::geom_line(ggplot2::aes(group = 1)) +
@@ -78,23 +78,21 @@ tibble::tibble(year = c(1968, 1980, 2001, 2007,
 ```
 
 
-Here’s an enhanced analysis of the provided information, focusing on the trends and implications for Peru's avian biodiversity:
+### Insights and Trends
 
-- The chart depicts the steady increase in the number of bird species recorded in Peru from 1968 to 2025, showcasing the country’s remarkable progress in avian taxonomy and biodiversity documentation. Over the decades, several key trends emerge:
+The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2025, reflecting continuous research and improvements in taxonomic resolution:
 
-### Significant Milestones:
+- A substantial jump occurred between 1968 and 1980, with 187 new species recorded.
 
-The species count grew substantially between 1968 (1,491 species) and 1980 (1,678 species), reflecting early efforts in exploration and classification.
-Post-2000, the growth rate appears more stable, with key updates in 2010, 2020, and culminating in 2025 with 1,911 species.
+- In recent years, updates have slowed but continued to increase steadily, reflecting meticulous reviews of published records and taxonomic refinements.
 
+### Categorical Summary
 
-### Categorical Analysis:
+- Most species are resident (X), accounting for 1,542 species.
 
-- Most of the species belong to the "Resident" (X) category, accounting for **1,542 species**, while **118 species** are classified as  **endemic,** showcasing Peru's unique biodiversity.
+- Endemic species (E) have increased to 119, reinforcing Peru’s status as a center of avian endemism.
 
-- Hypothetical species ("H") contribute 26 species, emphasizing the importance of continued validation efforts to solidify their inclusion in the list.
-
-
+- The hypothetical category (H) includes 26 species, pending stronger evidence for full inclusion.
 
 ## Suggested citation:
 
