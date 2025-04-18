@@ -86,20 +86,20 @@ improvements in taxonomic resolution:
 citation("avesperu")
 #> To cite avesperu in publications use:
 #> 
-#>   Santos - Andrade, PE. (2024). avesperu: Access to the List of Birds
-#>   Species of Peru. R package version 0.0.3
+#>   Santos - Andrade, PE. (2025). avesperu: Access to the List of Birds
+#>   Species of Peru. R package version 0.0.5
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {avesperu: Access to the List of Birds Species of Peru},
 #>     author = {Paul E. Santos - Andrade},
-#>     year = {2024},
-#>     note = {R package version 0.0.3},
+#>     year = {2025},
+#>     note = {R package version 0.0.5},
 #>   }
 #> 
 #> To cite the avesperu dataset, please use: Plenge, M. A. Version
-#> [12/02/2024] List of the birds of Peru / Lista de las aves del Perú.
+#> [05/04/2025] List of the birds of Peru / Lista de las aves del Perú.
 #> Unión de Ornitólogos del Perú:
 #> https://sites.google.com/site/boletinunop/checklist
 ```
@@ -126,26 +126,27 @@ Here’s a quick example of how to use the `avesperu` package:
 
 ``` r
 library(avesperu)
-#> This is avesperu 0.0.4
+#> This is avesperu 0.0.5
+#> UNOP database is up to date (05 de abril de 2025).
 
 splist <- c("Falco sparverius",
-            "Tinamus osgodi",
-            "Crypturellus sooui",
-            "Thraupisa palamarum",
+            "Tinamus osgoodi",
+            "Crypturellus soui",
+            "Thraupis palmarum",
             "Thamnophilus praecox")
 
-search_avesperu(splist = splist, max_distance = 0.05)
+search_avesperu(splist = splist)
 #>         name_submitted        accepted_name    order_name    family_name
 #> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
-#> 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae
-#> 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae
-#> 4  Thraupisa palamarum                 <NA>          <NA>           <NA>
+#> 2      Tinamus osgoodi      Tinamus osgoodi  Tinamiformes      Tinamidae
+#> 3    Crypturellus soui    Crypturellus soui  Tinamiformes      Tinamidae
+#> 4    Thraupis palmarum    Thraupis palmarum    Passeridae     Thraupidae
 #> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
 #>       english_name        spanish_name    status dist
 #> 1 American Kestrel Cernícalo Americano Residente    0
-#> 2    Black Tinamou        Perdiz Negra Residente    1
-#> 3   Little Tinamou        Perdiz Chica Residente    1
-#> 4             <NA>                <NA>      <NA> <NA>
+#> 2    Black Tinamou        Perdiz Negra Residente    0
+#> 3   Little Tinamou        Perdiz Chica Residente    0
+#> 4     Palm Tanager Tangara de Palmeras Residente    0
 #> 5  Cocha Antshrike     Batará de Cocha Residente    0
 ```
 
@@ -160,22 +161,23 @@ search_avesperu(splist = splist, max_distance = 0.05)
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
             "Crypturellus sooui",
-            "Thraupisa palamarum",
-            "Thraupisa palamarum",
+            "Tinamus guttatus",
+            "Tinamus guttattus",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist, max_distance = 0.05)
-#> The following names are repeated in the 'splist': Thraupisa palamarum
 #>         name_submitted        accepted_name    order_name    family_name
 #> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
 #> 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae
 #> 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae
-#> 4  Thraupisa palamarum                 <NA>          <NA>           <NA>
-#> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
-#>       english_name        spanish_name    status dist
-#> 1 American Kestrel Cernícalo Americano Residente    0
-#> 2    Black Tinamou        Perdiz Negra Residente    1
-#> 3   Little Tinamou        Perdiz Chica Residente    1
-#> 4             <NA>                <NA>      <NA> <NA>
-#> 5  Cocha Antshrike     Batará de Cocha Residente    0
+#> 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae
+#> 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae
+#> 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
+#>             english_name              spanish_name    status dist
+#> 1       American Kestrel       Cernícalo Americano Residente    0
+#> 2          Black Tinamou              Perdiz Negra Residente    1
+#> 3         Little Tinamou              Perdiz Chica Residente    1
+#> 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0
+#> 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1
+#> 6        Cocha Antshrike           Batará de Cocha Residente    0
 ```

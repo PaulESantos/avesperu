@@ -126,12 +126,12 @@ Here's a quick example of how to use the `avesperu` package:
 library(avesperu)
 
 splist <- c("Falco sparverius",
-            "Tinamus osgodi",
-            "Crypturellus sooui",
-            "Thraupisa palamarum",
+            "Tinamus osgoodi",
+            "Crypturellus soui",
+            "Thraupis palmarum",
             "Thamnophilus praecox")
 
-search_avesperu(splist = splist, max_distance = 0.05)
+search_avesperu(splist = splist)
 
 ```
 
@@ -141,8 +141,8 @@ search_avesperu(splist = splist, max_distance = 0.05)
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
             "Crypturellus sooui",
-            "Thraupisa palamerum",
-            "Thraupisa palomarum",
+            "Tinamus guttatus",
+            "Tinamus guttattus",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist, max_distance = 0.05)
