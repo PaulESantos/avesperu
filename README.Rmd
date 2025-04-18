@@ -141,8 +141,8 @@ search_avesperu(splist = splist, max_distance = 0.05)
 splist <- c("Falco sparverius",
             "Tinamus osgodi",
             "Crypturellus sooui",
-            "Thraupisa palamarum",
-            "Thraupisa palamarum",
+            "Thraupisa palamerum",
+            "Thraupisa palomarum",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist, max_distance = 0.05)

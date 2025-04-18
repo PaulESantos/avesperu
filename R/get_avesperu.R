@@ -112,7 +112,7 @@ search_avesperu <- function(splist, max_distance = 0.1) {
       } else {
         # Extraer datos de la coincidencia más cercana
         row_data <- as.matrix(avesperu::aves_peru_2025_v2[
-          avesperu::aves_peru_2025_v1$scientific_name %in% valid_matches,
+          avesperu::aves_peru_2025_v2$scientific_name %in% valid_matches,
           c("order_name", "family_name", "english_name", "spanish_name", "status")
         ])
         row_data <- row_data[1, , drop = FALSE]
