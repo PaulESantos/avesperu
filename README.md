@@ -17,8 +17,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 <!-- badges: end -->
 
 The `avesperu` package provides access to the most up-to-date and
-comprehensive dataset on Peru’s avian diversity. As of **April 5,
-2025**, the list includes **1,912** bird species, reflecting significant
+comprehensive dataset on Peru’s avian diversity. As of **June 23,
+2025**, the list includes **1,914** bird species, reflecting significant
 taxonomic changes and updated validations based on recent scientific
 publications, photographs, and sound recordings deposited in accredited
 institutions. The classification follows the guidelines set by the South
@@ -29,15 +29,15 @@ American Checklist Committee (SACC).
 Each species in the dataset is classified into one of the following
 categories, reflecting its status in Peru:
 
-- X Resident: 1,542 species
+- X Resident: 1,545 species
 - E Endemic: 119 species
-- NB Migratory (non-breeding): 138 species
-- V Vagrant: 84 species
+- NB Migratory (non-breeding): 139 species
+- V Vagrant: 85 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
-- H Hypothetical: 26 species
+- H Hypothetical: 23 species
 
-This results in a total of 1,912 species, showcasing Peru’s
+This results in a total of 1,914 species, showcasing Peru’s
 extraordinary bird diversity and the ongoing refinement of its avifaunal
 checklist.
 
@@ -72,12 +72,12 @@ improvements in taxonomic resolution:
 
 ### Categorical Summary
 
-- Most species are resident (X), accounting for 1,542 species.
+- Most species are resident (X), accounting for 1,545 species.
 
 - Endemic species (E) have increased to 119, reinforcing Peru’s status
   as a center of avian endemism.
 
-- The hypothetical category (H) includes 26 species, pending stronger
+- The hypothetical category (H) includes 23 species, pending stronger
   evidence for full inclusion.
 
 ## Suggested citation:
@@ -127,7 +127,7 @@ Here’s a quick example of how to use the `avesperu` package:
 ``` r
 library(avesperu)
 #> This is avesperu 0.0.5
-#> UNOP database is up to date (05 de abril de 2025).
+#> UNOP database has been updated! New version: 23 de junio de 2025
 
 splist <- c("Falco sparverius",
             "Tinamus osgoodi",

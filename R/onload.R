@@ -16,7 +16,7 @@
 
   # Verificar si la base de datos UNOP ha sido actualizada
   aviso <- tryCatch({
-    unop_check_update("05 de abril de 2025")
+    unop_check_update("23 de junio de 2025")
   }, error = function(e) {
     "Could not verify whether the UNOP database has been updated."
   })
