@@ -102,7 +102,7 @@ unop_update_date <- function() {
 #' @return A character message indicating if the site has a more recent update.
 #' @keywords internal
 
-unop_check_update <- function(version_date = "05 de abril de 2025") {
+unop_check_update <- function(version_date = "23 de junio de 2025") {
   site_date <- unop_update_date()
 
   if (is.na(site_date)) {
