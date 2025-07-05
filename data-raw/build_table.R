@@ -2,7 +2,7 @@
 library(pdftools)
 library(tidyverse)
 
-text <- pdf_text("List of the Birds of Peru 2025 02.pdf" )
+text <- pdf_text("List of the Birds of Peru 2025 03.pdf" )
 
 length(text)
 
@@ -63,20 +63,22 @@ get_aves_tab <- function(text){
 
 }
 
-aves_peru_2025_2 <- purrr::map_dfr(text[1:34],
+aves_peru_2025_3 <- purrr::map_dfr(text[1:36],
                             ~ get_aves_tab(.))
 
-aves_peru_2025_v2 <- aves_peru_2025_2 |>
+aves_peru_2025_v3 <- aves_peru_2025_3 |>
   tidyr::fill(family_name, .direction = "down") |>
   tidyr::fill(order_name, .direction = "down") |>
   dplyr::filter(!is.na(order_name),
          !is.na(family_name))
 
-aves_peru_2025_v2
+
+aves_peru_2025_v3
 
 
-aves_peru_2025_v2 |>
-  dplyr::distinct(status)
+aves_peru_2025_v3 |>
+  dplyr::count(status) |>
+  janitor::adorn_totals()
 
 
 #' (E) = endémico; una especie es considerada endémica para Perú hasta que un registro fuera de sus fronteras ha sido publicado.
@@ -99,11 +101,11 @@ categoria_map <- c(
 )
 length(categoria_map)
 
-aves_peru_2025_v2 <- aves_peru_2025_v2 |>
+aves_peru_2025_v3 <- aves_peru_2025_v3 |>
   dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
   dplyr::mutate(status = stringr::str_to_sentence(status))
 
-aves_peru_2025_v2 |>
+aves_peru_2025_v3 |>
   dplyr::count(status) |>
   janitor::adorn_totals()
 
@@ -134,6 +136,46 @@ aves_peru_2025_v2 |>
 # EX = extirpado:     0
 # H = hipotético:     26
 
-usethis::use_data(aves_peru_2025_v2,
+usethis::use_data(aves_peru_2025_v3,
                   compress = "xz",
                   overwrite = TRUE)
+
+# Data for June 2025 imported from Excel file
+# df <- readxl::read_excel("avesperu_jun2025_.xlsx") |>
+#   dplyr::mutate(order_name = dplyr::if_else(
+#     order_name == "Passeridae",
+#     "Passeriformes" ,
+#     order_name
+#   ))
+#
+# df
+# categoria_map <- c(
+#   "X" = "residente", #
+#   "E" = "endémico",
+#   "NB" = "migratorio",
+#   "V" = "divagante",
+#   "IN" = "introducido",
+#   "EX" = "extirpado",
+#   "H" = "hipotético"
+# )
+# length(categoria_map)
+#
+# aves_peru_2025_v3_1 <- df |>
+#   dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
+#   dplyr::mutate(status = stringr::str_to_sentence(status))
+#
+# aves_peru_2025_v3_1 |>
+#   fgroup_by(status) |>
+#   fsummarise(n = dplyr::n_distinct(scientific_name)) |>
+#   janitor::adorn_totals()
+#
+# aves_peru_2025_v3_1 |>
+#   distinct(order_name) |>
+#   flatten_chr()
+#
+#
+# aves_peru_2025_v3 <-
+#   aves_peru_2025_v3_1 |>
+#   dplyr::select(dplyr::all_of(names(aves_peru_2025_v3))) |>
+#   dplyr::mutate_all(~stringr::str_squish(.))
+#
