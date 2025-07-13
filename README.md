@@ -87,7 +87,7 @@ citation("avesperu")
 #> To cite avesperu in publications use:
 #> 
 #>   Santos - Andrade, PE. (2025). avesperu: Access to the List of Birds
-#>   Species of Peru. R package version 0.0.5
+#>   Species of Peru. R package version 0.0.6
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -95,11 +95,11 @@ citation("avesperu")
 #>     title = {avesperu: Access to the List of Birds Species of Peru},
 #>     author = {Paul E. Santos - Andrade},
 #>     year = {2025},
-#>     note = {R package version 0.0.5},
+#>     note = {R package version 0.0.6},
 #>   }
 #> 
 #> To cite the avesperu dataset, please use: Plenge, M. A. Version
-#> [05/04/2025] List of the birds of Peru / Lista de las aves del Perú.
+#> [23/06/2025] List of the birds of Peru / Lista de las aves del Perú.
 #> Unión de Ornitólogos del Perú:
 #> https://sites.google.com/site/boletinunop/checklist
 ```
@@ -126,8 +126,8 @@ Here’s a quick example of how to use the `avesperu` package:
 
 ``` r
 library(avesperu)
-#> This is avesperu 0.0.5
-#> UNOP database has been updated! New version: 23 de junio de 2025
+#> This is avesperu 0.0.6
+#> UNOP database is up to date (23 de junio de 2025).
 
 splist <- c("Falco sparverius",
             "Tinamus osgoodi",
@@ -140,7 +140,7 @@ search_avesperu(splist = splist)
 #> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
 #> 2      Tinamus osgoodi      Tinamus osgoodi  Tinamiformes      Tinamidae
 #> 3    Crypturellus soui    Crypturellus soui  Tinamiformes      Tinamidae
-#> 4    Thraupis palmarum    Thraupis palmarum    Passeridae     Thraupidae
+#> 4    Thraupis palmarum    Thraupis palmarum Passeriformes     Thraupidae
 #> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
 #>       english_name        spanish_name    status dist
 #> 1 American Kestrel Cernícalo Americano Residente    0
