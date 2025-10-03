@@ -2,7 +2,7 @@
 library(pdftools)
 library(tidyverse)
 
-text <- pdf_text("List of the Birds of Peru 2025 03.pdf" )
+text <- pdf_text("List of the Birds of Peru 2025 04.pdf" )
 
 length(text)
 
@@ -63,20 +63,20 @@ get_aves_tab <- function(text){
 
 }
 
-aves_peru_2025_3 <- purrr::map_dfr(text[1:36],
+aves_peru_2025_4 <- purrr::map_dfr(text[1:33],
                             ~ get_aves_tab(.))
 
-aves_peru_2025_v3 <- aves_peru_2025_3 |>
+aves_peru_2025_v4 <- aves_peru_2025_4 |>
   tidyr::fill(family_name, .direction = "down") |>
   tidyr::fill(order_name, .direction = "down") |>
   dplyr::filter(!is.na(order_name),
          !is.na(family_name))
 
 
-aves_peru_2025_v3
+aves_peru_2025_v4
 
 
-aves_peru_2025_v3 |>
+aves_peru_2025_v4 |>
   dplyr::count(status) |>
   janitor::adorn_totals()
 
@@ -101,11 +101,11 @@ categoria_map <- c(
 )
 length(categoria_map)
 
-aves_peru_2025_v3 <- aves_peru_2025_v3 |>
+aves_peru_2025_v4 <- aves_peru_2025_v4 |>
   dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
   dplyr::mutate(status = stringr::str_to_sentence(status))
 
-aves_peru_2025_v3 |>
+aves_peru_2025_v4 |>
   dplyr::count(status) |>
   janitor::adorn_totals()
 
@@ -136,7 +136,29 @@ aves_peru_2025_v3 |>
 # EX = extirpado:     0
 # H = hipotético:     26
 
-usethis::use_data(aves_peru_2025_v3,
+#################################
+# 2025 - v3
+# Divagante   85
+# Endémico  119
+# Hipotético   23
+# Introducido    3
+# Migratorio  139
+# Residente 1545
+# Total 1914
+
+####################################
+# 2025 - v4
+# X = residente:      1547 *
+# E = endémico:       120 revisar
+# NB = migratorio:    139 *
+# V = divagante:      85 *
+# IN = introducido:   3 *
+# EX = extirpado:     0
+# H = hipotético:     23 *
+# Total: 1917
+
+
+usethis::use_data(aves_peru_2025_v4,
                   compress = "xz",
                   overwrite = TRUE)
 
@@ -179,3 +201,5 @@ usethis::use_data(aves_peru_2025_v3,
 #   dplyr::select(dplyr::all_of(names(aves_peru_2025_v3))) |>
 #   dplyr::mutate_all(~stringr::str_squish(.))
 #
+aves_peru_2025_v4 |>
+  writexl::write_xlsx("bird_of_peru_unop_v4_2025.xlsx")
