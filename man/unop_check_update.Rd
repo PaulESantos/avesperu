@@ -4,7 +4,7 @@
 \alias{unop_check_update}
 \title{Check if the UNOP Checklist Has Been Updated}
 \usage{
-unop_check_update(version_date = "23 de junio de 2025")
+unop_check_update(version_date = "29 de septiembre de 2025")
 }
 \arguments{
 \item{version_date}{Character string with the current local version date
