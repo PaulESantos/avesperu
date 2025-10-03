@@ -1,6 +1,6 @@
-#' aves_peru_2025_v3
+#' aves_peru_2025_v4
 #'
-#' The `aves_peru_2025_v3` dataset provides an updated tibble of bird
+#' The `aves_peru_2025_v4` dataset provides an updated tibble of bird
 #' species recorded in Peru, based on the most recent taxonomic revisions
 #' by the South American Checklist Committee (SACC).
 #'
@@ -10,7 +10,7 @@
 #' following the SACC guidelines. Species without a specific code are considered
 #' resident species, equivalent to the "X" category of the SACC.
 #'
-#' @format A tibble with 1,914 rows and 6 columns:
+#' @format A tibble with 1,916 rows and 6 columns:
 #' \describe{
 #'   \item{order_name}{Taxonomic order to which the bird species belongs.}
 #'   \item{family_name}{Taxonomic family to which the bird species belongs.}
@@ -31,10 +31,10 @@
 #' }
 #'
 #' @details
-#' - **Total species**: 1,912
+#' - **Total species**: 1,916
 #' - **Distribution by status**:
 #'   \itemize{
-#'     \item{\code{X}}: 1,545 species
+#'     \item{\code{X}}: 1,547 species
 #'     \item{\code{E}}: 119 species
 #'     \item{\code{NB}}: 139 species
 #'     \item{\code{V}}: 85 species
@@ -47,14 +47,14 @@
 #'
 #' @examples
 #' # Load the dataset
-#' data("aves_peru_2025_v3")
+#' data("aves_peru_2025_v4")
 #'
 #' @seealso
 #' For more information about the data, visit:
 #' \url{https://sites.google.com/site/boletinunop/checklist}
 #'
 #' @references
-#' Plenge, M. A. Version (23-06-2025) List of the birds of Peru / Lista de
+#' Plenge, M. A. Version (29-09-2025) List of the birds of Peru / Lista de
 #' las aves del Perú. Unión de Ornitólogos del Perú:
 #' \url{https://sites.google.com/site/boletinunop/checklist}
 #'
@@ -63,4 +63,4 @@
 #' Package implementation: Paul Efren Santos Andrade
 #'
 #' @keywords dataset birds Peru taxonomy SACC ornithology
-"aves_peru_2025_v3"
+"aves_peru_2025_v4"
