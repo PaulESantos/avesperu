@@ -2,7 +2,7 @@
 library(pdftools)
 library(tidyverse)
 
-text <- pdf_text("List of the Birds of Peru 2025 04.pdf" )
+text <- pdf_text("List of the Birds of Peru 2025 04_1.pdf" )
 
 length(text)
 
