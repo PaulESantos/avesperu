@@ -162,44 +162,45 @@ usethis::use_data(aves_peru_2025_v4,
                   compress = "xz",
                   overwrite = TRUE)
 
-# Data for June 2025 imported from Excel file
-# df <- readxl::read_excel("avesperu_jun2025_.xlsx") |>
-#   dplyr::mutate(order_name = dplyr::if_else(
-#     order_name == "Passeridae",
-#     "Passeriformes" ,
-#     order_name
-#   ))
-#
-# df
-# categoria_map <- c(
-#   "X" = "residente", #
-#   "E" = "endémico",
-#   "NB" = "migratorio",
-#   "V" = "divagante",
-#   "IN" = "introducido",
-#   "EX" = "extirpado",
-#   "H" = "hipotético"
-# )
-# length(categoria_map)
-#
-# aves_peru_2025_v3_1 <- df |>
-#   dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
-#   dplyr::mutate(status = stringr::str_to_sentence(status))
-#
-# aves_peru_2025_v3_1 |>
-#   fgroup_by(status) |>
-#   fsummarise(n = dplyr::n_distinct(scientific_name)) |>
-#   janitor::adorn_totals()
-#
-# aves_peru_2025_v3_1 |>
-#   distinct(order_name) |>
-#   flatten_chr()
-#
-#
-# aves_peru_2025_v3 <-
-#   aves_peru_2025_v3_1 |>
-#   dplyr::select(dplyr::all_of(names(aves_peru_2025_v3))) |>
-#   dplyr::mutate_all(~stringr::str_squish(.))
-#
+# Data for septiembre 2025 imported from Excel file
+df <- readxl::read_excel("org_data\\Lista de las aves del Peru 04 oct 2025.xlsx") |>
+  dplyr::select(-c(3,4)) |>
+  purrr::set_names(c("order_name",
+                     "family_name",
+                     "scientific_name",
+                     "spanish_name",
+                     "english_name",
+                     "status"
+                     ))
+df
+df |>
+  dplyr::distinct(order_name) |>
+  purrr::flatten_chr()
+
+df |>  dplyr::count(status) |> janitor::adorn_totals()
+
+categoria_map <- c(
+  "X" = "residente", #
+  "E" = "endémico",
+  "NB" = "migratorio",
+  "V" = "divagante",
+  "IN" = "introducido",
+  "EX" = "extirpado",
+  "H" = "hipotético",
+  "U" = "hipotético",
+  "P" = "divagante!"
+)
+
+length(categoria_map)
+
+aves_peru_2025_v4 <- df |>
+  dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
+  dplyr::mutate(status = stringr::str_to_sentence(status))
+
 aves_peru_2025_v4 |>
-  writexl::write_xlsx("bird_of_peru_unop_v4_2025.xlsx")
+  collapse::fgroup_by(status) |>
+  collapse::fsummarise(n = dplyr::n_distinct(scientific_name)) |>
+  janitor::adorn_totals()
+
+aves_peru_2025_v4 |>
+  writexl::write_xlsx("org_data\\bird_of_peru_unop_v4_2025.xlsx")

@@ -26,21 +26,22 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **September 29, 2025**, the list includes **1,916** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
+The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **September 29, 2025**, the list includes **1,917** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
 
 ### Species Categories
 
 Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:
 
-- X Resident: 1,547 species
-- E Endemic: 119 species
-- NB Migratory (non-breeding): 139 species
+- X Resident: 1,545 species
+- E Endemic: 120 species
+- NB Migratory (non-breeding): 140 species
 - V Vagrant: 85 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
 - H Hypothetical: 23 species
+- P : 2 species
 
-This results in a total of 1,916 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
+This results in a total of 1,917 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
 
 ## Features
 
@@ -59,7 +60,7 @@ tibble::tibble(year = c(1968, 1980, 2001, 2007,
                         2022, 2023, 2024, 2025),
                species = c(1491, 1678, 1800, 1800, 
                            1820, 1851, 1870, 1874, 
-                           1888, 1892, 1909, 1916)) |> 
+                           1888, 1892, 1909, 1917)) |> 
   ggplot2::ggplot(ggplot2::aes(year,
              species)) +
   ggplot2::geom_line(ggplot2::aes(group = 1)) +
@@ -88,9 +89,9 @@ The chart shows the steady increase in the number of bird species recorded in Pe
 
 ### Categorical Summary
 
-- Most species are resident (X), accounting for 1,547 species.
+- Most species are resident (X), accounting for 1,545 species.
 
-- Endemic species (E) have increased to 119, reinforcing Peru’s status as a center of avian endemism.
+- Endemic species (E) have increased to 120, reinforcing Peru’s status as a center of avian endemism.
 
 - The hypothetical category (H) includes 23 species, pending stronger evidence for full inclusion.
 
@@ -145,6 +146,10 @@ splist <- c("Falco sparverius",
             "Tinamus guttattus",
             "Thamnophilus praecox")
 
-search_avesperu(splist = splist, max_distance = 0.05)
+search_avesperu(splist = splist, max_distance = 0.05, return_details = TRUE)
 
 ```
+
+
+
+

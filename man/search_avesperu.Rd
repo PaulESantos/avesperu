@@ -4,53 +4,125 @@
 \alias{search_avesperu}
 \title{Search for Bird Species Data in the Birds of Peru Dataset}
 \usage{
-search_avesperu(splist, max_distance = 0.1)
+search_avesperu(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+)
 }
 \arguments{
-\item{splist}{A character vector containing the names of bird species to search for.
-Names can include minor variations or typos.}
+\item{splist}{A character vector or factor containing the scientific names of
+bird species to search for. Names can include minor variations or typos.}
 
-\item{max_distance}{Numeric. The maximum allowable distance for fuzzy matching,
-which can either be a proportion (0 < max_distance < 1) or an integer representing
-the maximum number of allowed differences. Defaults to 0.1.}
+\item{max_distance}{Numeric. The maximum allowable distance for fuzzy matching.
+Can be either:
+\itemize{
+\item A proportion between 0 and 1 (e.g., 0.1 = 10\\% of string length)
+\item An integer representing the maximum number of character differences
+}
+Default: 0.1.}
+
+\item{return_details}{Logical. If \code{FALSE} (default), returns only a character
+vector of species status. If \code{TRUE}, returns a detailed data frame with
+complete reconciliation information including taxonomic data and matching distances.}
+
+\item{batch_size}{Integer. Number of species to process per batch when handling
+large lists. Useful for memory management and progress tracking.
+Default: 100 species per batch.}
+
+\item{parallel}{Logical. Should parallel processing be used for large lists?
+Automatically disabled for small lists. Requires the \code{parallel} package.
+Default: \code{TRUE}.}
+
+\item{n_cores}{Integer or \code{NULL}. Number of CPU cores to use for parallel
+processing. If \code{NULL} (default), uses \code{detectCores() - 1} to leave
+one core free for system operations.}
 }
 \value{
-A data frame with the following columns:
+The return value depends on the \code{return_details} parameter:
+
+\strong{If return_details = FALSE (default):}
+
+A character vector with the same length as \code{splist}, containing the
+conservation/occurrence status for each species. \code{NA} values indicate
+no match was found.
+
+\strong{If return_details = TRUE:}
+
+A data frame (tibble-compatible) with the following columns:
 \describe{
-\item{name_submitted}{The species name provided as input.}
-\item{accepted_name}{The closest matching species name from the dataset, or \code{NA} if no match is found.}
-\item{order_name}{The taxonomic order of the species.}
-\item{family_name}{The taxonomic family of the species.}
-\item{english_name}{The common name of the species in English.}
-\item{spanish_name}{The common name of the species in Spanish.}
-\item{status}{The conservation or other status of the species.}
-\item{dist}{The computed distance between the submitted name and the matched name.}
+\item{name_submitted}{Character. The species name provided as input (standardized).}
+\item{accepted_name}{Character. The closest matching species name from the
+database, or \code{NA} if no match found within \code{max_distance}.}
+\item{order_name}{Character. The taxonomic order of the matched species.}
+\item{family_name}{Character. The taxonomic family of the matched species.}
+\item{english_name}{Character. Common name in English.}
+\item{spanish_name}{Character. Common name in Spanish.}
+\item{status}{Character. Conservation or occurrence status (e.g., "Endemic",
+"Resident", "Migrant", "Vagrant").}
+\item{dist}{Character. Edit distance between submitted and matched names.
+Lower values indicate better matches. \code{NA} if no match found.}
 }
 }
 \description{
 This function searches for bird species information in the dataset provided by
 the \code{avesperu} package, given a list of species names. It supports approximate
-(fuzzy) matching to handle typographical errors or minor variations in the
-species names. The function returns detailed information for each species,
-including taxonomic data, common names, and status.
+(fuzzy) matching to handle typographical errors or minor variations in species
+names using optimized \code{agrep()} matching. The function is optimized for both
+small and large lists through intelligent pre-filtering and optional parallel
+processing, while maintaining exact \code{agrep()} precision.
 }
 \details{
 The function performs the following steps:
 \enumerate{
-\item Validates the input, ensuring that \code{splist} is a character vector or a factor.
-\item Standardizes species names and identifies duplicate entries in the list.
-\item For each unique species name, it searches for matches in the dataset using
-approximate string matching (\code{agrep}), with a customizable \code{max_distance}.
-\item Retrieves the taxonomic and common name data for the closest matching species.
+\item Validates input and converts factors to character vectors
+\item Standardizes species names using \code{standardize_names()}
+\item Identifies and reports duplicate entries in the input list
+\item Uses intelligent pre-filtering to reduce search space:
+\itemize{
+\item Filters by string length (mathematically guaranteed to preserve matches)
+\item Optionally filters by first character for very large candidate sets
+}
+\item Performs precise \code{agrep()} fuzzy matching on filtered candidates
+\item Calculates exact edit distances using \code{adist()}
+\item Selects the best match (minimum distance) for each query
+\item For large lists (>batch_size), processes in batches with optional parallelization
+}
+}
+\section{Warning}{
+
+For very large lists (>10,000 species) with parallel processing enabled,
+ensure sufficient system memory is available. Each parallel worker maintains
+a copy of the reference database (~5-10 MB).
 }
 
-If no matches are found for a species, the corresponding row in the output will
-contain \code{NA} values.
-}
 \examples{
-# Example: Search for bird species in the dataset
-splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui",
-            "Thraupis palmarum", "Thamnophilus praecox")
-search_avesperu(splist)
+\dontrun{
+# Basic usage - returns status vector
+splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui")
+status <- search_avesperu(splist)
+print(status)
 
+# Get detailed reconciliation information
+details <- search_avesperu(splist, return_details = TRUE)
+print(details)
+
+# Exact matching only (no fuzzy matching)
+exact_results <- search_avesperu(splist, max_distance = 0)
+
+# Handle species with typos
+typo_list <- c("Falco sparveruis", "Tinamus osgoodi", "Crypturellus sui")
+corrected <- search_avesperu(typo_list, return_details = TRUE)
+
+# View submitted vs accepted names
+print(corrected[, c("name_submitted", "accepted_name", "dist")])
+
+}
+
+}
+\seealso{
+\code{\link[base]{agrep}} for the underlying fuzzy matching algorithm
 }
