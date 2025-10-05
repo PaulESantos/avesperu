@@ -18,7 +18,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 
 The `avesperu` package provides access to the most up-to-date and
 comprehensive dataset on Peru’s avian diversity. As of **September 29,
-2025**, the list includes **1,916** bird species, reflecting significant
+2025**, the list includes **1,917** bird species, reflecting significant
 taxonomic changes and updated validations based on recent scientific
 publications, photographs, and sound recordings deposited in accredited
 institutions. The classification follows the guidelines set by the South
@@ -29,15 +29,16 @@ American Checklist Committee (SACC).
 Each species in the dataset is classified into one of the following
 categories, reflecting its status in Peru:
 
-- X Resident: 1,547 species
-- E Endemic: 119 species
-- NB Migratory (non-breeding): 139 species
+- X Resident: 1,545 species
+- E Endemic: 120 species
+- NB Migratory (non-breeding): 140 species
 - V Vagrant: 85 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
 - H Hypothetical: 23 species
+- P : 2 species
 
-This results in a total of 1,916 species, showcasing Peru’s
+This results in a total of 1,917 species, showcasing Peru’s
 extraordinary bird diversity and the ongoing refinement of its avifaunal
 checklist.
 
@@ -72,9 +73,9 @@ improvements in taxonomic resolution:
 
 ### Categorical Summary
 
-- Most species are resident (X), accounting for 1,547 species.
+- Most species are resident (X), accounting for 1,545 species.
 
-- Endemic species (E) have increased to 119, reinforcing Peru’s status
+- Endemic species (E) have increased to 120, reinforcing Peru’s status
   as a center of avian endemism.
 
 - The hypothetical category (H) includes 23 species, pending stronger
@@ -98,7 +99,7 @@ citation("avesperu")
 #>     note = {R package version 0.0.7},
 #>   }
 #> 
-#> To cite the avesperu dataset, please use: Plenge, M. A. Version
+#> To cite the avesperu dataset, please use: Plenge, M. A. & F. Angulo
 #> [29/09/2025] List of the birds of Peru / Lista de las aves del Perú.
 #> Unión de Ornitólogos del Perú:
 #> https://sites.google.com/site/boletinunop/checklist
@@ -127,7 +128,7 @@ Here’s a quick example of how to use the `avesperu` package:
 ``` r
 library(avesperu)
 #> This is avesperu 0.0.7
-#> UNOP database is up to date (29 de septiembre de 2025).
+#> The UNOP database is up to date (current version: 29 de septiembre de 2025).
 
 splist <- c("Falco sparverius",
             "Tinamus osgoodi",
@@ -136,18 +137,7 @@ splist <- c("Falco sparverius",
             "Thamnophilus praecox")
 
 search_avesperu(splist = splist)
-#>         name_submitted        accepted_name    order_name    family_name
-#> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
-#> 2      Tinamus osgoodi      Tinamus osgoodi  Tinamiformes      Tinamidae
-#> 3    Crypturellus soui    Crypturellus soui  Tinamiformes      Tinamidae
-#> 4    Thraupis palmarum    Thraupis palmarum    Passeridae     Thraupidae
-#> 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae
-#>       english_name        spanish_name    status dist
-#> 1 American Kestrel Cernícalo Americano Residente    0
-#> 2    Black Tinamou        Perdiz Negra Residente    0
-#> 3   Little Tinamou        Perdiz Chica Residente    0
-#> 4     Palm Tanager Tangara de Palmeras Residente    0
-#> 5  Cocha Antshrike     Batará de Cocha Residente    0
+#> [1] "Residente" "Residente" "Residente" "Residente" "Residente"
 ```
 
 - The package not only provides access to the list of bird species
@@ -165,7 +155,7 @@ splist <- c("Falco sparverius",
             "Tinamus guttattus",
             "Thamnophilus praecox")
 
-search_avesperu(splist = splist, max_distance = 0.05)
+search_avesperu(splist = splist, max_distance = 0.05, return_details = TRUE)
 #>         name_submitted        accepted_name    order_name    family_name
 #> 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae
 #> 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae
