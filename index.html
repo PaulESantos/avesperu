@@ -54,21 +54,22 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. As of <strong>September 29, 2025</strong>, the list includes <strong>1,916</strong> bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
+<p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. As of <strong>September 29, 2025</strong>, the list includes <strong>1,917</strong> bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
 <div class="section level3">
 <h3 id="species-categories">Species Categories<a class="anchor" aria-label="anchor" href="#species-categories"></a>
 </h3>
 <p>Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:</p>
 <ul>
-<li>X Resident: 1,547 species</li>
-<li>E Endemic: 119 species</li>
-<li>NB Migratory (non-breeding): 139 species</li>
+<li>X Resident: 1,545 species</li>
+<li>E Endemic: 120 species</li>
+<li>NB Migratory (non-breeding): 140 species</li>
 <li>V Vagrant: 85 species</li>
 <li>IN Introduced: 3 species</li>
 <li>EX Extirpated: 0 species</li>
 <li>H Hypothetical: 23 species</li>
+<li>P : 2 species</li>
 </ul>
-<p>This results in a total of 1,916 species, showcasing Peru’s extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.</p>
+<p>This results in a total of 1,917 species, showcasing Peru’s extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.</p>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -93,8 +94,8 @@
 <h3 id="categorical-summary">Categorical Summary<a class="anchor" aria-label="anchor" href="#categorical-summary"></a>
 </h3>
 <ul>
-<li><p>Most species are resident (X), accounting for 1,547 species.</p></li>
-<li><p>Endemic species (E) have increased to 119, reinforcing Peru’s status as a center of avian endemism.</p></li>
+<li><p>Most species are resident (X), accounting for 1,545 species.</p></li>
+<li><p>Endemic species (E) have increased to 120, reinforcing Peru’s status as a center of avian endemism.</p></li>
 <li><p>The hypothetical category (H) includes 23 species, pending stronger evidence for full inclusion.</p></li>
 </ul>
 </div>
@@ -118,7 +119,7 @@
 <span><span class="co">#&gt;     note = {R package version 0.0.7},</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; To cite the avesperu dataset, please use: Plenge, M. A. Version</span></span>
+<span><span class="co">#&gt; To cite the avesperu dataset, please use: Plenge, M. A. &amp; F. Angulo</span></span>
 <span><span class="co">#&gt; [29/09/2025] List of the birds of Peru / Lista de las aves del Perú.</span></span>
 <span><span class="co">#&gt; Unión de Ornitólogos del Perú:</span></span>
 <span><span class="co">#&gt; https://sites.google.com/site/boletinunop/checklist</span></span></code></pre></div>
@@ -142,7 +143,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; This is avesperu 0.0.7</span></span>
-<span><span class="co">#&gt; UNOP database is up to date (29 de septiembre de 2025).</span></span>
+<span><span class="co">#&gt; The UNOP database is up to date (current version: 29 de septiembre de 2025).</span></span>
 <span></span>
 <span><span class="va">splist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>,</span>
 <span>            <span class="st">"Tinamus osgoodi"</span>,</span>
@@ -151,18 +152,7 @@
 <span>            <span class="st">"Thamnophilus praecox"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2      Tinamus osgoodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 3    Crypturellus soui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 4    Thraupis palmarum    Thraupis palmarum    Passeridae     Thraupidae</span></span>
-<span><span class="co">#&gt; 5 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt;       english_name        spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1 American Kestrel Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2    Black Tinamou        Perdiz Negra Residente    0</span></span>
-<span><span class="co">#&gt; 3   Little Tinamou        Perdiz Chica Residente    0</span></span>
-<span><span class="co">#&gt; 4     Palm Tanager Tangara de Palmeras Residente    0</span></span>
-<span><span class="co">#&gt; 5  Cocha Antshrike     Batará de Cocha Residente    0</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Residente" "Residente" "Residente" "Residente" "Residente"</span></span></code></pre></div>
 <ul>
 <li>The package not only provides access to the list of bird species recorded in Peru but also excels in resolving potential typos or variations in species names through fuzzy matching. It ensures accurate retrieval by intelligently recognizing and accommodating slight discrepancies in the input names, making it a robust tool for working with diverse and sometimes inconsistent datasets.</li>
 </ul>
@@ -174,7 +164,7 @@
 <span>            <span class="st">"Tinamus guttattus"</span>,</span>
 <span>            <span class="st">"Thamnophilus praecox"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
 <span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
 <span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
