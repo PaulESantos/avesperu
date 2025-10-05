@@ -139,32 +139,128 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Here’s a quick example of how to use the <code>avesperu</code> package:</p>
+<div class="section level3">
+<h3 id="basic-search">Basic Search<a class="anchor" aria-label="anchor" href="#basic-search"></a>
+</h3>
+<p>The <code><a href="reference/search_avesperu.html">search_avesperu()</a></code> function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; This is avesperu 0.0.7</span></span>
 <span><span class="co">#&gt; The UNOP database is up to date (current version: 29 de septiembre de 2025).</span></span>
 <span></span>
+<span><span class="co"># Define species list</span></span>
 <span><span class="va">splist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>,</span>
 <span>            <span class="st">"Tinamus osgoodi"</span>,</span>
+<span>            <span class="st">"Phoenicoparrus jamesi"</span>,</span>
 <span>            <span class="st">"Crypturellus soui"</span>,</span>
 <span>            <span class="st">"Thraupis palmarum"</span>,</span>
-<span>            <span class="st">"Thamnophilus praecox"</span><span class="op">)</span></span>
+<span>            <span class="st">"Thamnophilus praecox"</span>,</span>
+<span>            <span class="st">"Penelope albipennis"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Search for species information</span></span>
 <span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Residente" "Residente" "Residente" "Residente" "Residente"</span></span></code></pre></div>
-<ul>
-<li>The package not only provides access to the list of bird species recorded in Peru but also excels in resolving potential typos or variations in species names through fuzzy matching. It ensures accurate retrieval by intelligently recognizing and accommodating slight discrepancies in the input names, making it a robust tool for working with diverse and sometimes inconsistent datasets.</li>
-</ul>
+<span><span class="co">#&gt; [1] "Residente"  "Residente"  "Migratorio" "Residente"  "Residente" </span></span>
+<span><span class="co">#&gt; [6] "Residente"  "Endémico"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="integration-with-data-frames">Integration with Data Frames<a class="anchor" aria-label="anchor" href="#integration-with-data-frames"></a>
+</h3>
+<p>The function integrates seamlessly with data.frame and tibble objects, enabling efficient taxonomic validation within data processing pipelines:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">splist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>,</span>
-<span>            <span class="st">"Tinamus osgodi"</span>,</span>
-<span>            <span class="st">"Crypturellus sooui"</span>,</span>
-<span>            <span class="st">"Tinamus guttatus"</span>,</span>
-<span>            <span class="st">"Tinamus guttattus"</span>,</span>
-<span>            <span class="st">"Thamnophilus praecox"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Create a data frame with species names</span></span>
+<span><span class="va">bird_data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>species <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Add taxonomic information</span></span>
+<span><span class="va">bird_data</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span>taxonomy <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; # A tibble: 7 × 2</span></span>
+<span><span class="co">#&gt;   species               taxonomy  </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt;     </span></span>
+<span><span class="co">#&gt; 1 Falco sparverius      Residente </span></span>
+<span><span class="co">#&gt; 2 Tinamus osgoodi       Residente </span></span>
+<span><span class="co">#&gt; 3 Phoenicoparrus jamesi Migratorio</span></span>
+<span><span class="co">#&gt; 4 Crypturellus soui     Residente </span></span>
+<span><span class="co">#&gt; 5 Thraupis palmarum     Residente </span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox  Residente </span></span>
+<span><span class="co">#&gt; 7 Penelope albipennis   Endémico</span></span>
+<span></span>
+<span><span class="co"># Or extract specific fields</span></span>
+<span><span class="va">bird_data</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span></span>
+<span>    status <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">status</span>,</span>
+<span>    family <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">family_name</span>,</span>
+<span>    order <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">order_name</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 7 × 4</span></span>
+<span><span class="co">#&gt;   species               status     family           order              </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;              </span></span>
+<span><span class="co">#&gt; 1 Falco sparverius      Residente  Falconidae       Falconiformes      </span></span>
+<span><span class="co">#&gt; 2 Tinamus osgoodi       Residente  Tinamidae        Tinamiformes       </span></span>
+<span><span class="co">#&gt; 3 Phoenicoparrus jamesi Migratorio Phoenicopteridae Phoenicopteriformes</span></span>
+<span><span class="co">#&gt; 4 Crypturellus soui     Residente  Tinamidae        Tinamiformes       </span></span>
+<span><span class="co">#&gt; 5 Thraupis palmarum     Residente  Thraupidae       Passeriformes      </span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox  Residente  Thamnophilidae   Passeriformes      </span></span>
+<span><span class="co">#&gt; 7 Penelope albipennis   Endémico   Cracidae         Galliformes</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="fuzzy-matching-for-name-variations">Fuzzy Matching for Name Variations<a class="anchor" aria-label="anchor" href="#fuzzy-matching-for-name-variations"></a>
+</h3>
+<p>The package implements approximate string matching (fuzzy matching) to handle typographical errors, spelling variations, and incomplete names. This feature significantly improves data quality when working with field observations or legacy datasets that may contain inconsistencies.</p>
+<ul>
+<li>How Fuzzy Matching Works The max_distance parameter controls the matching tolerance:</li>
+</ul>
+<p>Values between 0 and 1 (e.g., 0.1): Interpreted as a proportion of the name length</p>
+<p>“Tinamus osgoodi” (14 chars): allows up to 1 character difference (14 × 0.1)</p>
+<p>Integer values (e.g., 2): Interpreted as absolute number of character differences allowed</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Species list with intentional typos</span></span>
+<span><span class="va">splist_typos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Falco sparverius"</span>,      <span class="co"># Correct</span></span>
+<span>  <span class="st">"Tinamus osgodi"</span>,        <span class="co"># Missing 'o' should match "Tinamus osgoodi"</span></span>
+<span>  <span class="st">"Crypturellus sooui"</span>,    <span class="co"># Extra 'o' should match "Crypturellus soui"</span></span>
+<span>  <span class="st">"Tinamus guttatus"</span>,      <span class="co"># Correct</span></span>
+<span>  <span class="st">"Tinamus guttattus"</span>,     <span class="co"># Extra 't' should match "Tinamus guttatus"</span></span>
+<span>  <span class="st">"Thamnophilus praecox"</span>,  <span class="co"># Correct</span></span>
+<span>  <span class="st">"Penelope albipenis"</span>     <span class="co"># Missing 'n' should match "Penelope albipennis"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search with moderate tolerance (5% of name length)</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display matching results</span></span>
+<span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_submitted"</span>, <span class="st">"accepted_name"</span>, <span class="st">"dist"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;         name_submitted        accepted_name dist</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius    0</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi    1</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui    1</span></span>
+<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus    0</span></span>
+<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus    1</span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox    0</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis    1</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="understanding-the-output">Understanding the Output<a class="anchor" aria-label="anchor" href="#understanding-the-output"></a>
+</h3>
+<ul>
+<li><p>name_submitted: The original name provided by the user</p></li>
+<li><p>accepted_name: The matched species name from the database</p></li>
+<li>
+<p>dist: Levenshtein distance (number of single-character edits required to transform one string into another)</p>
+<ul>
+<li>0 = exact match</li>
+<li>1 = one character difference (insertion, deletion, or substitution)</li>
+<li>Higher values indicate greater divergence</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="adjusting-matching-sensitivity">Adjusting Matching Sensitivity<a class="anchor" aria-label="anchor" href="#adjusting-matching-sensitivity"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Strict matching: only 1 character difference allowed</span></span>
+<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
 <span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
 <span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
@@ -172,13 +268,231 @@
 <span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
 <span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
 <span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
 <span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
 <span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
 <span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
 <span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
 <span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
 <span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span></code></pre></div>
+<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
+<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
+<span></span>
+<span><span class="co"># Proportional matching: 10% of name length</span></span>
+<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
+<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
+<span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
+<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
+<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
+<span></span>
+<span><span class="co"># Lenient matching: up to 2 character differences</span></span>
+<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">2</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
+<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
+<span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
+<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
+<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
+<span></span>
+<span><span class="co"># Exact matching only</span></span>
+<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 5    Tinamus guttattus                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
+<span><span class="co">#&gt; 5                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
+<span><span class="co">#&gt; 7                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="best-practices">Best Practices<a class="anchor" aria-label="anchor" href="#best-practices"></a>
+</h3>
+<p>Start conservative: Use max_distance = 0.05 (5%) for initial data cleaning Review ambiguous matches: Check entries with dist &gt; 0 to verify correctness Handle unmatched species: Names returning NA require manual verification Document your threshold: Always report the max_distance parameter used</p>
+<ul>
+<li>Handling Unmatched Names</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, </span>
+<span>                           max_distance <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">results</span></span>
+<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
+<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
+<span><span class="co">#&gt; 2       Tinamus osgodi                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3   Crypturellus sooui                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
+<span><span class="co">#&gt; 5    Tinamus guttattus                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
+<span><span class="co">#&gt; 7   Penelope albipenis                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
+<span><span class="co">#&gt; 5                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
+<span><span class="co">#&gt; 7                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span></span>
+<span><span class="co"># Identify unmatched species</span></span>
+<span><span class="va">unmatched</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">accepted_name</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">unmatched</span></span>
+<span><span class="co">#&gt;       name_submitted accepted_name order_name family_name english_name</span></span>
+<span><span class="co">#&gt; 2     Tinamus osgodi          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3 Crypturellus sooui          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5  Tinamus guttattus          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 7 Penelope albipenis          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   spanish_name status dist</span></span>
+<span><span class="co">#&gt; 2         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 7         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"The following names could not be matched:\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">$</span><span class="va">name_submitted</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Try with higher tolerance</span></span>
+<span>  <span class="va">retry</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">$</span><span class="va">name_submitted</span>,</span>
+<span>                           max_distance <span class="op">=</span> <span class="fl">0.15</span>,</span>
+<span>                           return_details <span class="op">=</span> <span class="cn">TRUE</span> <span class="op">)</span></span>
+<span>  <span class="va">retry</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">retry</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; The following names could not be matched:</span></span>
+<span><span class="co">#&gt; [1] "Tinamus osgodi"     "Crypturellus sooui" "Tinamus guttattus" </span></span>
+<span><span class="co">#&gt; [4] "Penelope albipenis"</span></span>
+<span><span class="co">#&gt;       name_submitted       accepted_name   order_name family_name</span></span>
+<span><span class="co">#&gt; 1     Tinamus osgodi     Tinamus osgoodi Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 2 Crypturellus sooui   Crypturellus soui Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 3  Tinamus guttattus    Tinamus guttatus Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 4 Penelope albipenis Penelope albipennis  Galliformes    Cracidae</span></span>
+<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1          Black Tinamou              Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 2         Little Tinamou              Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 3 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
+<span><span class="co">#&gt; 4      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="advanced-usage-examples">Advanced Usage Examples<a class="anchor" aria-label="anchor" href="#advanced-usage-examples"></a>
+</h3>
+<div class="section level4">
+<h4 id="example-1-quality-control-for-field-data">Example 1: Quality Control for Field Data<a class="anchor" aria-label="anchor" href="#example-1-quality-control-for-field-data"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simulated field observation data</span></span>
+<span><span class="va">field_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  observer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Observer A"</span>, <span class="st">"Observer B"</span>, <span class="st">"Observer A"</span>, <span class="st">"Observer C"</span><span class="op">)</span>,</span>
+<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Amazilia amazilia"</span>, <span class="st">"Phaetornis guy"</span>, <span class="st">"Metallura tyrianthina"</span>, </span>
+<span>              <span class="st">"Tangara chilensis"</span><span class="op">)</span>,</span>
+<span>  count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Validate species names and add taxonomy</span></span>
+<span><span class="va">field_data_validated</span> <span class="op">&lt;-</span> <span class="va">field_data</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span></span>
+<span>  taxonomy <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">species</span>, <span class="op">~</span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">.x</span>, </span>
+<span>                                           max_distance <span class="op">=</span> <span class="fl">0.1</span>, </span>
+<span>                                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu">unnest</span><span class="op">(</span><span class="va">taxonomy</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">select</span><span class="op">(</span><span class="va">observer</span>, <span class="va">species</span>, <span class="va">accepted_name</span>, <span class="va">family_name</span>, </span>
+<span>         <span class="va">english_name</span>, <span class="va">status</span>, <span class="va">count</span>, <span class="va">dist</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">field_data_validated</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 8</span></span>
+<span><span class="co">#&gt;   observer   species   accepted_name family_name english_name status count dist </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 Observer A Amazilia… Amazilis ama… Trochilidae Amazilia Hu… Resid…     2 1    </span></span>
+<span><span class="co">#&gt; 2 Observer B Phaetorn… Phaethornis … Trochilidae Green Hermit Resid…     1 1    </span></span>
+<span><span class="co">#&gt; 3 Observer A Metallur… Metallura ty… Trochilidae Tyrian Meta… Resid…     3 0    </span></span>
+<span><span class="co">#&gt; 4 Observer C Tangara … Tangara chil… Thraupidae  Paradise Ta… Resid…     5 0</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="example-2-checking-endemic-status">Example 2: Checking Endemic Status<a class="anchor" aria-label="anchor" href="#example-2-checking-endemic-status"></a>
+</h4>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Identify endemic species from a list</span></span>
+<span><span class="va">my_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Penelope albipennis"</span>, <span class="st">"Xenoglaux loweryi"</span>, <span class="st">"Grallaria ridgelyi"</span>,</span>
+<span>                <span class="st">"Falco sparverius"</span>, <span class="st">"Thraupis palmarum"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">my_species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Filter endemic species</span></span>
+<span><span class="va">endemic_species</span> <span class="op">&lt;-</span> <span class="va">results</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">filter</span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Endémico"</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">select</span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="va">accepted_name</span>, <span class="va">english_name</span>, <span class="va">family_name</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">endemic_species</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       scientific_name         english_name family_name</span></span>
+<span><span class="co">#&gt; 1 Penelope albipennis    White-winged Guan    Cracidae</span></span>
+<span><span class="co">#&gt; 2   Xenoglaux loweryi Long-whiskered Owlet   Strigidae</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="example-3-taxonomic-summary">Example 3: Taxonomic Summary<a class="anchor" aria-label="anchor" href="#example-3-taxonomic-summary"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get taxonomic distribution of a species list</span></span>
+<span><span class="va">my_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Count by family</span></span>
+<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">family_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        family_name n</span></span>
+<span><span class="co">#&gt; 1        Tinamidae 2</span></span>
+<span><span class="co">#&gt; 2         Cracidae 1</span></span>
+<span><span class="co">#&gt; 3       Falconidae 1</span></span>
+<span><span class="co">#&gt; 4 Phoenicopteridae 1</span></span>
+<span><span class="co">#&gt; 5   Thamnophilidae 1</span></span>
+<span><span class="co">#&gt; 6       Thraupidae 1</span></span>
+<span></span>
+<span><span class="co"># Count by order</span></span>
+<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">order_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            order_name n</span></span>
+<span><span class="co">#&gt; 1       Passeriformes 2</span></span>
+<span><span class="co">#&gt; 2        Tinamiformes 2</span></span>
+<span><span class="co">#&gt; 3       Falconiformes 1</span></span>
+<span><span class="co">#&gt; 4         Galliformes 1</span></span>
+<span><span class="co">#&gt; 5 Phoenicopteriformes 1</span></span>
+<span></span>
+<span><span class="co"># Status summary</span></span>
+<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       status n</span></span>
+<span><span class="co">#&gt; 1   Endémico 1</span></span>
+<span><span class="co">#&gt; 2 Migratorio 1</span></span>
+<span><span class="co">#&gt; 3  Residente 5</span></span></code></pre></div>
+</div>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
