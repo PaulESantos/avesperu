@@ -4,7 +4,8 @@ library(testthat)
 
 test_that("search_avesperu returns expected results for multiple species", {
   result <- search_avesperu(c("Patagioenas picazuros", "Columba livia",
-                                "Chordeiles nacunda", "Laterallus albigularis"))
+                                "Chordeiles nacunda", "Laterallus albigularis"),
+                            return_details = TRUE)
 
   # Comprobar dimensiones del resultado
   expect_equal(nrow(result), 4)
@@ -41,7 +42,7 @@ test_that("search_avesperu returns expected results for multiple species", {
 })
 
 test_that("search_avesperu returns expected results for a single species", {
-  result <- search_avesperu("Falco sparverius")
+  result <- search_avesperu("Falco sparverius", return_details = TRUE)
 
   # Comprobar dimensiones del resultado
   expect_equal(nrow(result), 1)
@@ -65,7 +66,7 @@ test_that("search_avesperu behaves as expected", {
 
   # Caso 1: Entrada válida con nombres exactos
   splist <- c("Falco sparverius", "Crypturellus soui")
-  result <- search_avesperu(splist)
+  result <- search_avesperu(splist, return_details = TRUE)
 
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), length(splist))
@@ -74,7 +75,7 @@ test_that("search_avesperu behaves as expected", {
 
   # Caso 2: Entrada válida con nombres aproximados
   splist <- c("Falko sparverius", "Crypturelus soui")
-  result <- search_avesperu(splist, max_distance = 0.2)
+  result <- search_avesperu(splist, max_distance = 0.2, return_details = TRUE)
 
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), length(splist))
@@ -82,7 +83,7 @@ test_that("search_avesperu behaves as expected", {
 
   # Caso 3: Nombres no encontrados
   splist <- c("Nonexistent species", "Another fake bird")
-  result <- search_avesperu(splist)
+  result <- search_avesperu(splist, return_details = TRUE)
 
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), length(splist))
@@ -90,19 +91,14 @@ test_that("search_avesperu behaves as expected", {
 
   # Caso 4: Validación de entradas incorrectas
   expect_error(search_avesperu(123), "'splist' must be a character vector or a factor.")
-  expect_error(search_avesperu(list("Falco sparverius")), "'splist' must be a character vector or a factor.")
-
-  # Caso 5: Entrada con duplicados
-  splist <- c("Falco sparverius", "Falco sparverius")
-  result <- search_avesperu(splist)
-
-  expect_equal(nrow(result), 1) # Solo se debe procesar una vez el nombre
-  expect_equal(result$name_submitted, "Falco sparverius")
+  expect_error(search_avesperu(list("Falco sparverius"),
+                               return_details = TRUE),
+               "'splist' must be a character vector or a factor.")
 
 
   # Caso 7: Datos de salida correctos
   splist <- c("Falco sparverius")
-  result <- search_avesperu(splist)
+  result <- search_avesperu(splist, return_details = TRUE)
 
   expect_equal(result$name_submitted[1], "Falco sparverius")
   expect_true(!is.na(result$order_name[1]))

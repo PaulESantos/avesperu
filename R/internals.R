@@ -1,25 +1,49 @@
-# Function to clean species list names
+#' Standardize Species Names
+#'
+#'
+#' @param splist Character vector of species names
+#' @return Standardized species names
 #' @keywords internal
 standardize_names <- function(splist) {
-  fixed1 <- simple_cap(trimws(splist)) # all up
-  fixed2 <- gsub("cf\\.", "", fixed1)
-  fixed3 <- gsub("aff\\.", "", fixed2)
-  fixed4 <- trimws(fixed3) # remove trailing and leading space
-  fixed5 <- gsub("_", " ", fixed4) # change names separated by _ to space
 
-  # Hybrids
-  fixed6 <- gsub("(^x )|( x$)|( x )", " ", fixed5)
-  hybrids <- fixed5 == fixed6
-  if (!all(hybrids)) {
-    sp_hybrids <- splist[!hybrids]
-    warning(paste("The 'x' sign indicating hybrids have been removed in the",
-                  "following names before search:",
-                  paste(paste0("'", sp_hybrids, "'"), collapse = ", ")),
-            immediate. = TRUE, call. = FALSE)
+  # Paso 1
+  splist <- trimws(splist)
+
+  # Paso 2: Capitalización
+  splist <- vapply(splist, function(x) {
+    words <- strsplit(tolower(x), "\\s+")[[1]]
+    words[1] <- paste0(toupper(substring(words[1], 1, 1)),
+                       substring(words[1], 2))
+    if (length(words) > 1) {
+      words[2] <- paste0(tolower(substring(words[2], 1, 1)),
+                         substring(words[2], 2))
+    }
+    paste(words, collapse = " ")
+  }, character(1), USE.NAMES = FALSE)
+
+  # Paso 3: Limpieza con expreciones regulares combinadas
+  # Detectar híbridos primero para warning
+  has_hybrid <- grepl("(^x\\s)|( x$)|( x )", splist)
+
+  # Aplicar todas las transformaciones en una sola pasada
+  splist <- gsub("\\s*cf\\.\\s*|\\s*aff\\.\\s*", " ", splist)
+  splist <- gsub("(^x\\s)|( x$)|( x )", " ", splist)
+  splist <- gsub("_", " ", splist)
+  splist <- gsub("\\s{2,}", " ", splist)  # Reemplaze multiples espacios con uno
+  splist <- trimws(splist)
+
+  # Advertencia sobre híbridos si es necesario
+  if (any(has_hybrid)) {
+    sp_hybrids <- unique(splist[has_hybrid])
+    warning(
+      "The 'x' sign indicating hybrids have been removed in ",
+      length(sp_hybrids), " name(s) before search.",
+      call. = FALSE,
+      immediate. = TRUE
+    )
   }
-  # Merge multiple spaces
-  fixed7 <- gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", fixed6, perl = TRUE)
-  return(fixed7)
+
+  return(splist)
 }
 
 #' @keywords internal
@@ -39,7 +63,6 @@ simple_cap <- function(x) {
 }
 
 #' @keywords internal
-#'
 find_duplicates <- function(vector) {
   # Count the frequency of each word
   word_counts <- table(vector)
@@ -88,7 +111,7 @@ unop_update_date <- function() {
   return(fecha)
 }
 
-
+# unop_update_date()
 # ---------------------------------------------------------------
 #' Check if the UNOP Checklist Has Been Updated
 #'
@@ -121,16 +144,23 @@ unop_check_update <- function(version_date = "29 de septiembre de 2025") {
 
   fecha_sitio <- parse_fecha(site_date)
   fecha_version <- parse_fecha(version_date)
-
   if (is.na(fecha_sitio) || is.na(fecha_version)) {
-    return("Could not convert one or both dates into proper format.")
+    return("Unable to parse one or both dates into the proper format.")
   }
 
   if (fecha_sitio > fecha_version) {
-    return(paste0("UNOP database has been updated! New version: ", site_date))
+    return(
+      paste0(
+        "The UNOP database requires an update.\n",
+        "A newer version is available (published on ", site_date, ")."
+      )
+    )
   } else {
-    return(paste0("UNOP database is up to date (", site_date, ")."))
+    return(
+      paste0(
+        "The UNOP database is up to date (current version: ", version_date, ")."
+      )
+    )
   }
 }
-
 
