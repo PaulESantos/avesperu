@@ -23,7 +23,6 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 [![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **September 29, 2025**, the list includes **1,917** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
