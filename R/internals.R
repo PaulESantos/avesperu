@@ -111,7 +111,7 @@ unop_update_date <- function() {
   return(fecha)
 }
 
-# unop_update_date()
+#unop_update_date()
 # ---------------------------------------------------------------
 #' Check if the UNOP Checklist Has Been Updated
 #'
@@ -119,20 +119,21 @@ unop_update_date <- function() {
 #' website with a reference version date. It returns a message indicating
 #' whether an update has occurred.
 #'
-#' @param version_date Character string with the current local version date
-#'        (e.g., "05 de abril de 2025").
 #'
 #' @return A character message indicating if the site has a more recent update.
 #' @keywords internal
 
-unop_check_update <- function(version_date = "29 de septiembre de 2025") {
+unop_check_update <- function() {
   site_date <- unop_update_date()
+  version_date <- attr(avesperu::aves_peru_2025_v5, "version_date")
 
   if (is.na(site_date)) {
-    return("Could not extract the update date from the website.")
+    cli::cli_alert_danger(
+      "Failed to retrieve the update date from the website."
+    )
+    return(invisible(NULL))
   }
 
-  # Convert both dates to Date format for comparison
   parse_fecha <- function(fecha_str) {
     meses <- c("enero", "febrero", "marzo", "abril", "mayo", "junio",
                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
@@ -144,23 +145,26 @@ unop_check_update <- function(version_date = "29 de septiembre de 2025") {
 
   fecha_sitio <- parse_fecha(site_date)
   fecha_version <- parse_fecha(version_date)
+
   if (is.na(fecha_sitio) || is.na(fecha_version)) {
-    return("Unable to parse one or both dates into the proper format.")
+    cli::cli_alert_warning(
+      "Unable to parse one or both dates in the expected format."
+    )
+    return(invisible(NULL))
   }
 
   if (fecha_sitio > fecha_version) {
-    return(
-      paste0(
-        "The UNOP database requires an update.\n",
-        "A newer version is available (published on ", site_date, ")."
-      )
+    cli::cli_alert_warning(
+      "A newer UNOP checklist version is available."
+    )
+    cli::cli_alert_info(
+      "Latest online version date: {site_date}."
     )
   } else {
-    return(
-      paste0(
-        "The UNOP database is up to date (current version: ", version_date, ")."
-      )
+    cli::cli_alert_success(
+      "The UNOP checklist is up to date (current version: {version_date})."
     )
   }
-}
 
+  invisible(NULL)
+}

@@ -10,7 +10,7 @@
 #' following the SACC guidelines. Species without a specific code are considered
 #' resident species, equivalent to the "X" category of the SACC.
 #'
-#' @format A tibble with 1,916 rows and 6 columns:
+#' @format A tibble with 1,917 rows and 6 columns:
 #' \describe{
 #'   \item{order_name}{Taxonomic order to which the bird species belongs.}
 #'   \item{family_name}{Taxonomic family to which the bird species belongs.}
@@ -31,17 +31,19 @@
 #' }
 #'
 #' @details
-#' - **Total species**: 1,916
+#' - **Total species**: 1,917
 #' - **Distribution by status**:
 #'   \itemize{
 #'     \item{\code{X}}: 1,547 species
-#'     \item{\code{E}}: 119 species
+#'     \item{\code{E}}: 120 species
 #'     \item{\code{NB}}: 139 species
 #'     \item{\code{V}}: 85 species
 #'     \item{\code{IN}}: 3 species
 #'     \item{\code{EX}}: 0 species
 #'     \item{\code{H}}: 23 species
 #'   }
+#'
+#'
 #'
 #' These updates reflect the SACC’s continuous evaluation process, which now recognizes several former subspecies as full species.
 #'
