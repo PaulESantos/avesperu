@@ -25,6 +25,3 @@ template:
     navbar-bg: "#fcfbf9"  # match to site bg
     navbar-light-color: "#272b30"
     navbar-light-hover-color: "#336688"
-development:
-  mode: auto
-
