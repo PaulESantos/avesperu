@@ -1,13 +1,40 @@
-citHeader("To cite avesperu in publications use:")
+citHeader("To cite avesperu in publications, please use:")
 
 bibentry(
-  bibtype   = "Manual",
-  title    = "avesperu: Access to the List of Birds Species of Peru",
-  author   = "Paul E. Santos - Andrade",
-  year     = 2025,
-  note     = "R package version 0.0.8",
+  bibtype = "Manual",
+  title = "avesperu: Access to the List of Birds Species of Peru",
+  author = person("Paul E.", "Santos Andrade",
+                  email = "paulefrens@gmail.com",
+                  comment = c(ORCID = "0000-0002-6635-0375")),
+  year = "2025",
+  note = "R package version 0.0.8",
+  url = "https://paulesantos.github.io/avesperu/",
   textVersion = paste(
-"Santos - Andrade, PE. (2025). avesperu: Access to the List of Birds Species of Peru. R package version 0.0.8"
+    "Santos Andrade, P. E. (2025).",
+    "avesperu: Access to the List of Birds Species of Peru.",
+    "R package version 0.0.8.",
+    "https://paulesantos.github.io/avesperu/"
   ),
-  footer = "To cite the avesperu dataset, please use: \nPlenge, M. A. & F. Angulo [29/12/2025] List of the birds of Peru / Lista de las aves del Perú. Unión de Ornitólogos del Perú: https://sites.google.com/site/boletinunop/checklist"
+  header = "To cite the avesperu package in publications, please use:",
+  footer = "The bird species checklist included in this package is based on:"
+)
+
+bibentry(
+  bibtype = "Misc",
+  title = "Lista de las aves del Perú / List of the birds of Peru",
+  author = c(
+    person("Manuel A.", "Plenge"),
+    person("Fernando", "Angulo")
+  ),
+  year = "2025",
+  note = "Version 29-12-2025",
+  publisher = "Unión de Ornitólogos del Perú",
+  url = "https://sites.google.com/site/boletinunop/checklist",
+  textVersion = paste(
+    "Plenge, M. A., & Angulo, F. (2025).",
+    "Lista de las aves del Perú / List of the birds of Peru.",
+    "Version 29-12-2025.",
+    "Unión de Ornitólogos del Perú.",
+    "https://sites.google.com/site/boletinunop/checklist"
+  )
 )
