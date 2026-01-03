@@ -7,15 +7,8 @@ whether an update has occurred.
 ## Usage
 
 ``` r
-unop_check_update(version_date = "29 de septiembre de 2025")
+unop_check_update()
 ```
-
-## Arguments
-
-- version_date:
-
-  Character string with the current local version date (e.g., "05 de
-  abril de 2025").
 
 ## Value
 

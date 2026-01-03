@@ -12,7 +12,7 @@ aves_peru_2025_v4
 
 ## Format
 
-A tibble with 1,916 rows and 6 columns:
+A tibble with 1,917 rows and 6 columns:
 
 - order_name:
 
@@ -68,13 +68,13 @@ in accredited institutions. It also includes a classification criterion
 following the SACC guidelines. Species without a specific code are
 considered resident species, equivalent to the "X" category of the SACC.
 
-- **Total species**: 1,916
+- **Total species**: 1,917
 
 - **Distribution by status**:
 
   - `X`: 1,547 species
 
-  - `E`: 119 species
+  - `E`: 120 species
 
   - `NB`: 139 species
 
