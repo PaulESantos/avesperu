@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(tidyverse)
 ```
 
 # avesperu <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="200" width="200" /></a>
@@ -25,22 +26,21 @@ knitr::opts_chunk$set(
 [![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 <!-- badges: end -->
 
-The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **September 29, 2025**, the list includes **1,917** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
+The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **December 29, 2025**, the list includes **1,919** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
 
 ### Species Categories
 
 Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:
 
-- X Resident: 1,545 species
-- E Endemic: 120 species
+- X Resident: 1,549 species
+- E Endemic: 118 species
 - NB Migratory (non-breeding): 140 species
-- V Vagrant: 85 species
+- V Vagrant: 86 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
-- H Hypothetical: 23 species
-- P : 2 species
+- U Unconfirmed records: 23 species
 
-This results in a total of 1,917 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
+This results in a total of 1,919 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
 
 ## Features
 
@@ -54,27 +54,69 @@ The `avesperu` package is designed to streamline access to this data for researc
 
 
 ```{r echo=FALSE}
-tibble::tibble(year = c(1968, 1980, 2001, 2007, 
-                        2010, 2015, 2020, 2021,
-                        2022, 2023, 2024, 2025),
-               species = c(1491, 1678, 1800, 1800, 
-                           1820, 1851, 1870, 1874, 
-                           1888, 1892, 1909, 1917)) |> 
-  ggplot2::ggplot(ggplot2::aes(year,
-             species)) +
-  ggplot2::geom_line(ggplot2::aes(group = 1)) +
-  ggplot2::geom_point(color = "red") +
-  ggplot2::labs(x = "",
-       y = "Number of species") +
-  ggplot2::scale_x_continuous(guide = ggplot2::guide_axis(n.dodge = 2),
-  breaks = c(1968, 1980, 2001, 2007, 
-                        2010, 2015, 2020, 2021,
-                        2022, 2023, 2024, 2025),
-  labels = c(1968, 1980, 2001, 2007, 
-                        2010, 2015, 2020, 2021,
-                        2022, 2023, 2024, 2025)) +
-  ggplot2::theme_bw() +
-  ggplot2::coord_flip()
+df <- tibble(
+  year    = c(1968, 1980, 2001, 2007, 
+              2010, 2015, 2020, 2021,
+              2022, 2023, 2024, 2025),
+  species = c(1491, 1678, 1800, 1800, 
+              1820, 1851, 1870, 1874, 
+              1888, 1892, 1909, 1919)
+) |>
+  mutate(is_current = year == max(year))
+
+base_color  <- "#1B7F79"  # teal
+highlight   <- "#D1495B"  # coral for current value
+
+ggplot(df, aes(x = year, y = species)) +
+  # línea general
+  geom_line(linewidth = 1.1, color = base_color) +
+  
+  # puntos (último año con color distinto)
+  geom_point(
+    aes(color = is_current),
+    size  = 2.8,
+    shape = 21,
+    fill  = "white",
+    stroke = 1.1
+  ) +
+  # etiqueta especial resaltando el valor vigente
+  geom_text(
+    data = dplyr::filter(df, is_current),
+    aes(label = paste0(species, " sp.")),
+    vjust = -2.1,
+    size  = 3.2,
+    fontface = "bold",
+    color = highlight
+  ) +
+  
+  scale_color_manual(
+    values = c(`TRUE` = highlight, `FALSE` = base_color),
+    guide = "none"
+  ) +
+  
+  scale_x_continuous(
+    breaks = df$year,
+    guide  = guide_axis(n.dodge = 2)
+  ) +
+  scale_y_continuous(
+    name   = "Number of species",
+    expand = expansion(mult = c(0.02, 0.18))
+  ) +
+  
+  labs(
+    title    = "Growth of the Peruvian Bird Checklist (1968–2025)",
+    subtitle = "Total number of species recognized in major checklist updates",
+    x        = NULL
+  ) +
+  theme_bw() +
+  theme(
+    panel.grid.minor  = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.title        = element_text(face = "bold"),
+    plot.subtitle     = element_text(size = 9),
+    axis.title.y      = element_text(margin = margin(r = 6))
+  )
+
 ```
 
 
@@ -86,13 +128,6 @@ The chart shows the steady increase in the number of bird species recorded in Pe
 
 - In recent years, updates have slowed but continued to increase steadily, reflecting meticulous reviews of published records and taxonomic refinements.
 
-### Categorical Summary
-
-- Most species are resident (X), accounting for 1,545 species.
-
-- Endemic species (E) have increased to 120, reinforcing Peru’s status as a center of avian endemism.
-
-- The hypothetical category (H) includes 23 species, pending stronger evidence for full inclusion.
 
 ## Suggested citation:
 
