@@ -6,25 +6,30 @@
 #' @param lib A character string indicating the path to the library.
 #' @param pkg A character string with the name of the package.
 #' @keywords internal
+
 .onAttach <- function(lib, pkg) {
-  # Mostrar mensaje de bienvenida con versión del paquete
-  packageStartupMessage("This is avesperu ",
-                        utils::packageDescription("avesperu",
-                                                  fields = "Version"),
-                        appendLF = TRUE
+
+  if (!interactive()) return(invisible(NULL))
+
+  cli::cli_rule(
+    left = "avesperu",
+    right = paste("v", utils::packageVersion("avesperu"))
   )
 
-  # Verificar si la base de datos UNOP ha sido actualizada
-  aviso <- tryCatch({
-    unop_check_update("29 de septiembre de 2025")
-  }, error = function(e) {
-    "Could not verify whether the UNOP database has been updated."
-  })
+  cli::cli_alert_success("Package successfully loaded.")
+  cli::cli_alert_info("Checking UNOP checklist status...")
 
-  packageStartupMessage(aviso)
+  tryCatch(
+    unop_check_update(),
+    error = function(e) {
+      cli::cli_alert_warning(
+        "Unable to verify whether the UNOP checklist is up to date."
+      )
+    }
+  )
+
+  invisible(NULL)
 }
-
-
 # -------------------------------------------------------------------------
 
 #' Determine whether to show progress bar

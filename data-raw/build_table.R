@@ -170,14 +170,24 @@ df <- readxl::read_excel("org_data\\Lista de las aves del Peru 04 oct 2025.xlsx"
                      "scientific_name",
                      "spanish_name",
                      "english_name",
+                     "status_code",
                      "status"
                      ))
 df
 df |>
   dplyr::distinct(order_name) |>
   purrr::flatten_chr()
-
-df |>  dplyr::count(status) |> janitor::adorn_totals()
+# X = residente:      1547
+# E = endémico:        120
+# NB = migratorio:     139
+# V = divagante:        85
+# IN = introducido:      3
+# EX = extirpado:        0
+# Subtotal:           1894
+# H = hipotético:       23
+df |>
+  dplyr::count(status, status_code) |>
+  janitor::adorn_totals()
 
 categoria_map <- c(
   "X" = "residente", #
@@ -188,19 +198,37 @@ categoria_map <- c(
   "EX" = "extirpado",
   "H" = "hipotético",
   "U" = "hipotético",
-  "P" = "divagante!"
+  "P" = "divagante"
 )
 
 length(categoria_map)
 
 aves_peru_2025_v4 <- df |>
   dplyr::mutate(status = dplyr::recode(status, !!!categoria_map)) |>
-  dplyr::mutate(status = stringr::str_to_sentence(status))
+  dplyr::mutate(status = stringr::str_to_sentence(status)) |>
+  dplyr::mutate(status = ifelse(status == "Divagante!", "Divagante", status))
+
+aves_peru_2025_v4
+
+aves_peru_2025_v4 |>
+  dplyr::count(status) |>
+  janitor::adorn_totals()
 
 aves_peru_2025_v4 |>
   collapse::fgroup_by(status) |>
   collapse::fsummarise(n = dplyr::n_distinct(scientific_name)) |>
   janitor::adorn_totals()
 
+aves_peru_2025_v4 <-
+  aves_peru_2025_v4 |>
+  dplyr::select(-status_code)
+aves_peru_2025_v4
+
+
+usethis::use_data(aves_peru_2025_v4,
+                  compress = "xz",
+                  overwrite = TRUE)
+
+
 aves_peru_2025_v4 |>
-  writexl::write_xlsx("org_data\\bird_of_peru_unop_v4_2025.xlsx")
+  writexl::write_xlsx("org_data\\bird_of_peru_unop_v4_2025_19112025.xlsx")

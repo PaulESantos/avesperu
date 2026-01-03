@@ -134,6 +134,13 @@ search_avesperu <- function(splist,
     stop("'max_distance' must be a single non-negative numeric value.", call. = FALSE)
   }
 
+  if (max_distance > 0 && max_distance < 1) {
+    # Es una proporción - validar que sea razonable
+    if (max_distance > 0.5) {
+      warning("'max_distance' > 0.5 may produce too many false matches.", call. = FALSE)
+    }
+  }
+
   if (!is.numeric(batch_size) || length(batch_size) != 1 || batch_size < 1) {
     stop("'batch_size' must be a positive integer.", call. = FALSE)
   }
@@ -163,7 +170,7 @@ search_avesperu <- function(splist,
   n_unique <- length(splist_unique)
 
   # Cargar dataset una sola vez
-  species_db <- avesperu::aves_peru_2025_v4
+  species_db <- avesperu::aves_peru_2025_v5
   db_names <- species_db$scientific_name
 
 
