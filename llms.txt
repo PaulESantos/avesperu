@@ -58,24 +58,23 @@ improvements in taxonomic resolution:
 
 ``` r
 citation("avesperu")
-#> To cite avesperu in publications use:
+#> To cite avesperu in publications, please use:
 #> 
-#>   Santos - Andrade, PE. (2025). avesperu: Access to the List of Birds
-#>   Species of Peru. R package version 0.0.7
+#> To cite the avesperu package in publications, please use:
 #> 
-#> A BibTeX entry for LaTeX users is
+#>   Santos Andrade, P. E. (2025). avesperu: Access to the List of Birds
+#>   Species of Peru. R package version 0.0.8.
+#>   https://paulesantos.github.io/avesperu/
 #> 
-#>   @Manual{,
-#>     title = {avesperu: Access to the List of Birds Species of Peru},
-#>     author = {Paul E. Santos - Andrade},
-#>     year = {2025},
-#>     note = {R package version 0.0.7},
-#>   }
+#> The bird species checklist included in this package is based on:
 #> 
-#> To cite the avesperu dataset, please use: Plenge, M. A. & F. Angulo
-#> [29/09/2025] List of the birds of Peru / Lista de las aves del Perú.
-#> Unión de Ornitólogos del Perú:
-#> https://sites.google.com/site/boletinunop/checklist
+#>   Plenge, M. A., & Angulo, F. (2025). Lista de las aves del Perú / List
+#>   of the birds of Peru. Version 29-12-2025. Unión de Ornitólogos del
+#>   Perú. https://sites.google.com/site/boletinunop/checklist
+#> 
+#> To see these entries in BibTeX format, use 'print(<citation>,
+#> bibtex=TRUE)', 'toBibtex(.)', or set
+#> 'options(citation.bibtex.max=999)'.
 ```
 
 ## Installation
