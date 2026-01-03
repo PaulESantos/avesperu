@@ -1,8 +1,8 @@
 # avesperu [![](reference/figures/avesperu.svg)](https://github.com/PaulESantos/avesperu)
 
 The `avesperu` package provides access to the most up-to-date and
-comprehensive dataset on Peru’s avian diversity. As of **September 29,
-2025**, the list includes **1,917** bird species, reflecting significant
+comprehensive dataset on Peru’s avian diversity. As of **December 29,
+2025**, the list includes **1,919** bird species, reflecting significant
 taxonomic changes and updated validations based on recent scientific
 publications, photographs, and sound recordings deposited in accredited
 institutions. The classification follows the guidelines set by the South
@@ -13,16 +13,15 @@ American Checklist Committee (SACC).
 Each species in the dataset is classified into one of the following
 categories, reflecting its status in Peru:
 
-- X Resident: 1,545 species
-- E Endemic: 120 species
+- X Resident: 1,549 species
+- E Endemic: 118 species
 - NB Migratory (non-breeding): 140 species
-- V Vagrant: 85 species
+- V Vagrant: 86 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
-- H Hypothetical: 23 species
-- P : 2 species
+- U Unconfirmed records: 23 species
 
-This results in a total of 1,917 species, showcasing Peru’s
+This results in a total of 1,919 species, showcasing Peru’s
 extraordinary bird diversity and the ongoing refinement of its avifaunal
 checklist.
 
@@ -54,16 +53,6 @@ improvements in taxonomic resolution:
 - In recent years, updates have slowed but continued to increase
   steadily, reflecting meticulous reviews of published records and
   taxonomic refinements.
-
-### Categorical Summary
-
-- Most species are resident (X), accounting for 1,545 species.
-
-- Endemic species (E) have increased to 120, reinforcing Peru’s status
-  as a center of avian endemism.
-
-- The hypothetical category (H) includes 23 species, pending stronger
-  evidence for full inclusion.
 
 ## Suggested citation:
 
@@ -119,8 +108,6 @@ simultaneously.
 ``` r
 
 library(avesperu)
-#> This is avesperu 0.0.7
-#> The UNOP database is up to date (current version: 29 de septiembre de 2025).
 
 # Define species list
 splist <- c("Falco sparverius",
