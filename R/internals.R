@@ -1,6 +1,5 @@
 #' Standardize Species Names
 #'
-#'
 #' @param splist Character vector of species names
 #' @return Standardized species names
 #' @keywords internal
@@ -21,7 +20,7 @@ standardize_names <- function(splist) {
   x <- trimws(x)
 
   # Paso 2: detectar y remover hibridos ANTES de capitalizar (x/× como token aislado)
-  hybrid_pat <- "(^|\\s)[x×](\\s|$)"
+  hybrid_pat <- "(^|\\s)[x\\u00D7](\\s|$)"
   has_hybrid <- grepl(hybrid_pat, x, ignore.case = TRUE)
 
   # Remover y normalizar espacios inmediatamente
