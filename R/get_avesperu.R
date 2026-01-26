@@ -376,25 +376,68 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
   # Procesamiento paralelo o secuencial
   if (parallel && requireNamespace("parallel", quietly = TRUE)) {
 
+    # Calcular n_cores de forma robusta
     if (is.null(n_cores)) {
-      n_cores <- max(1, parallel::detectCores() - 1)
+      # Respetar opción global de cores (usada en CRAN, CI, tests)
+      max_by_option <- getOption("mc.cores", 2L)
+
+      # Auto-detectar, pero de forma prudente
+      n_cores_detected <- max(1L, parallel::detectCores(logical = FALSE) - 1L)
+
+      # Capar por número de batches (no tiene sentido más cores que batches)
+      max_by_batches <- n_batches
+
+      # Tapa prudente para evitar problemas en checks/CI (máximo 4 cores)
+      n_cores <- min(n_cores_detected, max_by_batches, max_by_option, 4L)
+    } else {
+      # Usuario especificó n_cores explícitamente, respetar pero capar por batches
+      n_cores <- min(as.integer(n_cores), n_batches)
     }
 
-    message("Using parallel processing with ", n_cores, " cores...")
+    # Fallback seguro: intentar crear cluster, si falla volver a secuencial
+    cl <- NULL
+    cluster_created <- FALSE
 
-    # Crear cluster
-    cl <- parallel::makeCluster(n_cores)
-    on.exit(parallel::stopCluster(cl), add = TRUE)
+    cl <- tryCatch(
+      parallel::makeCluster(n_cores),
+      error = function(e) {
+        warning(
+          "Could not create parallel cluster with ", n_cores, " cores. ",
+          "Falling back to sequential processing. Error: ",
+          conditionMessage(e),
+          call. = FALSE
+        )
+        NULL
+      }
+    )
 
-    # Exportar objetos necesarios al cluster
-    parallel::clusterExport(cl,
-                            c("species_db", "db_names", "max_distance",
-                              "search_with_agrep",
-                              "create_empty_result", "create_match_result"),
-                            envir = environment())
+    if (!is.null(cl)) {
+      cluster_created <- TRUE
+      on.exit(parallel::stopCluster(cl), add = TRUE)
 
-    # Procesar lotes en paralelo
-    batch_results <- parallel::parLapply(cl, batch_indices, process_batch)
+      message("Using parallel processing with ", n_cores, " cores...")
+
+      # Exportar objetos necesarios al cluster
+      parallel::clusterExport(cl,
+                              c("species_db", "db_names", "max_distance",
+                                "search_with_agrep",
+                                "create_empty_result", "create_match_result"),
+                              envir = environment())
+
+      # Procesar lotes en paralelo
+      batch_results <- parallel::parLapply(cl, batch_indices, process_batch)
+    }
+
+    # Si no se creó el cluster, usar procesamiento secuencial
+    if (!cluster_created) {
+      message("Using sequential processing...")
+      batch_results <- lapply(seq_along(batch_indices), function(i) {
+        if (i %% 10 == 0 || i == n_batches) {
+          message("  Batch ", i, "/", n_batches, " completed...")
+        }
+        process_batch(batch_indices[[i]])
+      })
+    }
 
   } else {
     # Procesamiento secuencial con indicadores de progreso

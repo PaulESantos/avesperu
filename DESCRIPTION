@@ -7,8 +7,9 @@ Authors@R:
            comment = c(ORCID = "0000-0002-6635-0375"))
 Description: Allows access to the data found in the species list featured in the renowned 'List of the Birds of Peru' Plenge, M. A. (2023) <https://sites.google.com/site/boletinunop/checklist>. This publication stands as one of Peru's most comprehensive reviews of bird diversity. The dataset incorporates detailed species accounts and has been meticulously structured for effortless utilization within the R environment.
 License: MIT + file LICENSE
-Suggests: 
+Suggests:
     testthat (>= 3.0.0),
+    withr,
     xml2
 Config/testthat/edition: 3
 Encoding: UTF-8

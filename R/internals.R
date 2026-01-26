@@ -6,44 +6,65 @@
 #' @keywords internal
 standardize_names <- function(splist) {
 
-  # Paso 1
-  splist <- trimws(splist)
+  # Forzar a character pero preservando NA
+  splist <- as.character(splist)
 
-  # Paso 2: Capitalización
-  splist <- vapply(splist, function(x) {
-    words <- strsplit(tolower(x), "\\s+")[[1]]
-    words[1] <- paste0(toupper(substring(words[1], 1, 1)),
-                       substring(words[1], 2))
-    if (length(words) > 1) {
-      words[2] <- paste0(tolower(substring(words[2], 1, 1)),
-                         substring(words[2], 2))
-    }
-    paste(words, collapse = " ")
-  }, character(1), USE.NAMES = FALSE)
+  # Guardar NA y trabajar solo con no-NA
+  na_idx <- is.na(splist)
+  out <- splist
 
-  # Paso 3: Limpieza con expreciones regulares combinadas
-  # Detectar híbridos primero para warning
-  has_hybrid <- grepl("(^x\\s)|( x$)|( x )", splist)
+  if (all(na_idx)) return(out)
 
-  # Aplicar todas las transformaciones en una sola pasada
-  splist <- gsub("\\s*cf\\.\\s*|\\s*aff\\.\\s*", " ", splist)
-  splist <- gsub("(^x\\s)|( x$)|( x )", " ", splist)
-  splist <- gsub("_", " ", splist)
-  splist <- gsub("\\s{2,}", " ", splist)  # Reemplaze multiples espacios con uno
-  splist <- trimws(splist)
+  x <- splist[!na_idx]
 
-  # Advertencia sobre híbridos si es necesario
-  if (any(has_hybrid)) {
-    sp_hybrids <- unique(splist[has_hybrid])
+  # Paso 1: trim
+  x <- trimws(x)
+
+  # Paso 2: detectar y remover hibridos ANTES de capitalizar (x/× como token aislado)
+  hybrid_pat <- "(^|\\s)[x×](\\s|$)"
+  has_hybrid <- grepl(hybrid_pat, x, ignore.case = TRUE)
+
+  # Remover y normalizar espacios inmediatamente
+  x <- gsub(hybrid_pat, " ", x, ignore.case = TRUE)
+  x <- gsub("\\s{2,}", " ", x)
+  x <- trimws(x)
+
+  # Paso 3: limpieza general
+  x <- gsub("\\s*cf\\.\\s*|\\s*aff\\.\\s*", " ", x)
+  x <- gsub("_", " ", x)
+  x <- gsub("\\s{2,}", " ", x)
+  x <- trimws(x)
+
+  # Warning (solo sobre no-NA)
+  if (any(has_hybrid, na.rm = TRUE)) {
     warning(
       "The 'x' sign indicating hybrids have been removed in ",
-      length(sp_hybrids), " name(s) before search.",
+      length(unique(x[has_hybrid])), " name(s) before search.",
       call. = FALSE,
       immediate. = TRUE
     )
   }
 
-  return(splist)
+  # Paso 4: capitalizacion
+  x <- vapply(x, function(s) {
+    words <- strsplit(tolower(s), "\\s+")[[1]]
+
+    if (length(words) >= 1) {
+      words[1] <- paste0(
+        toupper(substring(words[1], 1, 1)),
+        substring(words[1], 2)
+      )
+    }
+    if (length(words) >= 2) {
+      words[2] <- tolower(words[2])
+    }
+
+    paste(words, collapse = " ")
+  }, character(1), USE.NAMES = FALSE)
+
+  # Reinsertar
+  out[!na_idx] <- x
+  out
 }
 
 #' @keywords internal

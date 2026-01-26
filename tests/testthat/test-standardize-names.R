@@ -40,13 +40,6 @@ describe("standardize_names()", {
     expect_equal(result, "Falco sparverius")
   })
 
-  it("warns about hybrid species markers", {
-    expect_warning(
-      standardize_names("x Falco sparverius"),
-      "hybrids have been removed"
-    )
-  })
-
   it("removes hybrid marker at end of name", {
     expect_warning(
       standardize_names("Falco sparverius x"),
@@ -93,6 +86,12 @@ describe("standardize_names()", {
     result <- standardize_names("")
     expect_equal(result, "")
   })
+  it("warns about hybrid species markers", {
+         expect_warning(
+             standardize_names("x Falco sparverius"),
+             "hybrids have been removed"
+           )
+       })
 
   it("counts hybrid warnings correctly", {
     # Múltiples híbridos
