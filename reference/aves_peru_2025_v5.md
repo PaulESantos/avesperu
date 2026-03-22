@@ -79,12 +79,12 @@ by the SACC and the Unión de Ornitólogos del Perú (UNOP).
 |               |          |           |                           |
 |---------------|----------|-----------|---------------------------|
 | **Status**    | **Code** | **Count** | **Description**           |
-| Residente     | X        | ~1,547    | Resident breeding species |
-| Endémico      | E        | ~120      | Endemic to Peru           |
-| Migratorio    | NB       | ~140      | Non-breeding migrants     |
-| Divagante     | V        | ~85       | Vagrant species           |
+| Residente     | X        | 1,549     | Resident breeding species |
+| Endémico      | E        | 118       | Endemic to Peru           |
+| Migratorio    | NB       | 140       | Non-breeding migrants     |
+| Divagante     | V        | 86        | Vagrant species           |
 | Introducido   | IN       | 3         | Introduced species        |
-| No confirmado | U        | ~23       | Unconfirmed records       |
+| No confirmado | U        | 23        | Unconfirmed records       |
 | Extirpado     | EX       | 0         | Extirpated species        |
 
 ### Status Categories (Detailed)
@@ -138,6 +138,10 @@ Peru.
 The taxonomic sequence and species limits follow the South American
 Checklist Committee (SACC) of the American Ornithological Society,
 reflecting the committee's decisions through December 22, 2025.
+
+To compare this local dataset version against the latest UNOP checklist
+available online, run
+[`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md).
 
 ## Note
 

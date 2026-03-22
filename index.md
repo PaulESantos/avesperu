@@ -25,6 +25,19 @@ This results in a total of 1,919 species, showcasing Peru’s
 extraordinary bird diversity and the ongoing refinement of its avifaunal
 checklist.
 
+### Checking for Checklist Updates
+
+The package includes
+[`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md),
+which compares the local dataset version date against the latest date
+published on the UNOP checklist website. This check is no longer
+triggered automatically on package attach; run it explicitly when you
+want to verify whether `avesperu` is up to date.
+
+``` r
+unop_check_update()
+```
+
 ## Features
 
 The `avesperu` package is designed to streamline access to this data for

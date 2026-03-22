@@ -62,6 +62,9 @@ A tibble with 1,917 rows and 6 columns:
 
 ## Details
 
+This object is kept as a historical dataset. For the current checklist,
+use `aves_peru_2025_v5`.
+
 This version reflects dramatic taxonomic changes and category updates
 based on published articles, photographs, and sound recordings archived
 in accredited institutions. It also includes a classification criterion
