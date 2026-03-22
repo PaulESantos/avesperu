@@ -2,16 +2,22 @@
 % Please edit documentation in R/internals.R
 \name{unop_check_update}
 \alias{unop_check_update}
-\title{Check if the UNOP Checklist Has Been Updated}
+\title{Check whether the local dataset is up to date against UNOP}
 \usage{
-unop_check_update()
+unop_check_update(verbose = interactive())
+}
+\arguments{
+\item{verbose}{Logical. If \code{TRUE}, prints a summary with \code{cli} alerts.
+If \code{FALSE}, returns the result silently. Default: \code{interactive()}.}
 }
 \value{
-A character message indicating if the site has a more recent update.
+An invisible named list with the fields \code{success}, \code{is_up_to_date},
+\code{has_update}, \code{current_version_date}, \code{online_version_date}, \code{checked_at},
+\code{source_url}, and \code{message}.
 }
 \description{
-This function compares the latest update date from the UNOP checklist
-website with a reference version date. It returns a message indicating
-whether an update has occurred.
+This function compares the local dataset version date stored in
+\code{aves_peru_2025_v5} against the latest update date published on the
+UNOP checklist website. It is designed to be called explicitly by the
+user, or enabled through the \code{avesperu.check_updates} option.
 }
-\keyword{internal}

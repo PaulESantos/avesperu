@@ -17,16 +17,18 @@
   )
 
   cli::cli_alert_success("Package successfully loaded.")
-  cli::cli_alert_info("Checking UNOP checklist status...")
+  cli::cli_alert_info("Run `unop_check_update()` to compare this dataset with the latest UNOP checklist.")
 
-  tryCatch(
-    unop_check_update(),
-    error = function(e) {
-      cli::cli_alert_warning(
-        "Unable to verify whether the UNOP checklist is up to date."
-      )
-    }
-  )
+  if (isTRUE(getOption("avesperu.check_updates"))) {
+    tryCatch(
+      unop_check_update(verbose = TRUE),
+      error = function(e) {
+        cli::cli_alert_warning(
+          "Unable to verify whether the UNOP checklist is up to date."
+        )
+      }
+    )
+  }
 
   invisible(NULL)
 }
@@ -55,7 +57,8 @@ show_progress <- function() {
 
   # Establecer opciones por defecto para el paquete
   opt_avesperu <- list(
-    avesperu.show_progress = TRUE
+    avesperu.show_progress = TRUE,
+    avesperu.check_updates = FALSE
   )
 
   # Solo establecer opciones si no están ya definidas

@@ -50,12 +50,12 @@ established by the SACC and the Unión de Ornitólogos del Perú (UNOP).
 
 \tabular{lrrl}{
 \strong{Status} \tab \strong{Code} \tab \strong{Count} \tab \strong{Description} \cr
-Residente \tab X \tab ~1,547 \tab Resident breeding species \cr
-Endémico \tab E \tab ~120 \tab Endemic to Peru \cr
-Migratorio \tab NB \tab ~140 \tab Non-breeding migrants \cr
-Divagante \tab V \tab ~85 \tab Vagrant species \cr
+Residente \tab X \tab 1,549 \tab Resident breeding species \cr
+Endémico \tab E \tab 118 \tab Endemic to Peru \cr
+Migratorio \tab NB \tab 140 \tab Non-breeding migrants \cr
+Divagante \tab V \tab 86 \tab Vagrant species \cr
 Introducido \tab IN \tab 3 \tab Introduced species \cr
-No confirmado \tab U \tab ~23 \tab Unconfirmed records \cr
+No confirmado \tab U \tab 23 \tab Unconfirmed records \cr
 Extirpado \tab EX \tab 0 \tab Extirpated species \cr
 }
 }
@@ -115,6 +115,9 @@ Species that have gone extinct globally or have been extirpated from Peru.
 The taxonomic sequence and species limits follow the South American
 Checklist Committee (SACC) of the American Ornithological Society,
 reflecting the committee's decisions through December 22, 2025.
+
+To compare this local dataset version against the latest UNOP checklist
+available online, run \code{\link{unop_check_update}()}.
 }
 }
 \note{

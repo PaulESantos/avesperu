@@ -4,6 +4,9 @@
 #' species recorded in Peru, based on the most recent taxonomic revisions
 #' by the South American Checklist Committee (SACC).
 #'
+#' This object is kept as a historical dataset. For the current checklist,
+#' use `aves_peru_2025_v5`.
+#'
 #' This version reflects dramatic taxonomic changes and category updates
 #' based on published articles, photographs, and sound recordings archived
 #' in accredited institutions. It also includes a classification criterion
