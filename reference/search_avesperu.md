@@ -158,15 +158,23 @@ matching algorithm
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Basic usage - returns status vector
 splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui")
 status <- search_avesperu(splist)
 print(status)
+#> [1] "Residente" "Residente" "Residente"
 
 # Get detailed reconciliation information
 details <- search_avesperu(splist, return_details = TRUE)
 print(details)
+#>      name_submitted     accepted_name    order_name family_name
+#> 1  Falco sparverius  Falco sparverius Falconiformes  Falconidae
+#> 2    Tinamus osgodi   Tinamus osgoodi  Tinamiformes   Tinamidae
+#> 3 Crypturellus soui Crypturellus soui  Tinamiformes   Tinamidae
+#>       english_name        spanish_name    status dist
+#> 1 American Kestrel Cernícalo Americano Residente    0
+#> 2    Black Tinamou        Perdiz Negra Residente    1
+#> 3   Little Tinamou        Perdiz Chica Residente    0
 
 # Exact matching only (no fuzzy matching)
 exact_results <- search_avesperu(splist, max_distance = 0)
@@ -177,6 +185,8 @@ corrected <- search_avesperu(typo_list, return_details = TRUE)
 
 # View submitted vs accepted names
 print(corrected[, c("name_submitted", "accepted_name", "dist")])
-
-} # }
+#>     name_submitted     accepted_name dist
+#> 1 Falco sparveruis  Falco sparverius    2
+#> 2  Tinamus osgoodi   Tinamus osgoodi    0
+#> 3 Crypturellus sui Crypturellus soui    1
 ```
