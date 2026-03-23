@@ -65,6 +65,9 @@ researchers, conservationists, and bird enthusiasts alike. It provides:
 - Fuzzy matching capabilities for improved species name retrieval and
   validation.
 
+- An interactive Shiny interface for batch name validation, parsing,
+  review, and export.
+
 <img src="man/figures/README-unnamed-chunk-2-1.png" alt="" width="100%" />
 
 ### Insights and Trends
@@ -120,6 +123,18 @@ pak::pak("PaulESantos/avesperu")
 ```
 
 ## Usage
+
+### Shiny app
+
+The package includes an interactive Shiny application for batch
+scientific-name validation against the local `avesperu` checklist. The
+app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`,
+`XLSX`), exact or fuzzy matching, review tables, and export to `CSV`,
+`TSV`, `XLSX`, and run metadata.
+
+``` r
+avesperu::run_avesperu_app()
+```
 
 ### Basic Search
 

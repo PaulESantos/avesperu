@@ -60,6 +60,8 @@ The `avesperu` package is designed to streamline access to this data for researc
 
 - Fuzzy matching capabilities for improved species name retrieval and validation.
 
+- An interactive Shiny interface for batch name validation, parsing, review, and export.
+
 
 ```{r echo=FALSE}
 df <- tibble(
@@ -160,6 +162,14 @@ pak::pak("PaulESantos/avesperu")
 ```
 
 ## Usage
+
+### Shiny app
+
+The package includes an interactive Shiny application for batch scientific-name validation against the local `avesperu` checklist. The app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`, `XLSX`), exact or fuzzy matching, review tables, and export to `CSV`, `TSV`, `XLSX`, and run metadata.
+
+```{r eval = FALSE}
+avesperu::run_avesperu_app()
+```
 
 ### Basic Search
 The `search_avesperu()` function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.

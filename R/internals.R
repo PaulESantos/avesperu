@@ -36,12 +36,9 @@ standardize_names <- function(splist) {
 
   # Warning (solo sobre no-NA)
   if (any(has_hybrid, na.rm = TRUE)) {
-    warning(
-      "The 'x' sign indicating hybrids have been removed in ",
-      length(unique(x[has_hybrid])), " name(s) before search.",
-      call. = FALSE,
-      immediate. = TRUE
-    )
+    cli::cli_warn(c(
+      "!" = "The 'x' sign indicating hybrids have been removed in {length(unique(x[has_hybrid]))} name{?s} before search."
+    ), call = parent.frame())
   }
 
   # Paso 4: capitalizacion
@@ -191,7 +188,7 @@ parse_unop_date <- function(fecha_str) {
 #' @export
 unop_check_update <- function(verbose = interactive()) {
   if (!is.logical(verbose) || length(verbose) != 1 || is.na(verbose)) {
-    stop("'verbose' must be a single TRUE or FALSE value.", call. = FALSE)
+    cli::cli_abort("{.arg verbose} must be a single TRUE or FALSE value.", call = parent.frame())
   }
 
   source_url <- "https://sites.google.com/site/boletinunop/checklist"

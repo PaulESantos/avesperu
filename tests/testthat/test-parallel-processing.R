@@ -63,11 +63,11 @@ describe("Parallel processing in search_avesperu()", {
 
     expect_error(
       search_avesperu(splist, batch_size = -1),
-      "'batch_size' must be a positive integer"
+      "must be a positive integer"
     )
     expect_error(
       search_avesperu(splist, batch_size = 0),
-      "'batch_size' must be a positive integer"
+      "must be a positive integer"
     )
   })
 
@@ -76,11 +76,11 @@ describe("Parallel processing in search_avesperu()", {
 
     expect_error(
       search_avesperu(splist, n_cores = -1),
-      "'n_cores' must be NULL or a positive integer"
+      "must be .*NULL.* or a positive integer"
     )
     expect_error(
       search_avesperu(splist, n_cores = 0),
-      "'n_cores' must be NULL or a positive integer"
+      "must be .*NULL.* or a positive integer"
     )
   })
 
@@ -124,11 +124,11 @@ describe("Parallel processing in search_avesperu()", {
 
     expect_error(
       search_avesperu(splist, parallel = "yes"),
-      "'parallel' must be a single logical value"
+      "must be a single logical value"
     )
     expect_error(
       search_avesperu(splist, parallel = c(TRUE, FALSE)),
-      "'parallel' must be a single logical value"
+      "must be a single logical value"
     )
   })
 

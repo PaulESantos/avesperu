@@ -95,11 +95,11 @@ describe("search_avesperu()", {
   it("validates input type correctly", {
     expect_error(
       search_avesperu(123),
-      "'splist' must be a character vector or a factor."
+      "must be a character vector or a factor"
     )
     expect_error(
       search_avesperu(list("Falco sparverius")),
-      "'splist' must be a character vector or a factor."
+      "must be a character vector or a factor"
     )
   })
 
@@ -122,11 +122,11 @@ describe("search_avesperu()", {
   it("validates max_distance parameter", {
     expect_error(
       search_avesperu("Falco sparverius", max_distance = -0.1),
-      "'max_distance' must be a single non-negative numeric value."
+      "must be a single non-negative numeric value"
     )
     expect_error(
       search_avesperu("Falco sparverius", max_distance = c(0.1, 0.2)),
-      "'max_distance' must be a single non-negative numeric value."
+      "must be a single non-negative numeric value"
     )
   })
 

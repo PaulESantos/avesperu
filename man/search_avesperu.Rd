@@ -100,7 +100,6 @@ a copy of the reference database (~5-10 MB).
 }
 
 \examples{
-\dontrun{
 # Basic usage - returns status vector
 splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui")
 status <- search_avesperu(splist)
@@ -119,8 +118,6 @@ corrected <- search_avesperu(typo_list, return_details = TRUE)
 
 # View submitted vs accepted names
 print(corrected[, c("name_submitted", "accepted_name", "dist")])
-
-}
 
 }
 \seealso{

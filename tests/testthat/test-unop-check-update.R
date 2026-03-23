@@ -45,7 +45,7 @@ describe("unop_check_update()", {
   it("validates the verbose parameter", {
     expect_error(
       unop_check_update(verbose = "yes"),
-      "'verbose' must be a single TRUE or FALSE value."
+      "must be a single TRUE or FALSE value"
     )
   })
 })

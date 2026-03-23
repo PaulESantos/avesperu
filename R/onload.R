@@ -11,13 +11,15 @@
 
   if (!interactive()) return(invisible(NULL))
 
-  cli::cli_rule(
-    left = "avesperu",
-    right = paste("v", utils::packageVersion("avesperu"))
+  packageStartupMessage(
+    cli::rule(
+      left = "avesperu",
+      right = paste("v", utils::packageVersion("avesperu"))
+    )
   )
 
-  cli::cli_alert_success("Package successfully loaded.")
-  cli::cli_alert_info("Run `unop_check_update()` to compare this dataset with the latest UNOP checklist.")
+  packageStartupMessage(cli::col_green("\u2714 Package successfully loaded."))
+  packageStartupMessage(cli::col_blue("\u2139 Run `unop_check_update()` to compare this dataset with the latest UNOP checklist."))
 
   if (isTRUE(getOption("avesperu.check_updates"))) {
     tryCatch(

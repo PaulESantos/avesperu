@@ -83,7 +83,6 @@
 #' \code{\link[base]{agrep}} for the underlying fuzzy matching algorithm
 #'
 #' @examples
-#' \dontrun{
 #' # Basic usage - returns status vector
 #' splist <- c("Falco sparverius", "Tinamus osgodi", "Crypturellus soui")
 #' status <- search_avesperu(splist)
@@ -103,8 +102,6 @@
 #' # View submitted vs accepted names
 #' print(corrected[, c("name_submitted", "accepted_name", "dist")])
 #'
-#' }
-#'
 #' @export
 #' @importFrom utils adist
 search_avesperu <- function(splist,
@@ -119,7 +116,7 @@ search_avesperu <- function(splist,
 
 
   if (!is.character(splist) && !is.factor(splist)) {
-    stop("'splist' must be a character vector or a factor.", call. = FALSE)
+    cli::cli_abort("{.arg splist} must be a character vector or a factor.", call = parent.frame())
   }
 
   if (is.factor(splist)) {
@@ -127,31 +124,31 @@ search_avesperu <- function(splist,
   }
 
   if (!is.logical(return_details) || length(return_details) != 1) {
-    stop("'return_details' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+    cli::cli_abort("{.arg return_details} must be a single logical value ({.val TRUE} or {.val FALSE}).", call = parent.frame())
   }
 
   if (!is.numeric(max_distance) || length(max_distance) != 1 || max_distance < 0) {
-    stop("'max_distance' must be a single non-negative numeric value.", call. = FALSE)
+    cli::cli_abort("{.arg max_distance} must be a single non-negative numeric value.", call = parent.frame())
   }
 
   if (max_distance > 0 && max_distance < 1) {
     # Es una proporción - validar que sea razonable
     if (max_distance > 0.5) {
-      warning("'max_distance' > 0.5 may produce too many false matches.", call. = FALSE)
+      cli::cli_warn("{.arg max_distance} > 0.5 may produce too many false matches.", call = parent.frame())
     }
   }
 
   if (!is.numeric(batch_size) || length(batch_size) != 1 || batch_size < 1) {
-    stop("'batch_size' must be a positive integer.", call. = FALSE)
+    cli::cli_abort("{.arg batch_size} must be a positive integer.", call = parent.frame())
   }
 
   if (!is.logical(parallel) || length(parallel) != 1) {
-    stop("'parallel' must be a single logical value (TRUE or FALSE).", call. = FALSE)
+    cli::cli_abort("{.arg parallel} must be a single logical value ({.val TRUE} or {.val FALSE}).", call = parent.frame())
   }
 
   if (!is.null(n_cores)) {
     if (!is.numeric(n_cores) || length(n_cores) != 1 || n_cores < 1) {
-      stop("'n_cores' must be NULL or a positive integer.", call. = FALSE)
+      cli::cli_abort("{.arg n_cores} must be {.val NULL} or a positive integer.", call = parent.frame())
     }
   }
 
@@ -161,8 +158,9 @@ search_avesperu <- function(splist,
   # Detectar y reportar duplicados
   dupes_splist_st <- find_duplicates(splist_st)
   if (length(dupes_splist_st) > 0) {
-    message("The following names are repeated in the 'splist': ",
-            paste(dupes_splist_st, collapse = ", "))
+    cli::cli_inform(c(
+      "i" = "The following names are repeated in the {.arg splist}: {.val {dupes_splist_st}}"
+    ))
   }
 
   # Trabajar con nombres únicos
@@ -365,7 +363,7 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
   n_batches <- ceiling(n_unique / batch_size)
   batch_indices <- split(1:n_unique, ceiling(seq_along(1:n_unique) / batch_size))
 
-  message("Processing ", n_unique, " unique species in ", n_batches, " batches...")
+  cli::cli_inform("Processing {n_unique} unique species in {n_batches} batch{?es}...")
 
   # Función para procesar un lote
   process_batch <- function(indices) {
@@ -401,12 +399,11 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
     cl <- tryCatch(
       parallel::makeCluster(n_cores),
       error = function(e) {
-        warning(
-          "Could not create parallel cluster with ", n_cores, " cores. ",
-          "Falling back to sequential processing. Error: ",
-          conditionMessage(e),
-          call. = FALSE
-        )
+        cli::cli_warn(c(
+          "Could not create parallel cluster with {n_cores} core{?s}.",
+          "i" = "Falling back to sequential processing.",
+          "x" = "Error: {conditionMessage(e)}"
+        ), call = parent.frame())
         NULL
       }
     )
@@ -415,7 +412,7 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
       cluster_created <- TRUE
       on.exit(parallel::stopCluster(cl), add = TRUE)
 
-      message("Using parallel processing with ", n_cores, " cores...")
+      cli::cli_inform("Using parallel processing with {n_cores} core{?s}...")
 
       # Exportar objetos necesarios al cluster
       parallel::clusterExport(cl,
@@ -430,10 +427,10 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
 
     # Si no se creó el cluster, usar procesamiento secuencial
     if (!cluster_created) {
-      message("Using sequential processing...")
+      cli::cli_inform("Using sequential processing...")
       batch_results <- lapply(seq_along(batch_indices), function(i) {
         if (i %% 10 == 0 || i == n_batches) {
-          message("  Batch ", i, "/", n_batches, " completed...")
+          cli::cli_inform("  Batch {i}/{n_batches} completed...")
         }
         process_batch(batch_indices[[i]])
       })
@@ -443,7 +440,7 @@ search_with_agrep_batched <- function(splist_unique, species_db, db_names,
     # Procesamiento secuencial con indicadores de progreso
     batch_results <- lapply(seq_along(batch_indices), function(i) {
       if (i %% 10 == 0 || i == n_batches) {
-        message("  Batch ", i, "/", n_batches, " completed...")
+        cli::cli_inform("  Batch {i}/{n_batches} completed...")
       }
       process_batch(batch_indices[[i]])
     })
