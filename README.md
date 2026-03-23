@@ -68,7 +68,7 @@ researchers, conservationists, and bird enthusiasts alike. It provides:
 - An interactive Shiny interface for batch name validation, parsing,
   review, and export.
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" alt="" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 ### Insights and Trends
 
@@ -135,6 +135,8 @@ app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`,
 ``` r
 avesperu::run_avesperu_app()
 ```
+
+![](man/figures/shiny_app.png)
 
 ### Basic Search
 

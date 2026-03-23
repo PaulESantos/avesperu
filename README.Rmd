@@ -171,6 +171,8 @@ The package includes an interactive Shiny application for batch scientific-name 
 avesperu::run_avesperu_app()
 ```
 
+![](man/figures/shiny_app.png)
+
 ### Basic Search
 The `search_avesperu()` function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.
 
