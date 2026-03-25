@@ -15,9 +15,11 @@ Description: Provides access to the species checklist published in
 License: MIT + file LICENSE
 Suggests:
     DT,
+    ggplot2,
     knitr,
     readxl,
     rmarkdown,
+    scales,
     shiny,
     testthat (>= 3.0.0),
     withr,

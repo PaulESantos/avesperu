@@ -1,8 +1,8 @@
 ---
-title: "Comparison between aves_peru_2025_v5 and aves_peru_2026_v1"
+title: "How the Peru checklist changed from 2025 to 2026"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Comparison between aves_peru_2025_v5 and aves_peru_2026_v1}
+  %\VignetteIndexEntry{How the Peru checklist changed from 2025 to 2026}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,54 +10,350 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 4.8,
+  fig.align = "center"
 )
 ```
 
 ## Introduction
 
-This vignette highlights the differences and updates between the previous dataset `aves_peru_2025_v5` and the newly released dataset `aves_peru_2026_v1` in the `avesperu` package.
+This vignette compares the two most recent checklist objects shipped with
+`avesperu`: `aves_peru_2025_v5` and `aves_peru_2026_v1`.
 
-```{r setup}
+The goal is not only to show that the dataset changed, but also to answer four
+practical questions:
+
+1. How large was the update?
+2. Which status categories changed the most?
+3. Which species entered or left the checklist?
+4. Where are the changes concentrated taxonomically?
+
+```{r setup, echo=FALSE}
 library(avesperu)
+library(ggplot2)
+
+old <- aves_peru_2025_v5
+new <- aves_peru_2026_v1
+
+old_date <- attr(old, "version_date", exact = TRUE)
+new_date <- attr(new, "version_date", exact = TRUE)
+
+added <- new[!(new$scientific_name %in% old$scientific_name), ]
+removed <- old[!(old$scientific_name %in% new$scientific_name), ]
+shared_species <- intersect(old$scientific_name, new$scientific_name)
+
+status_order <- c(
+  "Residente",
+  "Endémico",
+  "Migratorio",
+  "Divagante",
+  "Introducido",
+  "No confirmado",
+  "Extirpado"
+)
+
+count_status <- function(x, levels) {
+  out <- table(factor(x, levels = levels))
+  as.integer(out)
+}
+
+status_tbl <- data.frame(
+  status = status_order,
+  n_2025 = count_status(old$status, status_order),
+  n_2026 = count_status(new$status, status_order),
+  stringsAsFactors = FALSE
+)
+status_tbl$change <- status_tbl$n_2026 - status_tbl$n_2025
+
+summary_tbl <- data.frame(
+  dataset = c("aves_peru_2025_v5", "aves_peru_2026_v1"),
+  version_date = c(old_date, new_date),
+  species = c(nrow(old), nrow(new)),
+  orders = c(length(unique(old$order_name)), length(unique(new$order_name))),
+  families = c(length(unique(old$family_name)), length(unique(new$family_name))),
+  stringsAsFactors = FALSE
+)
+
+order_levels <- sort(unique(c(added$order_name, removed$order_name)))
+turnover_by_order <- data.frame(
+  order_name = order_levels,
+  added = as.integer(table(factor(added$order_name, levels = order_levels))),
+  removed = as.integer(table(factor(removed$order_name, levels = order_levels))),
+  stringsAsFactors = FALSE
+)
+turnover_by_order$net_change <- turnover_by_order$added - turnover_by_order$removed
+turnover_by_order <- turnover_by_order[
+  turnover_by_order$added > 0 | turnover_by_order$removed > 0,
+]
+
+fam_old <- table(old$family_name)
+fam_new <- table(new$family_name)
+family_levels <- sort(unique(c(names(fam_old), names(fam_new))))
+
+family_delta <- data.frame(
+  family_name = family_levels,
+  n_2025 = as.integer(fam_old[family_levels]),
+  n_2026 = as.integer(fam_new[family_levels]),
+  stringsAsFactors = FALSE
+)
+family_delta[is.na(family_delta)] <- 0L
+family_delta$change <- family_delta$n_2026 - family_delta$n_2025
+family_delta <- family_delta[family_delta$change != 0, ]
+family_delta <- family_delta[order(family_delta$change, family_delta$family_name), ]
+
+plot_theme <- theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "#51606F"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "top"
+  )
 ```
 
-## Summary Comparison
+Between `r old_date` and `r new_date`, the checklist grew from
+`r nrow(old)` to `r nrow(new)` species. That is a net gain of
+`r nrow(new) - nrow(old)` species.
 
-Let's compare the total number of species and the distribution of their statuses.
+At the same time, the overall structure of the database remained highly stable:
+`r length(shared_species)` species are shared by both versions, which means that
+`r round(length(shared_species) / nrow(old) * 100, 2)`% of the 2025 checklist
+was retained in the 2026 release.
 
-```{r comparison}
-# 2025 version
-table(aves_peru_2025_v5$status)
+## 1. High-level snapshot
 
-# 2026 version
-table(aves_peru_2026_v1$status)
+The first table summarizes the scale of the update. It shows that the number of
+orders remained constant, while the number of family labels increased slightly.
+
+```{r summary-table}
+knitr::kable(summary_tbl, caption = "High-level comparison of the two checklist versions")
 ```
 
-## Additions and Removals
+```{r total-species-plot}
+summary_plot_tbl <- summary_tbl
+summary_plot_tbl$release <- c("2025 v5", "2026 v1")
 
-Identify the species that were added or removed in the 2026 update.
-
-```{r additions-removals}
-added_species <- setdiff(aves_peru_2026_v1$scientific_name, aves_peru_2025_v5$scientific_name)
-removed_species <- setdiff(aves_peru_2025_v5$scientific_name, aves_peru_2026_v1$scientific_name)
-
-length(added_species)
-length(removed_species)
-
-# Display some newly added species
-head(added_species)
+ggplot(summary_plot_tbl, aes(x = release, y = species, fill = release)) +
+  geom_col(width = 0.62, color = NA) +
+  geom_text(aes(label = species), vjust = -0.5, fontface = "bold", size = 4.2) +
+  scale_fill_manual(values = c("2025 v5" = "#4C67B0", "2026 v1" = "#69B3E7")) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.08)),
+    labels = scales::comma
+  ) +
+  labs(
+    title = "Net checklist growth between releases",
+    subtitle = "The 2026 update adds 6 species relative to the 2025 release",
+    x = NULL,
+    y = "Number of species"
+  ) +
+  plot_theme +
+  theme(legend.position = "none")
 ```
 
-## Taxonomic Changes
+This graphic is useful as a first check for reproducibility: the update is not
+a complete restructuring of the package data, but a focused revision with a
+small and traceable net increase.
 
-Check if any families or orders have updated species counts or additions.
-```{r taxonomy}
-# 2025 Families count
-length(unique(aves_peru_2025_v5$family_name))
+## 2. Changes in status composition
 
-# 2026 Families count
-length(unique(aves_peru_2026_v1$family_name))
+The net increase is not distributed evenly across status categories. Most of
+the change is concentrated in `Divagante`, `Residente`, and `Endémico`, while
+`No confirmado` decreases.
+
+```{r status-table}
+knitr::kable(status_tbl, caption = "Species counts by status in each dataset version")
 ```
 
-This ensures users can easily transition their workflows and verify taxonomic consistency between these iterations.
+```{r status-delta-plot}
+status_plot_tbl <- status_tbl
+status_plot_tbl$direction <- ifelse(status_plot_tbl$change >= 0, "Increase", "Decrease")
+status_plot_tbl$label <- ifelse(
+  status_plot_tbl$change > 0,
+  paste0("+", status_plot_tbl$change),
+  as.character(status_plot_tbl$change)
+)
+status_plot_tbl$status <- factor(status_plot_tbl$status, levels = rev(status_plot_tbl$status))
+
+ggplot(status_plot_tbl, aes(x = status, y = change, fill = direction)) +
+  geom_col(width = 0.72) +
+  geom_hline(yintercept = 0, linetype = 2, color = "#7A8793") +
+  geom_text(
+    aes(
+      label = label,
+      hjust = ifelse(change >= 0, -0.15, 1.15)
+    ),
+    size = 4
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = c("Increase" = "#4B8A5F", "Decrease" = "#B34A3C")) +
+  scale_y_continuous(expand = expansion(mult = c(0.08, 0.12))) +
+  labs(
+    title = "Net change by status category",
+    subtitle = "Vagrants and residents explain most of the checklist growth",
+    x = NULL,
+    y = "Change in number of species"
+  ) +
+  plot_theme
+```
+
+Three patterns stand out:
+
+- `Divagante` increases by `r status_tbl$change[status_tbl$status == "Divagante"]`
+  species, the largest category-level change in the update.
+- `Residente` increases by
+  `r status_tbl$change[status_tbl$status == "Residente"]` species, showing that
+  the revision is not restricted to occasional records.
+- `No confirmado` decreases by
+  `r abs(status_tbl$change[status_tbl$status == "No confirmado"])` species,
+  suggesting that some previously uncertain records were either excluded or
+  reclassified in the updated source.
+
+## 3. Species turnover
+
+The 2026 release adds `r nrow(added)` species and removes `r nrow(removed)`.
+Because the shared core remains so large, the update is best understood as a
+targeted revision rather than a replacement of the whole checklist.
+
+### Added species
+
+```{r added-table}
+knitr::kable(
+  added[, c("scientific_name", "english_name", "status", "family_name", "order_name")],
+  caption = "Species added in aves_peru_2026_v1"
+)
+```
+
+### Removed species
+
+```{r removed-table}
+knitr::kable(
+  removed[, c("scientific_name", "english_name", "status", "family_name", "order_name")],
+  caption = "Species removed from the previous checklist version"
+)
+```
+
+Some of these additions and removals are especially informative. For example,
+the replacement of `Camptostoma obsoletum` by `Camptostoma sclateri` and
+`Camptostoma napaeum` is consistent with a taxonomic split in the source
+checklist. Likewise, the replacement of `Tunchiornis ochraceiceps` and
+`Turdus albicollis` by more specific taxa suggests an update in species limits
+or taxonomic circumscription.
+
+That interpretation is an inference from the before/after pattern in the data,
+not an explicit annotation embedded in the dataset itself.
+
+```{r turnover-order-plot}
+turnover_plot_tbl <- rbind(
+  data.frame(order_name = turnover_by_order$order_name, movement = "Added", n = turnover_by_order$added),
+  data.frame(order_name = turnover_by_order$order_name, movement = "Removed", n = turnover_by_order$removed)
+)
+turnover_plot_tbl <- turnover_plot_tbl[turnover_plot_tbl$n > 0, ]
+turnover_plot_tbl$order_name <- factor(
+  turnover_plot_tbl$order_name,
+  levels = turnover_by_order$order_name[order(turnover_by_order$net_change, decreasing = TRUE)]
+)
+
+ggplot(turnover_plot_tbl, aes(x = order_name, y = n, fill = movement)) +
+  geom_col(position = position_dodge(width = 0.72), width = 0.62) +
+  geom_text(
+    aes(label = n),
+    position = position_dodge(width = 0.72),
+    vjust = -0.45,
+    size = 3.8
+  ) +
+  scale_fill_manual(values = c("Added" = "#69B3E7", "Removed" = "#D98C6A")) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    title = "Species turnover by order",
+    subtitle = "Most additions and all removals occur in Passeriformes",
+    x = NULL,
+    y = "Number of species"
+  ) +
+  plot_theme +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+This plot shows that turnover is concentrated in `Passeriformes`, which accounts
+for `r turnover_by_order$added[turnover_by_order$order_name == "Passeriformes"]`
+of the `r nrow(added)` additions and all `r nrow(removed)` removals.
+
+## 4. Where the taxonomic changes are concentrated
+
+At a broad level, the checklist still contains
+`r summary_tbl$orders[summary_tbl$dataset == "aves_peru_2025_v5"]` orders in
+both versions. The family layer changes more subtly, from
+`r summary_tbl$families[summary_tbl$dataset == "aves_peru_2025_v5"]` to
+`r summary_tbl$families[summary_tbl$dataset == "aves_peru_2026_v1"]` distinct
+family labels.
+
+The next table isolates only the family labels whose counts changed.
+
+```{r family-table}
+knitr::kable(
+  family_delta,
+  caption = "Families with non-zero net change between versions"
+)
+```
+
+```{r family-delta-plot}
+family_plot_tbl <- family_delta
+family_plot_tbl$direction <- ifelse(family_plot_tbl$change > 0, "Increase", "Decrease")
+family_plot_tbl$label <- ifelse(
+  family_plot_tbl$change > 0,
+  paste0("+", family_plot_tbl$change),
+  as.character(family_plot_tbl$change)
+)
+family_plot_tbl$family_name <- factor(
+  family_plot_tbl$family_name,
+  levels = family_plot_tbl$family_name
+)
+
+ggplot(family_plot_tbl, aes(x = family_name, y = change, fill = direction)) +
+  geom_col(width = 0.7) +
+  geom_hline(yintercept = 0, linetype = 2, color = "#7A8793") +
+  geom_text(
+    aes(
+      label = label,
+      hjust = ifelse(change > 0, -0.12, 1.12)
+    ),
+    size = 3.8
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = c("Increase" = "#F3C94D", "Decrease" = "#C96B5C")) +
+  scale_y_continuous(expand = expansion(mult = c(0.08, 0.12))) +
+  labs(
+    title = "Family-level concentration of checklist updates",
+    subtitle = "Only a small subset of family labels changes between releases",
+    x = NULL,
+    y = "Net change in species count"
+  ) +
+  plot_theme
+```
+
+Two practical takeaways emerge from this comparison:
+
+- Most families do not change at all, which helps preserve compatibility with
+  analyses built on the previous release.
+- The largest localized revision occurs around the `Camptostoma` label, while
+  several other families gain a single species.
+
+## 5. What this means for users
+
+For most workflows, the 2026 update is a refinement rather than a disruptive
+schema change. The implications are straightforward:
+
+- If you are reproducing an analysis built with `aves_peru_2025_v5`, most names
+  remain unchanged and directly comparable.
+- If your data include any of the removed species, you should re-run matching
+  with `search_avesperu()` to align them with the current checklist.
+- If you work with vagrants, endemics, or recent country records, the 2026
+  release is especially relevant because these are the categories with the most
+  visible shifts.
+
+In short, `aves_peru_2026_v1` preserves continuity with the previous checklist
+while incorporating a small but meaningful set of taxonomic and occurrence
+updates.

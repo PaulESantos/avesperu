@@ -15,27 +15,28 @@ status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.o
 <!-- badges: end -->
 
 The `avesperu` package provides access to the most up-to-date and
-comprehensive dataset on Peru’s avian diversity. As of **December 29,
-2025**, the list includes **1,919** bird species, reflecting significant
-taxonomic changes and updated validations based on recent scientific
-publications, photographs, and sound recordings deposited in accredited
-institutions. The classification follows the guidelines set by the South
-American Checklist Committee (SACC).
+comprehensive dataset on Peru’s avian diversity. The current bundled
+checklist, `aves_peru_2026_v1`, corresponds to **March 23, 2026** and
+includes **1,925** bird species, reflecting recent taxonomic changes and
+updated validations based on scientific publications, photographs, and
+sound recordings deposited in accredited institutions. The
+classification follows the guidelines set by the South American
+Checklist Committee (SACC).
 
 ### Species Categories
 
 Each species in the dataset is classified into one of the following
 categories, reflecting its status in Peru:
 
-- X Resident: 1,549 species
-- E Endemic: 118 species
+- X Resident: 1,552 species
+- E Endemic: 119 species
 - NB Migratory (non-breeding): 140 species
-- V Vagrant: 86 species
+- V Vagrant: 90 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
-- U Unconfirmed records: 23 species
+- U Unconfirmed records: 21 species
 
-This results in a total of 1,919 species, showcasing Peru’s
+This results in a total of 1,925 species, showcasing Peru’s
 extraordinary bird diversity and the ongoing refinement of its avifaunal
 checklist.
 
@@ -73,7 +74,7 @@ researchers, conservationists, and bird enthusiasts alike. It provides:
 ### Insights and Trends
 
 The chart shows the steady increase in the number of bird species
-recorded in Peru from 1968 to 2025, reflecting continuous research and
+recorded in Peru from 1968 to 2026, reflecting continuous research and
 improvements in taxonomic resolution:
 
 - A substantial jump occurred between 1968 and 1980, with 187 new
@@ -85,25 +86,15 @@ improvements in taxonomic resolution:
 
 ## Suggested citation:
 
-``` r
-citation("avesperu")
-#> To cite avesperu in publications, please use:
-#> 
-#> To cite the avesperu package in publications, please use:
-#> 
-#>   Santos Andrade, P. E. (2025). avesperu: Access to the List of Birds
-#>   Species of Peru. R package version 0.0.8.
-#>   https://paulesantos.github.io/avesperu/
-#> 
-#> The bird species checklist included in this package is based on:
-#> 
-#>   Plenge, M. A., & Angulo, F. (2025). Lista de las aves del Perú / List
-#>   of the birds of Peru. Version 29-12-2025. Unión de Ornitólogos del
-#>   Perú. https://sites.google.com/site/boletinunop/checklist
-#> 
-#> To see these entries in BibTeX format, use 'print(<citation>,
-#> bibtex=TRUE)', 'toBibtex(.)', or set
-#> 'options(citation.bibtex.max=999)'.
+``` text
+Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
+R package version 0.1.0. https://paulesantos.github.io/avesperu/
+
+The bird species checklist included in this package is based on:
+
+Plenge, M. A., & Angulo, F. (2026). Lista de las aves del Perú / List of the birds
+of Peru. Version 23-03-2026. Unión de Ornitólogos del Perú.
+https://sites.google.com/site/boletinunop/checklist
 ```
 
 ## Installation
@@ -123,6 +114,14 @@ pak::pak("PaulESantos/avesperu")
 ```
 
 ## Usage
+
+### Current dataset
+
+The current checklist shipped with the package is `aves_peru_2026_v1`.
+
+``` r
+data("aves_peru_2026_v1")
+```
 
 ### Shiny app
 

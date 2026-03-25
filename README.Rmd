@@ -26,21 +26,21 @@ library(tidyverse)
 [![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 <!-- badges: end -->
 
-The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. As of **December 29, 2025**, the list includes **1,919** bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
+The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. The current bundled checklist, `aves_peru_2026_v1`, corresponds to **March 23, 2026** and includes **1,925** bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
 
 ### Species Categories
 
 Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:
 
-- X Resident: 1,549 species
-- E Endemic: 118 species
+- X Resident: 1,552 species
+- E Endemic: 119 species
 - NB Migratory (non-breeding): 140 species
-- V Vagrant: 86 species
+- V Vagrant: 90 species
 - IN Introduced: 3 species
 - EX Extirpated: 0 species
-- U Unconfirmed records: 23 species
+- U Unconfirmed records: 21 species
 
-This results in a total of 1,919 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
+This results in a total of 1,925 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
 
 ### Checking for Checklist Updates
 
@@ -67,10 +67,10 @@ The `avesperu` package is designed to streamline access to this data for researc
 df <- tibble(
   year    = c(1968, 1980, 2001, 2007, 
               2010, 2015, 2020, 2021,
-              2022, 2023, 2024, 2025),
+              2022, 2023, 2024, 2025, 2026),
   species = c(1491, 1678, 1800, 1800, 
               1820, 1851, 1870, 1874, 
-              1888, 1892, 1909, 1919)
+              1888, 1892, 1909, 1919, 1925)
 ) |>
   mutate(is_current = year == max(year))
 
@@ -114,7 +114,7 @@ ggplot(df, aes(x = year, y = species)) +
   ) +
   
   labs(
-    title    = "Growth of the Peruvian Bird Checklist (1968–2025)",
+    title    = "Growth of the Peruvian Bird Checklist (1968–2026)",
     subtitle = "Total number of species recognized in major checklist updates",
     x        = NULL
   ) +
@@ -132,7 +132,7 @@ ggplot(df, aes(x = year, y = species)) +
 
 ### Insights and Trends
 
-The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2025, reflecting continuous research and improvements in taxonomic resolution:
+The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2026, reflecting continuous research and improvements in taxonomic resolution:
 
 - A substantial jump occurred between 1968 and 1980, with 187 new species recorded.
 
@@ -141,8 +141,15 @@ The chart shows the steady increase in the number of bird species recorded in Pe
 
 ## Suggested citation:
 
-```{r}
-citation("avesperu")
+```text
+Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
+R package version 0.1.0. https://paulesantos.github.io/avesperu/
+
+The bird species checklist included in this package is based on:
+
+Plenge, M. A., & Angulo, F. (2026). Lista de las aves del Perú / List of the birds
+of Peru. Version 23-03-2026. Unión de Ornitólogos del Perú.
+https://sites.google.com/site/boletinunop/checklist
 ```
 
 ## Installation
@@ -162,6 +169,14 @@ pak::pak("PaulESantos/avesperu")
 ```
 
 ## Usage
+
+### Current dataset
+
+The current checklist shipped with the package is `aves_peru_2026_v1`.
+
+```{r}
+data("aves_peru_2026_v1")
+```
 
 ### Shiny app
 
