@@ -6,6 +6,8 @@
   : aves_peru_2025_v4
 - [`aves_peru_2025_v5`](https://paulesantos.github.io/avesperu/reference/aves_peru_2025_v5.md)
   : aves_peru_2025_v5
+- [`aves_peru_2026_v1`](https://paulesantos.github.io/avesperu/reference/aves_peru_2026_v1.md)
+  : aves_peru_2026_v1
 - [`run_avesperu_app()`](https://paulesantos.github.io/avesperu/reference/run_avesperu_app.md)
   : Run a TNRS-style Shiny app for avesperu
 - [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)

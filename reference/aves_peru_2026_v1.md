@@ -1,18 +1,19 @@
-# aves_peru_2025_v5
+# aves_peru_2026_v1
 
-The `aves_peru_2025_v5` dataset provides an updated tibble of bird
-species recorded in Peru, based on the taxonomic revisions by the South
-American Checklist Committee (SACC) as of December 22, 2025.
+The `aves_peru_2026_v1` dataset provides the most current and
+comprehensive tibble of bird species recorded in Peru, based on the
+taxonomic revisions by the South American Checklist Committee (SACC) as
+of February 27, 2026.
 
 ## Usage
 
 ``` r
-aves_peru_2025_v5
+aves_peru_2026_v1
 ```
 
 ## Format
 
-A tibble with 1,919 rows and 9 columns:
+A tibble with 1,925 rows and 9 columns:
 
 - order_name:
 
@@ -60,9 +61,6 @@ corrections or updates, contact: chamaepetes@gmail.com
 
 ## Details
 
-This object is kept as a historical dataset. For the current checklist,
-use `aves_peru_2026_v1`.
-
 All records are based on published evidence (specimens, photographs,
 videos, or recordings) deposited in accredited institutional
 collections. The dataset follows strict inclusion criteria established
@@ -70,23 +68,23 @@ by the SACC and the Unión de Ornitólogos del Perú (UNOP).
 
 ### Dataset Summary
 
-- **Total species**: 1,919
+- **Total species**: 1,925
 
-- **Version date**: December 29, 2025
+- **Version date**: March 23, 2026
 
-- **SACC baseline date**: December 22, 2025
+- **SACC baseline date**: February 27, 2026
 
 ### Distribution by Status
 
 |               |          |           |                           |
 |---------------|----------|-----------|---------------------------|
 | **Status**    | **Code** | **Count** | **Description**           |
-| Residente     | X        | 1,549     | Resident breeding species |
-| Endémico      | E        | 118       | Endemic to Peru           |
+| Residente     | X        | 1,552     | Resident breeding species |
+| Endémico      | E        | 119       | Endemic to Peru           |
 | Migratorio    | NB       | 140       | Non-breeding migrants     |
-| Divagante     | V        | 86        | Vagrant species           |
+| Divagante     | V        | 90        | Vagrant species           |
 | Introducido   | IN       | 3         | Introduced species        |
-| No confirmado | U        | 23        | Unconfirmed records       |
+| No confirmado | U        | 21        | Unconfirmed records       |
 | Extirpado     | EX       | 0         | Extirpated species        |
 
 ### Status Categories (Detailed)
@@ -139,7 +137,7 @@ Peru.
 
 The taxonomic sequence and species limits follow the South American
 Checklist Committee (SACC) of the American Ornithological Society,
-reflecting the committee's decisions through December 22, 2025.
+reflecting the committee's decisions through February 27, 2026.
 
 To compare this local dataset version against the latest UNOP checklist
 available online, run
@@ -153,7 +151,7 @@ current version.
 
 ## References
 
-Plenge, M. A. & F. Angulo. Version 29-12-2025. Lista de las aves del
+Plenge, M. A. & F. Angulo. Version 23-03-2026. Lista de las aves del
 Perú / List of the birds of Peru. Unión de Ornitólogos del Perú:
 <https://sites.google.com/site/boletinunop/checklist>
 
@@ -175,33 +173,33 @@ implementation: Paul Efren Santos Andrade
 
 ``` r
 # Load the dataset
-data("aves_peru_2025_v5")
+data("aves_peru_2026_v1")
 
 # View structure
-str(aves_peru_2025_v5)
-#> tibble [1,919 × 9] (S3: tbl_df/tbl/data.frame)
-#>  $ order_name     : chr [1:1919] "Rheiiformes" "Tinamiformes" "Tinamiformes" "Tinamiformes" ...
-#>  $ family_name    : chr [1:1919] "Rheidae" "Tinamidae" "Tinamidae" "Tinamidae" ...
-#>  $ genus          : chr [1:1919] "Pterocnemia" "Nothocercus" "Nothocercus" "Nothocercus" ...
-#>  $ species_epithet: chr [1:1919] "pennata" "julius" "bonapartei" "nigrocapillus" ...
-#>  $ scientific_name: chr [1:1919] "Pterocnemia pennata" "Nothocercus julius" "Nothocercus bonapartei" "Nothocercus nigrocapillus" ...
-#>  $ english_name   : chr [1:1919] "Lesser Rhea" "Tawny-breasted Tinamou" "Highland Tinamou" "Hooded Tinamou" ...
-#>  $ spanish_name   : chr [1:1919] "Ñandú Petizo" "Perdiz de Pecho Leonado" "Perdiz Montesa" "Perdiz de Cabeza Negra" ...
-#>  $ status         : chr [1:1919] "Residente" "Residente" "Residente" "Residente" ...
-#>  $ status_code    : chr [1:1919] "X" "X" "X" "X" ...
-#>  - attr(*, "version_date")= chr "29 de diciembre de 2025"
-#>  - attr(*, "sacc_date")= chr "22 de diciembre de 2025"
+str(aves_peru_2026_v1)
+#> tibble [1,925 × 9] (S3: tbl_df/tbl/data.frame)
+#>  $ order_name     : chr [1:1925] "Rheiiformes" "Tinamiformes" "Tinamiformes" "Tinamiformes" ...
+#>  $ family_name    : chr [1:1925] "Rheidae" "Tinamidae" "Tinamidae" "Tinamidae" ...
+#>  $ genus          : chr [1:1925] "Pterocnemia" "Nothocercus" "Nothocercus" "Nothocercus" ...
+#>  $ species_epithet: chr [1:1925] "pennata" "julius" "bonapartei" "nigrocapillus" ...
+#>  $ scientific_name: chr [1:1925] "Pterocnemia pennata" "Nothocercus julius" "Nothocercus bonapartei" "Nothocercus nigrocapillus" ...
+#>  $ english_name   : chr [1:1925] "Lesser Rhea" "Tawny-breasted Tinamou" "Highland Tinamou" "Hooded Tinamou" ...
+#>  $ spanish_name   : chr [1:1925] "Ñandú Petizo" "Perdiz de Pecho Leonado" "Perdiz Montesa" "Perdiz de Cabeza Negra" ...
+#>  $ status         : chr [1:1925] "Residente" "Residente" "Residente" "Residente" ...
+#>  $ status_code    : chr [1:1925] "X" "X" "X" "X" ...
+#>  - attr(*, "version_date")= chr "23 de marzo de 2026"
+#>  - attr(*, "sacc_date")= chr "27 de febrero de 2026"
 #>  - attr(*, "authors")= chr [1:2] "Manuel A. Plenge" "Fernando Angulo"
 #>  - attr(*, "contact")= chr "chamaepetes@gmail.com"
 #>  - attr(*, "source_url")= chr "https://sites.google.com/site/boletinunop/checklist"
-#>  - attr(*, "created_on")= POSIXct[1:1], format: "2026-01-03 16:36:01"
+#>  - attr(*, "created_on")= POSIXct[1:1], format: "2026-03-25 03:08:59"
 
 # Summary by status
-table(aves_peru_2025_v5$status)
+table(aves_peru_2026_v1$status)
 #> 
 #>     Divagante      Endémico   Introducido    Migratorio No confirmado 
-#>            86           118             3           140            23 
+#>            90           119             3           140            21 
 #>     Residente 
-#>          1549 
+#>          1552 
 
 ```

@@ -1,7 +1,7 @@
 # Check whether the local dataset is up to date against UNOP
 
 This function compares the local dataset version date stored in
-`aves_peru_2025_v5` against the latest update date published on the UNOP
+`aves_peru_2026_v1` against the latest update date published on the UNOP
 checklist website. It is designed to be called explicitly by the user,
 or enabled through the `avesperu.check_updates` option.
 
