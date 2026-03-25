@@ -15,12 +15,15 @@ Description: Provides access to the species checklist published in
 License: MIT + file LICENSE
 Suggests:
     DT,
+    knitr,
     readxl,
+    rmarkdown,
     shiny,
     testthat (>= 3.0.0),
     withr,
     writexl,
     xml2
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

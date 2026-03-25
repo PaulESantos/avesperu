@@ -168,7 +168,7 @@ search_avesperu <- function(splist,
   n_unique <- length(splist_unique)
 
   # Cargar dataset una sola vez
-  species_db <- avesperu::aves_peru_2025_v5
+  species_db <- avesperu::aves_peru_2026_v1
   db_names <- species_db$scientific_name
 
 

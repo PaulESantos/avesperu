@@ -2,7 +2,7 @@ describe("unop_check_update()", {
 
   it("returns a structured result when the local dataset is current", {
     local_mocked_bindings(
-      unop_update_date = function() "29 de diciembre de 2025"
+      unop_update_date = function() "23 de marzo de 2026"
     )
 
     result <- unop_check_update(verbose = FALSE)
@@ -10,13 +10,13 @@ describe("unop_check_update()", {
     expect_true(result$success)
     expect_true(result$is_up_to_date)
     expect_false(result$has_update)
-    expect_equal(result$current_version_date, "29 de diciembre de 2025")
-    expect_equal(result$online_version_date, "29 de diciembre de 2025")
+    expect_equal(result$current_version_date, "23 de marzo de 2026")
+    expect_equal(result$online_version_date, "23 de marzo de 2026")
   })
 
   it("detects when a newer UNOP version is available", {
     local_mocked_bindings(
-      unop_update_date = function() "30 de diciembre de 2025"
+      unop_update_date = function() "24 de marzo de 2026"
     )
 
     result <- unop_check_update(verbose = FALSE)

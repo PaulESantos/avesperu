@@ -33,3 +33,7 @@ bird_of_peru_unop_v4_2025.xlsx
 ^IMPROVEMENTS\.md
 ^IMPLEMENTATION-SUMMARY\.md
 ^PARALLEL-PROCESSING-IMPROVEMENTS\.md
+^app\.R$
+^deploy_shinyapps\.R$
+^\.rscignore$
+^rsconnect$

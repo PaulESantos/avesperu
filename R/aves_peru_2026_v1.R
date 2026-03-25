@@ -1,18 +1,15 @@
-#' aves_peru_2025_v5
+#' aves_peru_2026_v1
 #'
-#' The `aves_peru_2025_v5` dataset provides an updated
+#' The `aves_peru_2026_v1` dataset provides the most current and comprehensive
 #' tibble of bird species recorded in Peru, based on the taxonomic
-#' revisions by the South American Checklist Committee (SACC) as of December
-#' 22, 2025.
-#'
-#' This object is kept as a historical dataset. For the current checklist,
-#' use `aves_peru_2026_v1`.
+#' revisions by the South American Checklist Committee (SACC) as of February
+#' 27, 2026.
 #'
 #' All records are based on published evidence (specimens, photographs, videos, or recordings) deposited in accredited
 #' institutional collections. The dataset follows strict inclusion criteria
 #' established by the SACC and the Unión de Ornitólogos del Perú (UNOP).
 #'
-#' @format A tibble with 1,919 rows and 9 columns:
+#' @format A tibble with 1,925 rows and 9 columns:
 #' \describe{
 #'   \item{order_name}{Character. Taxonomic order to which the bird species belongs.}
 #'   \item{family_name}{Character. Taxonomic family to which the bird species belongs.}
@@ -30,19 +27,19 @@
 #'
 #' @details
 #' ## Dataset Summary
-#' - **Total species**: 1,919
-#' - **Version date**: December 29, 2025
-#' - **SACC baseline date**: December 22, 2025
+#' - **Total species**: 1,925
+#' - **Version date**: March 23, 2026
+#' - **SACC baseline date**: February 27, 2026
 #'
 #' ## Distribution by Status
 #' \tabular{lrrl}{
 #'   \strong{Status} \tab \strong{Code} \tab \strong{Count} \tab \strong{Description} \cr
-#'   Residente \tab X \tab 1,549 \tab Resident breeding species \cr
-#'   Endémico \tab E \tab 118 \tab Endemic to Peru \cr
+#'   Residente \tab X \tab 1,552 \tab Resident breeding species \cr
+#'   Endémico \tab E \tab 119 \tab Endemic to Peru \cr
 #'   Migratorio \tab NB \tab 140 \tab Non-breeding migrants \cr
-#'   Divagante \tab V \tab 86 \tab Vagrant species \cr
+#'   Divagante \tab V \tab 90 \tab Vagrant species \cr
 #'   Introducido \tab IN \tab 3 \tab Introduced species \cr
-#'   No confirmado \tab U \tab 23 \tab Unconfirmed records \cr
+#'   No confirmado \tab U \tab 21 \tab Unconfirmed records \cr
 #'   Extirpado \tab EX \tab 0 \tab Extirpated species \cr
 #' }
 #'
@@ -85,7 +82,7 @@
 #'
 #' The taxonomic sequence and species limits follow the South American
 #' Checklist Committee (SACC) of the American Ornithological Society,
-#' reflecting the committee's decisions through December 22, 2025.
+#' reflecting the committee's decisions through February 27, 2026.
 #'
 #' To compare this local dataset version against the latest UNOP checklist
 #' available online, run \code{\link{unop_check_update}()}.
@@ -93,13 +90,13 @@
 #'
 #' @examples
 #' # Load the dataset
-#' data("aves_peru_2025_v5")
+#' data("aves_peru_2026_v1")
 #'
 #' # View structure
-#' str(aves_peru_2025_v5)
+#' str(aves_peru_2026_v1)
 #'
 #' # Summary by status
-#' table(aves_peru_2025_v5$status)
+#' table(aves_peru_2026_v1$status)
 #'
 #'
 #' @seealso
@@ -110,7 +107,7 @@
 #' }
 #'
 #' @references
-#' Plenge, M. A. & F. Angulo. Version 29-12-2025. Lista de las aves del Perú /
+#' Plenge, M. A. & F. Angulo. Version 23-03-2026. Lista de las aves del Perú /
 #' List of the birds of Peru. Unión de Ornitólogos del Perú:
 #' \url{https://sites.google.com/site/boletinunop/checklist}
 #'
@@ -128,4 +125,4 @@
 #' current version.
 #'
 #' @keywords datasets birds Peru taxonomy SACC ornithology checklist avifauna
-"aves_peru_2025_v5"
+"aves_peru_2026_v1"

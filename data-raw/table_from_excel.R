@@ -40,8 +40,8 @@ library(usethis)
 ## CONSTANTES DE VERSIÓN
 ## ------------------------------------------------------------------------------
 
-VERSION_DATE <- "29 de diciembre de 2025"
-SACC_DATE    <- "22 de diciembre de 2025"
+VERSION_DATE <- "23 de marzo de 2026"
+SACC_DATE    <- "27 de febrero de 2026"
 AUTHORS      <- c("Manuel A. Plenge", "Fernando Angulo")
 CONTACT      <- "chamaepetes@gmail.com"
 SOURCE_URL   <- "https://sites.google.com/site/boletinunop/checklist"
@@ -51,7 +51,7 @@ SOURCE_URL   <- "https://sites.google.com/site/boletinunop/checklist"
 ## ------------------------------------------------------------------------------
 
 
-raw_path <- "org_data/Lista de las aves del Peru 29 dic 2025 web.xlsx"
+raw_path <- "org_data/Lista de las aves del Peru 23 marzo 2026 web.xlsx"
 
 # Verificar que el archivo existe
 if (!file.exists(raw_path)) {
@@ -143,7 +143,7 @@ status_map
 ## CONSTRUCCIÓN DEL OBJETO FINAL
 ## ------------------------------------------------------------------------------
 
-aves_peru_2025_v5 <- aves_peru_raw |>
+aves_peru_2026_v1 <- aves_peru_raw |>
   mutate(
     status_code = status,                # conservar código original
     status      = dplyr::recode(status,  # etiqueta en español
@@ -161,7 +161,7 @@ aves_peru_2025_v5 <- aves_peru_raw |>
     status_code   # código original de la lista
   )
 
-message("Dataset construido: ", nrow(aves_peru_2025_v5), " especies")
+message("Dataset construido: ", nrow(aves_peru_2026_v1), " especies")
 
 ## ------------------------------------------------------------------------------
 ## AÑADIR ATRIBUTOS DE METADATA
@@ -170,24 +170,23 @@ message("Dataset construido: ", nrow(aves_peru_2025_v5), " especies")
 message("Añadiendo metadatos al dataset...")
 
 # Atributos principales
-attr(aves_peru_2025_v5, "version_date") <- VERSION_DATE
-attr(aves_peru_2025_v5, "sacc_date")    <- SACC_DATE
-attr(aves_peru_2025_v5, "authors")      <- AUTHORS
-attr(aves_peru_2025_v5, "contact")      <- CONTACT
-attr(aves_peru_2025_v5, "source_url")   <- SOURCE_URL
+attr(aves_peru_2026_v1, "version_date") <- VERSION_DATE
+attr(aves_peru_2026_v1, "sacc_date")    <- SACC_DATE
+attr(aves_peru_2026_v1, "authors")      <- AUTHORS
+attr(aves_peru_2026_v1, "contact")      <- CONTACT
+attr(aves_peru_2026_v1, "source_url")   <- SOURCE_URL
 
 # Metadatos adicionales
-attr(aves_peru_2025_v5, "created_on")   <- Sys.time()
+attr(aves_peru_2026_v1, "created_on")   <- Sys.time()
 
 # Estadísticas del dataset
-species_counts <- aves_peru_2025_v5 |>
+species_counts <- aves_peru_2026_v1 |>
   count(status, name = "n_species") |>
-  arrange(desc(n_species))
+  arrange(desc(n_species)) |>
+  adorn_totals()
 species_counts
 
-
-
-## ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 ## VERIFICAR ATRIBUTOS
 ## ------------------------------------------------------------------------------
 
@@ -199,7 +198,7 @@ required_attrs <- c(
 )
 
 for (attr_name in required_attrs) {
-  attr_value <- attr(aves_peru_2025_v5, attr_name)
+  attr_value <- attr(aves_peru_2026_v1, attr_name)
 
   if (is.null(attr_value)) {
     warning("Atributo faltante: ", attr_name, call. = FALSE)
@@ -228,7 +227,7 @@ for (attr_name in required_attrs) {
 ## ------------------------------------------------------------------------------
 
 usethis::use_data(
-  aves_peru_2025_v5,
+  aves_peru_2026_v1,
   compress  = "xz",
   overwrite = TRUE,
   version   = 3  # Para compatibilidad con R >= 3.5.0

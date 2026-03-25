@@ -17,7 +17,7 @@ An invisible named list with the fields \code{success}, \code{is_up_to_date},
 }
 \description{
 This function compares the local dataset version date stored in
-\code{aves_peru_2025_v5} against the latest update date published on the
+\code{aves_peru_2026_v1} against the latest update date published on the
 UNOP checklist website. It is designed to be called explicitly by the
 user, or enabled through the \code{avesperu.check_updates} option.
 }

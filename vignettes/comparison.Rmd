@@ -1,0 +1,63 @@
+---
+title: "Comparison between aves_peru_2025_v5 and aves_peru_2026_v1"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparison between aves_peru_2025_v5 and aves_peru_2026_v1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+This vignette highlights the differences and updates between the previous dataset `aves_peru_2025_v5` and the newly released dataset `aves_peru_2026_v1` in the `avesperu` package.
+
+```{r setup}
+library(avesperu)
+```
+
+## Summary Comparison
+
+Let's compare the total number of species and the distribution of their statuses.
+
+```{r comparison}
+# 2025 version
+table(aves_peru_2025_v5$status)
+
+# 2026 version
+table(aves_peru_2026_v1$status)
+```
+
+## Additions and Removals
+
+Identify the species that were added or removed in the 2026 update.
+
+```{r additions-removals}
+added_species <- setdiff(aves_peru_2026_v1$scientific_name, aves_peru_2025_v5$scientific_name)
+removed_species <- setdiff(aves_peru_2025_v5$scientific_name, aves_peru_2026_v1$scientific_name)
+
+length(added_species)
+length(removed_species)
+
+# Display some newly added species
+head(added_species)
+```
+
+## Taxonomic Changes
+
+Check if any families or orders have updated species counts or additions.
+```{r taxonomy}
+# 2025 Families count
+length(unique(aves_peru_2025_v5$family_name))
+
+# 2026 Families count
+length(unique(aves_peru_2026_v1$family_name))
+```
+
+This ensures users can easily transition their workflows and verify taxonomic consistency between these iterations.

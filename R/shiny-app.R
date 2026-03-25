@@ -247,7 +247,7 @@ build_resolution_results <- function(splist,
     n_cores = n_cores
   )
 
-  db <- avesperu::aves_peru_2025_v5
+  db <- avesperu::aves_peru_2026_v1
   matched_rows <- db[match(resolved$accepted_name, db$scientific_name), , drop = FALSE]
   edit_distance <- suppressWarnings(as.integer(resolved$dist))
 
@@ -341,7 +341,7 @@ build_app_metadata <- function(results,
                                pasted_names,
                                uploaded_names) {
   metrics <- summarize_app_results(results, mode = mode)
-  checklist_date <- attr(avesperu::aves_peru_2025_v5, "version_date", exact = TRUE)
+  checklist_date <- attr(avesperu::aves_peru_2026_v1, "version_date", exact = TRUE)
   source_url <- "https://sites.google.com/site/boletinunop/checklist"
 
   data.frame(
@@ -399,7 +399,7 @@ metric_cards_ui <- function(metrics) {
 
 #' @keywords internal
 avesperu_app_ui <- function() {
-  checklist_date <- attr(avesperu::aves_peru_2025_v5, "version_date", exact = TRUE)
+  checklist_date <- attr(avesperu::aves_peru_2026_v1, "version_date", exact = TRUE)
 
   shiny::fluidPage(
     title = "avesperu",
