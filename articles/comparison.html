@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Comparison between aves_peru_2025_v5 and aves_peru_2026_v1 • avesperu</title>
+<title>How the Peru checklist changed from 2025 to 2026 • avesperu</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Jost-0.4.10/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/Abhaya_Libre-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Comparison between aves_peru_2025_v5 and aves_peru_2026_v1">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How the Peru checklist changed from 2025 to 2026">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,7 +36,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/comparison.html">Comparison between aves_peru_2025_v5 and aves_peru_2026_v1</a></li>
+<li><a class="dropdown-item" href="../articles/comparison.html">How the Peru checklist changed from 2025 to 2026</a></li>
   </ul>
 </li>
       </ul>
@@ -58,7 +58,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Comparison between aves_peru_2025_v5 and aves_peru_2026_v1</h1>
+      <h1>How the Peru checklist changed from 2025 to 2026</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/PaulESantos/avesperu/blob/master/vignettes/comparison.Rmd" class="external-link"><code>vignettes/comparison.Rmd</code></a></small>
@@ -70,70 +70,531 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette highlights the differences and updates between the
-previous dataset <code>aves_peru_2025_v5</code> and the newly released
-dataset <code>aves_peru_2026_v1</code> in the <code>avesperu</code>
-package.</p>
+<p>This vignette compares the two most recent checklist objects shipped
+with <code>avesperu</code>: <code>aves_peru_2025_v5</code> and
+<code>aves_peru_2026_v1</code>.</p>
+<p>The goal is not only to show that the dataset changed, but also to
+answer four practical questions:</p>
+<ol style="list-style-type: decimal">
+<li>How large was the update?</li>
+<li>Which status categories changed the most?</li>
+<li>Which species entered or left the checklist?</li>
+<li>Where are the changes concentrated taxonomically?</li>
+</ol>
+<p>Between 29 de diciembre de 2025 and 23 de marzo de 2026, the
+checklist grew from 1919 to 1925 species. That is a net gain of 6
+species.</p>
+<p>At the same time, the overall structure of the database remained
+highly stable: 1916 species are shared by both versions, which means
+that 99.84% of the 2025 checklist was retained in the 2026 release.</p>
+</div>
+<div class="section level2">
+<h2 id="high-level-snapshot">1. High-level snapshot<a class="anchor" aria-label="anchor" href="#high-level-snapshot"></a>
+</h2>
+<p>The first table summarizes the scale of the update. It shows that the
+number of orders remained constant, while the number of family labels
+increased slightly.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="summary-comparison">Summary Comparison<a class="anchor" aria-label="anchor" href="#summary-comparison"></a>
-</h2>
-<p>Let’s compare the total number of species and the distribution of
-their statuses.</p>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">summary_tbl</span>, caption <span class="op">=</span> <span class="st">"High-level comparison of the two checklist versions"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>High-level comparison of the two checklist versions</caption>
+<thead><tr class="header">
+<th align="left">dataset</th>
+<th align="left">version_date</th>
+<th align="right">species</th>
+<th align="right">orders</th>
+<th align="right">families</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">aves_peru_2025_v5</td>
+<td align="left">29 de diciembre de 2025</td>
+<td align="right">1919</td>
+<td align="right">32</td>
+<td align="right">90</td>
+</tr>
+<tr class="even">
+<td align="left">aves_peru_2026_v1</td>
+<td align="left">23 de marzo de 2026</td>
+<td align="right">1925</td>
+<td align="right">32</td>
+<td align="right">91</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 2025 version</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">aves_peru_2025_v5</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Divagante      Endémico   Introducido    Migratorio No confirmado </span></span>
-<span><span class="co">#&gt;            86           118             3           140            23 </span></span>
-<span><span class="co">#&gt;     Residente </span></span>
-<span><span class="co">#&gt;          1549</span></span>
+<code class="sourceCode R"><span><span class="va">summary_plot_tbl</span> <span class="op">&lt;-</span> <span class="va">summary_tbl</span></span>
+<span><span class="va">summary_plot_tbl</span><span class="op">$</span><span class="va">release</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2025 v5"</span>, <span class="st">"2026 v1"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2026 version</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">aves_peru_2026_v1</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Divagante      Endémico   Introducido    Migratorio No confirmado </span></span>
-<span><span class="co">#&gt;            90           119             3           140            21 </span></span>
-<span><span class="co">#&gt;     Residente </span></span>
-<span><span class="co">#&gt;          1552</span></span></code></pre></div>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">summary_plot_tbl</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">release</span>, y <span class="op">=</span> <span class="va">species</span>, fill <span class="op">=</span> <span class="va">release</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_col</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.62</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_text</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">species</span><span class="op">)</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span>, fontface <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">4.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2025 v5"</span> <span class="op">=</span> <span class="st">"#4C67B0"</span>, <span class="st">"2026 v1"</span> <span class="op">=</span> <span class="st">"#69B3E7"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span></span>
+<span>    expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.08</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Net checklist growth between releases"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"The 2026 update adds 6 species relative to the 2025 release"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Number of species"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="va">plot_theme</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="comparison_files/figure-html/total-species-plot-1.png" class="r-plt" alt="" width="768" style="display: block; margin: auto;"></p>
+<p>This graphic is useful as a first check for reproducibility: the
+update is not a complete restructuring of the package data, but a
+focused revision with a small and traceable net increase.</p>
 </div>
 <div class="section level2">
-<h2 id="additions-and-removals">Additions and Removals<a class="anchor" aria-label="anchor" href="#additions-and-removals"></a>
+<h2 id="changes-in-status-composition">2. Changes in status composition<a class="anchor" aria-label="anchor" href="#changes-in-status-composition"></a>
 </h2>
-<p>Identify the species that were added or removed in the 2026
-update.</p>
+<p>The net increase is not distributed evenly across status categories.
+Most of the change is concentrated in <code>Divagante</code>,
+<code>Residente</code>, and <code>Endémico</code>, while
+<code>No confirmado</code> decreases.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">added_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">aves_peru_2026_v1</span><span class="op">$</span><span class="va">scientific_name</span>, <span class="va">aves_peru_2025_v5</span><span class="op">$</span><span class="va">scientific_name</span><span class="op">)</span></span>
-<span><span class="va">removed_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">aves_peru_2025_v5</span><span class="op">$</span><span class="va">scientific_name</span>, <span class="va">aves_peru_2026_v1</span><span class="op">$</span><span class="va">scientific_name</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">status_tbl</span>, caption <span class="op">=</span> <span class="st">"Species counts by status in each dataset version"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Species counts by status in each dataset version</caption>
+<thead><tr class="header">
+<th align="left">status</th>
+<th align="right">n_2025</th>
+<th align="right">n_2026</th>
+<th align="right">change</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Residente</td>
+<td align="right">1549</td>
+<td align="right">1552</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Endémico</td>
+<td align="right">118</td>
+<td align="right">119</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Migratorio</td>
+<td align="right">140</td>
+<td align="right">140</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Divagante</td>
+<td align="right">86</td>
+<td align="right">90</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Introducido</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">No confirmado</td>
+<td align="right">23</td>
+<td align="right">21</td>
+<td align="right">-2</td>
+</tr>
+<tr class="odd">
+<td align="left">Extirpado</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">status_plot_tbl</span> <span class="op">&lt;-</span> <span class="va">status_tbl</span></span>
+<span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">direction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">change</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="st">"Increase"</span>, <span class="st">"Decrease"</span><span class="op">)</span></span>
+<span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>  <span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">change</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"+"</span>, <span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">change</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">change</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">status</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">status_plot_tbl</span><span class="op">$</span><span class="va">status</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">added_species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 9</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">removed_species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 3</span></span>
-<span></span>
-<span><span class="co"># Display some newly added species</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">added_species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Columbina squammata"         "Fulica americana"           </span></span>
-<span><span class="co">#&gt; [3] "Anous stolidus"              "Camptostoma sclateri"       </span></span>
-<span><span class="co">#&gt; [5] "Camptostoma napaeum"         "Tunchiornis ferrugineifrons"</span></span></code></pre></div>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">status_plot_tbl</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">status</span>, y <span class="op">=</span> <span class="va">change</span>, fill <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_col</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.72</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"#7A8793"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_text</span><span class="op">(</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span></span>
+<span>      label <span class="op">=</span> <span class="va">label</span>,</span>
+<span>      hjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">change</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="op">-</span><span class="fl">0.15</span>, <span class="fl">1.15</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">4</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Increase"</span> <span class="op">=</span> <span class="st">"#4B8A5F"</span>, <span class="st">"Decrease"</span> <span class="op">=</span> <span class="st">"#B34A3C"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.08</span>, <span class="fl">0.12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Net change by status category"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Vagrants and residents explain most of the checklist growth"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Change in number of species"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="va">plot_theme</span></span></code></pre></div>
+<p><img src="comparison_files/figure-html/status-delta-plot-1.png" class="r-plt" alt="" width="768" style="display: block; margin: auto;"></p>
+<p>Three patterns stand out:</p>
+<ul>
+<li>
+<code>Divagante</code> increases by 4 species, the largest
+category-level change in the update.</li>
+<li>
+<code>Residente</code> increases by 3 species, showing that the
+revision is not restricted to occasional records.</li>
+<li>
+<code>No confirmado</code> decreases by 2 species, suggesting that
+some previously uncertain records were either excluded or reclassified
+in the updated source.</li>
+</ul>
 </div>
 <div class="section level2">
-<h2 id="taxonomic-changes">Taxonomic Changes<a class="anchor" aria-label="anchor" href="#taxonomic-changes"></a>
+<h2 id="species-turnover">3. Species turnover<a class="anchor" aria-label="anchor" href="#species-turnover"></a>
 </h2>
-<p>Check if any families or orders have updated species counts or
-additions.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 2025 Families count</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">aves_peru_2025_v5</span><span class="op">$</span><span class="va">family_name</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 90</span></span>
+<p>The 2026 release adds 9 species and removes 3. Because the shared
+core remains so large, the update is best understood as a targeted
+revision rather than a replacement of the whole checklist.</p>
+<div class="section level3">
+<h3 id="added-species">Added species<a class="anchor" aria-label="anchor" href="#added-species"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">added</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scientific_name"</span>, <span class="st">"english_name"</span>, <span class="st">"status"</span>, <span class="st">"family_name"</span>, <span class="st">"order_name"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Species added in aves_peru_2026_v1"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Species added in aves_peru_2026_v1</caption>
+<colgroup>
+<col width="4%">
+<col width="27%">
+<col width="30%">
+<col width="9%">
+<col width="11%">
+<col width="15%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">scientific_name</th>
+<th align="left">english_name</th>
+<th align="left">status</th>
+<th align="left">family_name</th>
+<th align="left">order_name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">112</td>
+<td align="left">Columbina squammata</td>
+<td align="left">Scaled Dove</td>
+<td align="left">Divagante</td>
+<td align="left">Columbidae</td>
+<td align="left">Columbiformes</td>
+</tr>
+<tr class="even">
+<td align="left">336</td>
+<td align="left">Fulica americana</td>
+<td align="left">American Coot</td>
+<td align="left">Divagante</td>
+<td align="left">Rallidae</td>
+<td align="left">Gruiformes</td>
+</tr>
+<tr class="odd">
+<td align="left">408</td>
+<td align="left">Anous stolidus</td>
+<td align="left">Brown Noddy</td>
+<td align="left">Divagante</td>
+<td align="left">Laridae</td>
+<td align="left">Charadriiformes</td>
+</tr>
+<tr class="even">
+<td align="left">1360</td>
+<td align="left">Camptostoma sclateri</td>
+<td align="left">Pacific Beardless-Tyrannulet</td>
+<td align="left">Residente</td>
+<td align="left">Camptostoma</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="odd">
+<td align="left">1361</td>
+<td align="left">Camptostoma napaeum</td>
+<td align="left">Amazonian Beardless-Tyrannulet</td>
+<td align="left">Residente</td>
+<td align="left">Camptostoma</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="even">
+<td align="left">1504</td>
+<td align="left">Tunchiornis ferrugineifrons</td>
+<td align="left">Western Tawny-crowned Greenlet</td>
+<td align="left">Residente</td>
+<td align="left">Vireonidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="odd">
+<td align="left">1595</td>
+<td align="left">Turdus phaeopygus</td>
+<td align="left">Gray-flanked Thrush</td>
+<td align="left">Residente</td>
+<td align="left">Turdidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="even">
+<td align="left">1680</td>
+<td align="left">Icterus spurius</td>
+<td align="left">Orchard Oriole</td>
+<td align="left">Divagante</td>
+<td align="left">Icteridae</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="odd">
+<td align="left">1753</td>
+<td align="left">Sicalis columbiana</td>
+<td align="left">Orange-fronted Yellow-Finch</td>
+<td align="left">Residente</td>
+<td align="left">Thraupidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="removed-species">Removed species<a class="anchor" aria-label="anchor" href="#removed-species"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">removed</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scientific_name"</span>, <span class="st">"english_name"</span>, <span class="st">"status"</span>, <span class="st">"family_name"</span>, <span class="st">"order_name"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Species removed from the previous checklist version"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Species removed from the previous checklist version</caption>
+<colgroup>
+<col width="5%">
+<col width="26%">
+<col width="31%">
+<col width="10%">
+<col width="12%">
+<col width="14%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">scientific_name</th>
+<th align="left">english_name</th>
+<th align="left">status</th>
+<th align="left">family_name</th>
+<th align="left">order_name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">1357</td>
+<td align="left">Camptostoma obsoletum</td>
+<td align="left">Southern Beardless-Tyrannulet</td>
+<td align="left">Residente</td>
+<td align="left">Tyrannidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="even">
+<td align="left">1500</td>
+<td align="left">Tunchiornis ochraceiceps</td>
+<td align="left">Tawny-crowned Greenlet</td>
+<td align="left">Residente</td>
+<td align="left">Vireonidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+<tr class="odd">
+<td align="left">1591</td>
+<td align="left">Turdus albicollis</td>
+<td align="left">White-necked Thrush</td>
+<td align="left">Residente</td>
+<td align="left">Turdidae</td>
+<td align="left">Passeriformes</td>
+</tr>
+</tbody>
+</table>
+<p>Some of these additions and removals are especially informative. For
+example, the replacement of <code>Camptostoma obsoletum</code> by
+<code>Camptostoma sclateri</code> and <code>Camptostoma napaeum</code>
+is consistent with a taxonomic split in the source checklist. Likewise,
+the replacement of <code>Tunchiornis ochraceiceps</code> and
+<code>Turdus albicollis</code> by more specific taxa suggests an update
+in species limits or taxonomic circumscription.</p>
+<p>That interpretation is an inference from the before/after pattern in
+the data, not an explicit annotation embedded in the dataset itself.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">turnover_plot_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>order_name <span class="op">=</span> <span class="va">turnover_by_order</span><span class="op">$</span><span class="va">order_name</span>, movement <span class="op">=</span> <span class="st">"Added"</span>, n <span class="op">=</span> <span class="va">turnover_by_order</span><span class="op">$</span><span class="va">added</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>order_name <span class="op">=</span> <span class="va">turnover_by_order</span><span class="op">$</span><span class="va">order_name</span>, movement <span class="op">=</span> <span class="st">"Removed"</span>, n <span class="op">=</span> <span class="va">turnover_by_order</span><span class="op">$</span><span class="va">removed</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">turnover_plot_tbl</span> <span class="op">&lt;-</span> <span class="va">turnover_plot_tbl</span><span class="op">[</span><span class="va">turnover_plot_tbl</span><span class="op">$</span><span class="va">n</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">]</span></span>
+<span><span class="va">turnover_plot_tbl</span><span class="op">$</span><span class="va">order_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
+<span>  <span class="va">turnover_plot_tbl</span><span class="op">$</span><span class="va">order_name</span>,</span>
+<span>  levels <span class="op">=</span> <span class="va">turnover_by_order</span><span class="op">$</span><span class="va">order_name</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">turnover_by_order</span><span class="op">$</span><span class="va">net_change</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2026 Families count</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">aves_peru_2026_v1</span><span class="op">$</span><span class="va">family_name</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 91</span></span></code></pre></div>
-<p>This ensures users can easily transition their workflows and verify
-taxonomic consistency between these iterations.</p>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">turnover_plot_tbl</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">order_name</span>, y <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="va">movement</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_col</span><span class="op">(</span>position <span class="op">=</span> <span class="fu">position_dodge</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.72</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.62</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_text</span><span class="op">(</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">n</span><span class="op">)</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu">position_dodge</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.72</span><span class="op">)</span>,</span>
+<span>    vjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3.8</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Added"</span> <span class="op">=</span> <span class="st">"#69B3E7"</span>, <span class="st">"Removed"</span> <span class="op">=</span> <span class="st">"#D98C6A"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Species turnover by order"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Most additions and all removals occur in Passeriformes"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Number of species"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="va">plot_theme</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">20</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="comparison_files/figure-html/turnover-order-plot-1.png" class="r-plt" alt="" width="768" style="display: block; margin: auto;"></p>
+<p>This plot shows that turnover is concentrated in
+<code>Passeriformes</code>, which accounts for 6 of the 9 additions and
+all 3 removals.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="where-the-taxonomic-changes-are-concentrated">4. Where the taxonomic changes are concentrated<a class="anchor" aria-label="anchor" href="#where-the-taxonomic-changes-are-concentrated"></a>
+</h2>
+<p>At a broad level, the checklist still contains 32 orders in both
+versions. The family layer changes more subtly, from 90 to 91 distinct
+family labels.</p>
+<p>The next table isolates only the family labels whose counts
+changed.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">family_delta</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Families with non-zero net change between versions"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Families with non-zero net change between versions</caption>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">family_name</th>
+<th align="right">n_2025</th>
+<th align="right">n_2026</th>
+<th align="right">change</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">89</td>
+<td align="left">Tyrannidae</td>
+<td align="right">251</td>
+<td align="right">250</td>
+<td align="right">-1</td>
+</tr>
+<tr class="even">
+<td align="left">19</td>
+<td align="left">Columbidae</td>
+<td align="right">30</td>
+<td align="right">31</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">39</td>
+<td align="left">Icteridae</td>
+<td align="right">34</td>
+<td align="right">35</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="left">Laridae</td>
+<td align="right">30</td>
+<td align="right">31</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">68</td>
+<td align="left">Rallidae</td>
+<td align="right">30</td>
+<td align="right">31</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">81</td>
+<td align="left">Thraupidae</td>
+<td align="right">193</td>
+<td align="right">194</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="left">Camptostoma</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">family_plot_tbl</span> <span class="op">&lt;-</span> <span class="va">family_delta</span></span>
+<span><span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">direction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">change</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"Increase"</span>, <span class="st">"Decrease"</span><span class="op">)</span></span>
+<span><span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>  <span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">change</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"+"</span>, <span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">change</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">change</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">family_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
+<span>  <span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">family_name</span>,</span>
+<span>  levels <span class="op">=</span> <span class="va">family_plot_tbl</span><span class="op">$</span><span class="va">family_name</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">family_plot_tbl</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">family_name</span>, y <span class="op">=</span> <span class="va">change</span>, fill <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_col</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"#7A8793"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_text</span><span class="op">(</span></span>
+<span>    <span class="fu">aes</span><span class="op">(</span></span>
+<span>      label <span class="op">=</span> <span class="va">label</span>,</span>
+<span>      hjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">change</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">-</span><span class="fl">0.12</span>, <span class="fl">1.12</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3.8</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Increase"</span> <span class="op">=</span> <span class="st">"#F3C94D"</span>, <span class="st">"Decrease"</span> <span class="op">=</span> <span class="st">"#C96B5C"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.08</span>, <span class="fl">0.12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Family-level concentration of checklist updates"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Only a small subset of family labels changes between releases"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Net change in species count"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="va">plot_theme</span></span></code></pre></div>
+<p><img src="comparison_files/figure-html/family-delta-plot-1.png" class="r-plt" alt="" width="768" style="display: block; margin: auto;"></p>
+<p>Two practical takeaways emerge from this comparison:</p>
+<ul>
+<li>Most families do not change at all, which helps preserve
+compatibility with analyses built on the previous release.</li>
+<li>The largest localized revision occurs around the
+<code>Camptostoma</code> label, while several other families gain a
+single species.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="what-this-means-for-users">5. What this means for users<a class="anchor" aria-label="anchor" href="#what-this-means-for-users"></a>
+</h2>
+<p>For most workflows, the 2026 update is a refinement rather than a
+disruptive schema change. The implications are straightforward:</p>
+<ul>
+<li>If you are reproducing an analysis built with
+<code>aves_peru_2025_v5</code>, most names remain unchanged and directly
+comparable.</li>
+<li>If your data include any of the removed species, you should re-run
+matching with <code><a href="../reference/search_avesperu.html">search_avesperu()</a></code> to align them with the
+current checklist.</li>
+<li>If you work with vagrants, endemics, or recent country records, the
+2026 release is especially relevant because these are the categories
+with the most visible shifts.</li>
+</ul>
+<p>In short, <code>aves_peru_2026_v1</code> preserves continuity with
+the previous checklist while incorporating a small but meaningful set of
+taxonomic and occurrence updates.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

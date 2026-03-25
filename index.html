@@ -38,7 +38,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/comparison.html">Comparison between aves_peru_2025_v5 and aves_peru_2026_v1</a></li>
+<li><a class="dropdown-item" href="articles/comparison.html">How the Peru checklist changed from 2025 to 2026</a></li>
   </ul>
 </li>
       </ul>
@@ -60,21 +60,21 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. As of <strong>December 29, 2025</strong>, the list includes <strong>1,919</strong> bird species, reflecting significant taxonomic changes and updated validations based on recent scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
+<p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. The current bundled checklist, <code>aves_peru_2026_v1</code>, corresponds to <strong>March 23, 2026</strong> and includes <strong>1,925</strong> bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
 <div class="section level3">
 <h3 id="species-categories">Species Categories<a class="anchor" aria-label="anchor" href="#species-categories"></a>
 </h3>
 <p>Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:</p>
 <ul>
-<li>X Resident: 1,549 species</li>
-<li>E Endemic: 118 species</li>
+<li>X Resident: 1,552 species</li>
+<li>E Endemic: 119 species</li>
 <li>NB Migratory (non-breeding): 140 species</li>
-<li>V Vagrant: 86 species</li>
+<li>V Vagrant: 90 species</li>
 <li>IN Introduced: 3 species</li>
 <li>EX Extirpated: 0 species</li>
-<li>U Unconfirmed records: 23 species</li>
+<li>U Unconfirmed records: 21 species</li>
 </ul>
-<p>This results in a total of 1,919 species, showcasing Peru’s extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.</p>
+<p>This results in a total of 1,925 species, showcasing Peru’s extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.</p>
 </div>
 <div class="section level3">
 <h3 id="checking-for-checklist-updates">Checking for Checklist Updates<a class="anchor" aria-label="anchor" href="#checking-for-checklist-updates"></a>
@@ -97,7 +97,7 @@
 <div class="section level3">
 <h3 id="insights-and-trends">Insights and Trends<a class="anchor" aria-label="anchor" href="#insights-and-trends"></a>
 </h3>
-<p>The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2025, reflecting continuous research and improvements in taxonomic resolution:</p>
+<p>The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2026, reflecting continuous research and improvements in taxonomic resolution:</p>
 <ul>
 <li><p>A substantial jump occurred between 1968 and 1980, with 187 new species recorded.</p></li>
 <li><p>In recent years, updates have slowed but continued to increase steadily, reflecting meticulous reviews of published records and taxonomic refinements.</p></li>
@@ -107,25 +107,14 @@
 <div class="section level2">
 <h2 id="suggested-citation">Suggested citation:<a class="anchor" aria-label="anchor" href="#suggested-citation"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"avesperu"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; To cite avesperu in publications, please use:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; To cite the avesperu package in publications, please use:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Santos Andrade, P. E. (2025). avesperu: Access to the List of Birds</span></span>
-<span><span class="co">#&gt;   Species of Peru. R package version 0.0.8.</span></span>
-<span><span class="co">#&gt;   https://paulesantos.github.io/avesperu/</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The bird species checklist included in this package is based on:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Plenge, M. A., &amp; Angulo, F. (2025). Lista de las aves del Perú / List</span></span>
-<span><span class="co">#&gt;   of the birds of Peru. Version 29-12-2025. Unión de Ornitólogos del</span></span>
-<span><span class="co">#&gt;   Perú. https://sites.google.com/site/boletinunop/checklist</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; To see these entries in BibTeX format, use 'print(&lt;citation&gt;,</span></span>
-<span><span class="co">#&gt; bibtex=TRUE)', 'toBibtex(.)', or set</span></span>
-<span><span class="co">#&gt; 'options(citation.bibtex.max=999)'.</span></span></code></pre></div>
+<pre class="text"><code>Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
+R package version 0.1.0. https://paulesantos.github.io/avesperu/
+
+The bird species checklist included in this package is based on:
+
+Plenge, M. A., &amp; Angulo, F. (2026). Lista de las aves del Perú / List of the birds
+of Peru. Version 23-03-2026. Unión de Ornitólogos del Perú.
+https://sites.google.com/site/boletinunop/checklist</code></pre>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -143,10 +132,17 @@
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <div class="section level3">
+<h3 id="current-dataset">Current dataset<a class="anchor" aria-label="anchor" href="#current-dataset"></a>
+</h3>
+<p>The current checklist shipped with the package is <code>aves_peru_2026_v1</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aves_peru_2026_v1"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="shiny-app">Shiny app<a class="anchor" aria-label="anchor" href="#shiny-app"></a>
 </h3>
 <p>The package includes an interactive Shiny application for batch scientific-name validation against the local <code>avesperu</code> checklist. The app supports pasted names, file upload (<code>TXT</code>, <code>CSV</code>, <code>TSV</code>, <code>XLS</code>, <code>XLSX</code>), exact or fuzzy matching, review tables, and export to <code>CSV</code>, <code>TSV</code>, <code>XLSX</code>, and run metadata.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">avesperu</span><span class="fu">::</span><span class="fu"><a href="reference/run_avesperu_app.html">run_avesperu_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/shiny_app.png"></p>
 </div>
@@ -154,7 +150,7 @@
 <h3 id="basic-search">Basic Search<a class="anchor" aria-label="anchor" href="#basic-search"></a>
 </h3>
 <p>The <code><a href="reference/search_avesperu.html">search_avesperu()</a></code> function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
 <span></span>
@@ -176,7 +172,7 @@
 <h3 id="integration-with-data-frames">Integration with Data Frames<a class="anchor" aria-label="anchor" href="#integration-with-data-frames"></a>
 </h3>
 <p>The function integrates seamlessly with data.frame and tibble objects, enabling efficient taxonomic validation within data processing pipelines:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a data frame with species names</span></span>
 <span><span class="va">bird_data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>species <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
 <span></span>
@@ -222,7 +218,7 @@
 <p>Values between 0 and 1 (e.g., 0.1): Interpreted as a proportion of the name length</p>
 <p>“Tinamus osgoodi” (14 chars): allows up to 1 character difference (14 × 0.1)</p>
 <p>Integer values (e.g., 2): Interpreted as absolute number of character differences allowed</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Species list with intentional typos</span></span>
 <span><span class="va">splist_typos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Falco sparverius"</span>,      <span class="co"># Correct</span></span>
@@ -267,7 +263,7 @@
 <div class="section level3">
 <h3 id="adjusting-matching-sensitivity">Adjusting Matching Sensitivity<a class="anchor" aria-label="anchor" href="#adjusting-matching-sensitivity"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Strict matching: only 1 character difference allowed</span></span>
 <span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
@@ -351,7 +347,7 @@
 <ul>
 <li>Handling Unmatched Names</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, </span>
 <span>                           max_distance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -417,7 +413,7 @@
 <div class="section level4">
 <h4 id="example-1-quality-control-for-field-data">Example 1: Quality Control for Field Data<a class="anchor" aria-label="anchor" href="#example-1-quality-control-for-field-data"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simulated field observation data</span></span>
 <span><span class="va">field_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  observer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Observer A"</span>, <span class="st">"Observer B"</span>, <span class="st">"Observer A"</span>, <span class="st">"Observer C"</span><span class="op">)</span>,</span>
@@ -448,7 +444,7 @@
 <div class="section level4">
 <h4 id="example-2-checking-endemic-status">Example 2: Checking Endemic Status<a class="anchor" aria-label="anchor" href="#example-2-checking-endemic-status"></a>
 </h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Identify endemic species from a list</span></span>
 <span><span class="va">my_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Penelope albipennis"</span>, <span class="st">"Xenoglaux loweryi"</span>, <span class="st">"Grallaria ridgelyi"</span>,</span>
 <span>                <span class="st">"Falco sparverius"</span>, <span class="st">"Thraupis palmarum"</span><span class="op">)</span></span>
@@ -468,7 +464,7 @@
 <div class="section level4">
 <h4 id="example-3-taxonomic-summary">Example 3: Taxonomic Summary<a class="anchor" aria-label="anchor" href="#example-3-taxonomic-summary"></a>
 </h4>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get taxonomic distribution of a species list</span></span>
 <span><span class="va">my_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
