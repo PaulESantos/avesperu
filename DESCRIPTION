@@ -1,6 +1,6 @@
 Package: avesperu
 Title: Access to the List of Bird Species of Peru
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Paul E.", "Santos Andrade", , 
     "paulefrens@gmail.com", role = c("aut", "cre", "cph"),
