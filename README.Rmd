@@ -182,6 +182,9 @@ data("aves_peru_2026_v1")
 
 The package includes an interactive Shiny application for batch scientific-name validation against the local `avesperu` checklist. The app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`, `XLSX`), exact or fuzzy matching, review tables, and export to `CSV`, `TSV`, `XLSX`, and run metadata.
 
+You can explore the live deployed app here:
+<https://paulefrensa.shinyapps.io/avesperu/>
+
 ```{r eval = FALSE}
 avesperu::run_avesperu_app()
 ```
