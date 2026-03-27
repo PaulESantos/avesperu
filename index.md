@@ -118,6 +118,9 @@ app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`,
 `XLSX`), exact or fuzzy matching, review tables, and export to `CSV`,
 `TSV`, `XLSX`, and run metadata.
 
+You can explore the live deployed app here:
+<https://paulefrensa.shinyapps.io/avesperu/>
+
 ``` r
 avesperu::run_avesperu_app()
 ```
