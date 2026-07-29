@@ -59,7 +59,7 @@ the accepted Peru checklist, not a synonymy backbone.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-run_avesperu_app()
-} # }
+if (interactive()) {
+  run_avesperu_app()
+}
 ```

@@ -9,6 +9,11 @@ sound recordings deposited in accredited institutions. The
 classification follows the guidelines set by the South American
 Checklist Committee (SACC).
 
+The source checklist is maintained by the Unión de Ornitólogos del Perú
+(UNOP) and is available directly from the official **Lista de las aves
+del Perú / List of the Birds of Peru** page:
+<https://sites.google.com/site/boletinunop/checklist>
+
 ### Species Categories
 
 Each species in the dataset is classified into one of the following
@@ -36,6 +41,7 @@ triggered automatically on package attach; run it explicitly when you
 want to verify whether `avesperu` is up to date.
 
 ``` r
+
 unop_check_update()
 ```
 
@@ -75,7 +81,7 @@ improvements in taxonomic resolution:
 
 ``` text
 Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.0. https://paulesantos.github.io/avesperu/
+R package version 0.1.1. https://paulesantos.github.io/avesperu/
 
 The bird species checklist included in this package is based on:
 
@@ -89,6 +95,7 @@ https://sites.google.com/site/boletinunop/checklist
 You can install the `avesperu` package from CRAN using:
 
 ``` r
+
 install.packages("avesperu")
 # or
 pak::pak("avesperu")
@@ -97,6 +104,7 @@ pak::pak("avesperu")
 Also you can install the development version of `avesperu` like so:
 
 ``` r
+
 pak::pak("PaulESantos/avesperu")
 ```
 
@@ -107,6 +115,7 @@ pak::pak("PaulESantos/avesperu")
 The current checklist shipped with the package is `aves_peru_2026_v1`.
 
 ``` r
+
 data("aves_peru_2026_v1")
 ```
 
@@ -122,6 +131,7 @@ You can explore the live deployed app here:
 <https://paulefrensa.shinyapps.io/avesperu/>
 
 ``` r
+
 avesperu::run_avesperu_app()
 ```
 
@@ -137,6 +147,7 @@ vectorized, allowing efficient batch processing of multiple species
 simultaneously.
 
 ``` r
+
 
 library(avesperu)
 
@@ -162,6 +173,7 @@ enabling efficient taxonomic validation within data processing
 pipelines:
 
 ``` r
+
 # Create a data frame with species names
 bird_data <- tibble::tibble(species = splist)
 
@@ -218,6 +230,7 @@ Integer values (e.g., 2): Interpreted as absolute number of character
 differences allowed
 
 ``` r
+
 # Species list with intentional typos
 splist_typos <- c(
   "Falco sparverius",      # Correct
@@ -260,6 +273,7 @@ results[, c("name_submitted", "accepted_name", "dist")]
 ### Adjusting Matching Sensitivity
 
 ``` r
+
 # Strict matching: only 1 character difference allowed
 search_avesperu(splist_typos, max_distance = 1, return_details = TRUE)
 #>         name_submitted        accepted_name    order_name    family_name
@@ -348,6 +362,7 @@ max_distance parameter used
 - Handling Unmatched Names
 
 ``` r
+
 results <- search_avesperu(splist_typos, 
                            max_distance = 0,
                            return_details = TRUE)
@@ -413,6 +428,7 @@ if (nrow(unmatched) > 0) {
 #### Example 1: Quality Control for Field Data
 
 ``` r
+
 # Simulated field observation data
 field_data <- data.frame(
   observer = c("Observer A", "Observer B", "Observer A", "Observer C"),
@@ -444,6 +460,7 @@ field_data_validated
 #### Example 2: Checking Endemic Status
 
 ``` r
+
 # Identify endemic species from a list
 my_species <- c("Penelope albipennis", "Xenoglaux loweryi", "Grallaria ridgelyi",
                 "Falco sparverius", "Thraupis palmarum")
@@ -464,6 +481,7 @@ print(endemic_species)
 #### Example 3: Taxonomic Summary
 
 ``` r
+
 # Get taxonomic distribution of a species list
 my_list <- search_avesperu(splist, return_details = TRUE)
 
@@ -511,9 +529,6 @@ my_list  |>
   : Run a TNRS-style Shiny app for avesperu
 - [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
   : Search for Bird Species Data in the Birds of Peru Dataset
-- [`show_progress()`](https://paulesantos.github.io/avesperu/reference/show_progress.md)
-  : Determine whether to show progress bar Return logical TRUE/FALSE
-  depending on options and interactive session
 - [`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md)
   : Check whether the local dataset is up to date against UNOP
 

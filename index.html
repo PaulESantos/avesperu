@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Access to the List of Bird Species of Peru • avesperu</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Jost-0.4.10/font.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Jost-0.4.10/font.css" rel="stylesheet">
 <link href="deps/Overpass_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/Abhaya_Libre-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -61,6 +61,7 @@
 <!-- badges: start -->
 
 <p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. The current bundled checklist, <code>aves_peru_2026_v1</code>, corresponds to <strong>March 23, 2026</strong> and includes <strong>1,925</strong> bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
+<p>The source checklist is maintained by the Unión de Ornitólogos del Perú (UNOP) and is available directly from the official <strong>Lista de las aves del Perú / List of the Birds of Peru</strong> page: <a href="https://sites.google.com/site/boletinunop/checklist" class="external-link uri">https://sites.google.com/site/boletinunop/checklist</a></p>
 <div class="section level3">
 <h3 id="species-categories">Species Categories<a class="anchor" aria-label="anchor" href="#species-categories"></a>
 </h3>
@@ -108,7 +109,7 @@
 <h2 id="suggested-citation">Suggested citation:<a class="anchor" aria-label="anchor" href="#suggested-citation"></a>
 </h2>
 <pre class="text"><code>Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.0. https://paulesantos.github.io/avesperu/
+R package version 0.1.1. https://paulesantos.github.io/avesperu/
 
 The bird species checklist included in this package is based on:
 
@@ -179,7 +180,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Add taxonomic information</span></span>
 <span><span class="va">bird_data</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span>taxonomy <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>taxonomy <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; # A tibble: 7 × 2</span></span>
 <span><span class="co">#&gt;   species               taxonomy  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt;     </span></span>
@@ -193,7 +194,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Or extract specific fields</span></span>
 <span><span class="va">bird_data</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    status <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">status</span>,</span>
 <span>    family <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">family_name</span>,</span>
 <span>    order <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">order_name</span></span>
@@ -425,12 +426,12 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Validate species names and add taxonomy</span></span>
 <span><span class="va">field_data_validated</span> <span class="op">&lt;-</span> <span class="va">field_data</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">mutate</span><span class="op">(</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>  taxonomy <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">species</span>, <span class="op">~</span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">.x</span>, </span>
 <span>                                           max_distance <span class="op">=</span> <span class="fl">0.1</span>, </span>
 <span>                                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu">unnest</span><span class="op">(</span><span class="va">taxonomy</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">select</span><span class="op">(</span><span class="va">observer</span>, <span class="va">species</span>, <span class="va">accepted_name</span>, <span class="va">family_name</span>, </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">taxonomy</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">observer</span>, <span class="va">species</span>, <span class="va">accepted_name</span>, <span class="va">family_name</span>, </span>
 <span>         <span class="va">english_name</span>, <span class="va">status</span>, <span class="va">count</span>, <span class="va">dist</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">field_data_validated</span></span>
@@ -454,8 +455,8 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Filter endemic species</span></span>
 <span><span class="va">endemic_species</span> <span class="op">&lt;-</span> <span class="va">results</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">filter</span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Endémico"</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">select</span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="va">accepted_name</span>, <span class="va">english_name</span>, <span class="va">family_name</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Endémico"</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="va">accepted_name</span>, <span class="va">english_name</span>, <span class="va">family_name</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">endemic_species</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       scientific_name         english_name family_name</span></span>
@@ -471,7 +472,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Count by family</span></span>
 <span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">family_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">family_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        family_name n</span></span>
 <span><span class="co">#&gt; 1        Tinamidae 2</span></span>
 <span><span class="co">#&gt; 2         Cracidae 1</span></span>
@@ -482,7 +483,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Count by order</span></span>
 <span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">order_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">order_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            order_name n</span></span>
 <span><span class="co">#&gt; 1       Passeriformes 2</span></span>
 <span><span class="co">#&gt; 2        Tinamiformes 2</span></span>
@@ -492,7 +493,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <span></span>
 <span><span class="co"># Status summary</span></span>
 <span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">count</span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       status n</span></span>
 <span><span class="co">#&gt; 1   Endémico 1</span></span>
 <span><span class="co">#&gt; 2 Migratorio 1</span></span>
@@ -539,8 +540,8 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://CRAN.R-project.org/package=avesperu" class="external-link"><img src="https://www.r-pkg.org/badges/version/avesperu" alt="CRAN status"></a></li>
 <li><a href="https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green"></a></li>
-<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green"></a></li>
+<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green"></a></li>
+<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green"></a></li>
 </ul>
 </div>
 
@@ -553,7 +554,7 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

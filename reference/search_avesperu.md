@@ -3,11 +3,9 @@
 This function searches for bird species information in the dataset
 provided by the `avesperu` package, given a list of species names. It
 supports approximate (fuzzy) matching to handle typographical errors or
-minor variations in species names using optimized
-[`agrep()`](https://rdrr.io/r/base/agrep.html) matching. The function is
-optimized for both small and large lists through intelligent
-pre-filtering and optional parallel processing, while maintaining exact
-[`agrep()`](https://rdrr.io/r/base/agrep.html) precision.
+minor variations in species names using optimized edit-distance
+matching. The function is optimized for both small and large lists
+through intelligent pre-filtering and optional parallel processing.
 
 ## Usage
 
@@ -120,8 +118,7 @@ The function performs the following steps:
 
 1.  Validates input and converts factors to character vectors
 
-2.  Standardizes species names using
-    [`standardize_names()`](https://paulesantos.github.io/avesperu/reference/standardize_names.md)
+2.  Standardizes species names using `standardize_names()`
 
 3.  Identifies and reports duplicate entries in the input list
 
@@ -130,14 +127,11 @@ The function performs the following steps:
     - Filters by string length (mathematically guaranteed to preserve
       matches)
 
-    - Optionally filters by first character for very large candidate
-      sets
+5.  Performs exact matching before fuzzy matching to avoid unnecessary
+    work
 
-5.  Performs precise [`agrep()`](https://rdrr.io/r/base/agrep.html)
-    fuzzy matching on filtered candidates
-
-6.  Calculates exact edit distances using
-    [`adist()`](https://rdrr.io/r/utils/adist.html)
+6.  Calculates edit distances using
+    [`stringdist::stringdist()`](https://rdrr.io/pkg/stringdist/man/stringdist.html)
 
 7.  Selects the best match (minimum distance) for each query
 
@@ -152,8 +146,8 @@ worker maintains a copy of the reference database (~5-10 MB).
 
 ## See also
 
-[`agrep`](https://rdrr.io/r/base/agrep.html) for the underlying fuzzy
-matching algorithm
+[`stringdist::stringdist`](https://rdrr.io/pkg/stringdist/man/stringdist.html)
+for the underlying edit-distance calculation
 
 ## Examples
 

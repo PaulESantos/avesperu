@@ -27,6 +27,7 @@ number of orders remained constant, while the number of family labels
 increased slightly.
 
 ``` r
+
 knitr::kable(summary_tbl, caption = "High-level comparison of the two checklist versions")
 ```
 
@@ -35,9 +36,10 @@ knitr::kable(summary_tbl, caption = "High-level comparison of the two checklist 
 | aves_peru_2025_v5 | 29 de diciembre de 2025 |    1919 |     32 |       90 |
 | aves_peru_2026_v1 | 23 de marzo de 2026     |    1925 |     32 |       91 |
 
-High-level comparison of the two checklist versions
+High-level comparison of the two checklist versions {.table}
 
 ``` r
+
 summary_plot_tbl <- summary_tbl
 summary_plot_tbl$release <- c("2025 v5", "2026 v1")
 
@@ -72,6 +74,7 @@ Most of the change is concentrated in `Divagante`, `Residente`, and
 `Endémico`, while `No confirmado` decreases.
 
 ``` r
+
 knitr::kable(status_tbl, caption = "Species counts by status in each dataset version")
 ```
 
@@ -85,9 +88,10 @@ knitr::kable(status_tbl, caption = "Species counts by status in each dataset ver
 | No confirmado |     23 |     21 |     -2 |
 | Extirpado     |      0 |      0 |      0 |
 
-Species counts by status in each dataset version
+Species counts by status in each dataset version {.table}
 
 ``` r
+
 status_plot_tbl <- status_tbl
 status_plot_tbl$direction <- ifelse(status_plot_tbl$change >= 0, "Increase", "Decrease")
 status_plot_tbl$label <- ifelse(
@@ -140,42 +144,44 @@ rather than a replacement of the whole checklist.
 ### Added species
 
 ``` r
+
 knitr::kable(
   added[, c("scientific_name", "english_name", "status", "family_name", "order_name")],
   caption = "Species added in aves_peru_2026_v1"
 )
 ```
 
-|      | scientific_name             | english_name                   | status    | family_name | order_name      |
-|:-----|:----------------------------|:-------------------------------|:----------|:------------|:----------------|
-| 112  | Columbina squammata         | Scaled Dove                    | Divagante | Columbidae  | Columbiformes   |
-| 336  | Fulica americana            | American Coot                  | Divagante | Rallidae    | Gruiformes      |
-| 408  | Anous stolidus              | Brown Noddy                    | Divagante | Laridae     | Charadriiformes |
-| 1360 | Camptostoma sclateri        | Pacific Beardless-Tyrannulet   | Residente | Camptostoma | Passeriformes   |
-| 1361 | Camptostoma napaeum         | Amazonian Beardless-Tyrannulet | Residente | Camptostoma | Passeriformes   |
-| 1504 | Tunchiornis ferrugineifrons | Western Tawny-crowned Greenlet | Residente | Vireonidae  | Passeriformes   |
-| 1595 | Turdus phaeopygus           | Gray-flanked Thrush            | Residente | Turdidae    | Passeriformes   |
-| 1680 | Icterus spurius             | Orchard Oriole                 | Divagante | Icteridae   | Passeriformes   |
-| 1753 | Sicalis columbiana          | Orange-fronted Yellow-Finch    | Residente | Thraupidae  | Passeriformes   |
+| scientific_name | english_name | status | family_name | order_name |
+|:---|:---|:---|:---|:---|
+| Columbina squammata | Scaled Dove | Divagante | Columbidae | Columbiformes |
+| Fulica americana | American Coot | Divagante | Rallidae | Gruiformes |
+| Anous stolidus | Brown Noddy | Divagante | Laridae | Charadriiformes |
+| Camptostoma sclateri | Pacific Beardless-Tyrannulet | Residente | Camptostoma | Passeriformes |
+| Camptostoma napaeum | Amazonian Beardless-Tyrannulet | Residente | Camptostoma | Passeriformes |
+| Tunchiornis ferrugineifrons | Western Tawny-crowned Greenlet | Residente | Vireonidae | Passeriformes |
+| Turdus phaeopygus | Gray-flanked Thrush | Residente | Turdidae | Passeriformes |
+| Icterus spurius | Orchard Oriole | Divagante | Icteridae | Passeriformes |
+| Sicalis columbiana | Orange-fronted Yellow-Finch | Residente | Thraupidae | Passeriformes |
 
-Species added in aves_peru_2026_v1
+Species added in aves_peru_2026_v1 {.table style="width:100%;"}
 
 ### Removed species
 
 ``` r
+
 knitr::kable(
   removed[, c("scientific_name", "english_name", "status", "family_name", "order_name")],
   caption = "Species removed from the previous checklist version"
 )
 ```
 
-|      | scientific_name          | english_name                  | status    | family_name | order_name    |
-|:-----|:-------------------------|:------------------------------|:----------|:------------|:--------------|
-| 1357 | Camptostoma obsoletum    | Southern Beardless-Tyrannulet | Residente | Tyrannidae  | Passeriformes |
-| 1500 | Tunchiornis ochraceiceps | Tawny-crowned Greenlet        | Residente | Vireonidae  | Passeriformes |
-| 1591 | Turdus albicollis        | White-necked Thrush           | Residente | Turdidae    | Passeriformes |
+| scientific_name | english_name | status | family_name | order_name |
+|:---|:---|:---|:---|:---|
+| Camptostoma obsoletum | Southern Beardless-Tyrannulet | Residente | Tyrannidae | Passeriformes |
+| Tunchiornis ochraceiceps | Tawny-crowned Greenlet | Residente | Vireonidae | Passeriformes |
+| Turdus albicollis | White-necked Thrush | Residente | Turdidae | Passeriformes |
 
-Species removed from the previous checklist version
+Species removed from the previous checklist version {.table}
 
 Some of these additions and removals are especially informative. For
 example, the replacement of `Camptostoma obsoletum` by
@@ -188,6 +194,7 @@ That interpretation is an inference from the before/after pattern in the
 data, not an explicit annotation embedded in the dataset itself.
 
 ``` r
+
 turnover_plot_tbl <- rbind(
   data.frame(order_name = turnover_by_order$order_name, movement = "Added", n = turnover_by_order$added),
   data.frame(order_name = turnover_by_order$order_name, movement = "Removed", n = turnover_by_order$removed)
@@ -232,6 +239,7 @@ family labels.
 The next table isolates only the family labels whose counts changed.
 
 ``` r
+
 knitr::kable(
   family_delta,
   caption = "Families with non-zero net change between versions"
@@ -248,9 +256,10 @@ knitr::kable(
 | 81  | Thraupidae  |    193 |    194 |      1 |
 | 11  | Camptostoma |      0 |      2 |      2 |
 
-Families with non-zero net change between versions
+Families with non-zero net change between versions {.table}
 
 ``` r
+
 family_plot_tbl <- family_delta
 family_plot_tbl$direction <- ifelse(family_plot_tbl$change > 0, "Increase", "Decrease")
 family_plot_tbl$label <- ifelse(

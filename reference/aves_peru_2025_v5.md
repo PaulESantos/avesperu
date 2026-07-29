@@ -161,7 +161,7 @@ Perú / List of the birds of Peru. Unión de Ornitólogos del Perú:
 
 - UNOP Checklist: <https://sites.google.com/site/boletinunop/checklist>
 
-- SACC: <http://www.museum.lsu.edu/~Remsen/SACCBaseline.htm>
+- SACC: <https://www.museum.lsu.edu/~Remsen/SACCBaseline.htm>
 
 - [`search_avesperu`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
   for species name validation
