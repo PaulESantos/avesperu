@@ -10,8 +10,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecy
 [![CRAN
 status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.org/package=avesperu)
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
-[![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![](https://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 <!-- badges: end -->
 
 The `avesperu` package provides access to the most up-to-date and
@@ -22,6 +22,11 @@ updated validations based on scientific publications, photographs, and
 sound recordings deposited in accredited institutions. The
 classification follows the guidelines set by the South American
 Checklist Committee (SACC).
+
+The source checklist is maintained by the Unión de Ornitólogos del Perú
+(UNOP) and is available directly from the official **Lista de las aves
+del Perú / List of the Birds of Peru** page:
+<https://sites.google.com/site/boletinunop/checklist>
 
 ### Species Categories
 
@@ -88,7 +93,7 @@ improvements in taxonomic resolution:
 
 ``` text
 Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.0. https://paulesantos.github.io/avesperu/
+R package version 0.1.1. https://paulesantos.github.io/avesperu/
 
 The bird species checklist included in this package is based on:
 

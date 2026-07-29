@@ -14,14 +14,18 @@ Description: Provides access to the species checklist published in
     validation for researchers and conservationists.
 License: MIT + file LICENSE
 Suggests:
+    dplyr,
     DT,
     ggplot2,
     knitr,
+    purrr,
     readxl,
     rmarkdown,
     scales,
     shiny,
     testthat (>= 3.0.0),
+    tibble,
+    tidyr,
     withr,
     writexl,
     xml2
@@ -29,7 +33,6 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 URL: https://github.com/PaulESantos/avesperu, https://paulesantos.github.io/avesperu/
 BugReports: https://github.com/PaulESantos/avesperu/issues
 Depends: 
@@ -38,4 +41,6 @@ LazyData: true
 Maintainer: Paul E. Santos Andrade <paulefrens@gmail.com>
 Imports: 
     cli,
-    parallel
+    parallel,
+    stringdist
+Config/roxygen2/version: 8.0.0

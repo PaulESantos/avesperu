@@ -4,9 +4,9 @@
 #' This function searches for bird species information in the dataset provided by
 #' the \code{avesperu} package, given a list of species names. It supports approximate
 #' (fuzzy) matching to handle typographical errors or minor variations in species
-#' names using optimized \code{agrep()} matching. The function is optimized for both
+#' names using optimized edit-distance matching. The function is optimized for both
 #' small and large lists through intelligent pre-filtering and optional parallel
-#' processing, while maintaining exact \code{agrep()} precision.
+#' processing.
 #'
 #' @param splist A character vector or factor containing the scientific names of
 #'   bird species to search for. Names can include minor variations or typos.
@@ -39,10 +39,9 @@
 #'   \item Uses intelligent pre-filtering to reduce search space:
 #'     \itemize{
 #'       \item Filters by string length (mathematically guaranteed to preserve matches)
-#'       \item Optionally filters by first character for very large candidate sets
 #'     }
-#'   \item Performs precise \code{agrep()} fuzzy matching on filtered candidates
-#'   \item Calculates exact edit distances using \code{adist()}
+#'   \item Performs exact matching before fuzzy matching to avoid unnecessary work
+#'   \item Calculates edit distances using \code{\link[stringdist:stringdist]{stringdist::stringdist()}}
 #'   \item Selects the best match (minimum distance) for each query
 #'   \item For large lists (>batch_size), processes in batches with optional parallelization
 #' }
@@ -80,7 +79,8 @@
 #' a copy of the reference database (~5-10 MB).
 #'
 #' @seealso
-#' \code{\link[base]{agrep}} for the underlying fuzzy matching algorithm
+#' \code{\link[stringdist:stringdist]{stringdist::stringdist}} for the underlying
+#' edit-distance calculation
 #'
 #' @examples
 #' # Basic usage - returns status vector
@@ -103,7 +103,6 @@
 #' print(corrected[, c("name_submitted", "accepted_name", "dist")])
 #'
 #' @export
-#' @importFrom utils adist
 search_avesperu <- function(splist,
                             max_distance = 0.1,
                             return_details = FALSE,
@@ -208,13 +207,12 @@ search_avesperu <- function(splist,
 }
 
 
-#' Optimized agrep() Search with Pre-filtering
+#' Optimized Edit-Distance Search with Pre-filtering
 #'
 #' @description
-#' Internal function that performs fuzzy matching using \code{agrep()} with
-#' intelligent pre-filtering to reduce the search space without losing precision.
-#' This function guarantees identical results to naive \code{agrep()} usage while
-#' being significantly faster (typically 4-8x speedup).
+#' Internal function that performs exact matching first, then fuzzy matching with
+#' \code{stringdist::stringdist()} and intelligent pre-filtering to reduce the
+#' search space without changing the public output structure.
 #'
 #' @param splist_unique Character vector of unique, standardized species names to search.
 #' @param species_db Data frame containing the reference bird species database.
@@ -227,13 +225,10 @@ search_avesperu <- function(splist,
 #'   \item \strong{Length filtering}: Eliminates candidates whose length differs by
 #'     more than \code{max_distance} characters. This is guaranteed not to exclude
 #'     any valid matches because edit distance ≥ length difference.
-#'   \item \strong{First character filtering}: For very large candidate sets (>1000)
-#'     and exact matching (\code{max_distance = 0}), filters by first character.
 #' }
 #'
-#' After pre-filtering, standard \code{agrep()} is applied to the reduced candidate
-#' set, ensuring identical results to searching the full database but with much
-#' better performance.
+#' After pre-filtering, Levenshtein edit distance is calculated on the reduced
+#' candidate set and the nearest candidate within \code{max_distance} is selected.
 #'
 #' @return A data frame with detailed species information and matching distances.
 #'
@@ -249,6 +244,18 @@ search_with_agrep <- function(splist_unique, species_db, db_names, max_distance)
 
   for (i in seq_len(n_unique)) {
     sp_name <- splist_unique[i]
+
+    if (is.na(sp_name) || !nzchar(sp_name)) {
+      result_list[[i]] <- create_empty_result(sp_name)
+      next
+    }
+
+    exact_idx <- match(sp_name, db_names)
+    if (!is.na(exact_idx)) {
+      result_list[[i]] <- create_match_result(sp_name, species_db[exact_idx, ], 0L)
+      next
+    }
+
     sp_length <- nchar(sp_name)
 
     # Calcular distancia máxima permitida
@@ -273,50 +280,22 @@ search_with_agrep <- function(splist_unique, species_db, db_names, max_distance)
     candidate_names <- db_names[candidate_indices]
 
 
-    # OPTIMIZACIÓN 2: Pre-filtrado por primera letra
-    # Solo para datasets muy grandes y matching exacto
-
-    if (length(candidate_names) > 1000 && max_dist_fixed == 0) {
-      first_char <- substr(sp_name, 1, 1)
-      candidate_first_chars <- substr(candidate_names, 1, 1)
-      same_first <- candidate_first_chars == first_char
-      candidate_names <- candidate_names[same_first]
-      candidate_indices <- candidate_indices[same_first]
-    }
-
-    if (length(candidate_names) == 0) {
+    if (max_dist_fixed == 0 || length(candidate_names) == 0) {
       result_list[[i]] <- create_empty_result(sp_name)
       next
     }
 
+    distances <- stringdist::stringdist(sp_name, candidate_names, method = "lv")
+    valid_idx <- which(distances <= max_dist_fixed)
 
-    # PASO CRÍTICO: agrep() sobre espacio reducido
-
-    matches <- agrep(sp_name, candidate_names,
-                     max.distance = max_dist_fixed,
-                     value = TRUE)
-
-    if (length(matches) == 0) {
+    if (length(valid_idx) == 0) {
       result_list[[i]] <- create_empty_result(sp_name)
     } else {
-      # Calcular distancias exactas y seleccionar mejor match
-      distances <- adist(sp_name, matches)[1, ]
-      valid_idx <- which(distances <= max_dist_fixed)
+      best_local_idx <- valid_idx[which.min(distances[valid_idx])]
+      best_dist <- distances[best_local_idx]
+      db_idx <- candidate_indices[best_local_idx]
 
-      if (length(valid_idx) == 0) {
-        result_list[[i]] <- create_empty_result(sp_name)
-      } else {
-        # Seleccionar match con menor distancia
-        best_local_idx <- valid_idx[which.min(distances[valid_idx])]
-        best_match <- matches[best_local_idx]
-        best_dist <- distances[best_local_idx]
-
-        # Recuperar información completa de la base de datos
-        match_in_candidates <- which(candidate_names == best_match)[1]
-        db_idx <- candidate_indices[match_in_candidates]
-
-        result_list[[i]] <- create_match_result(sp_name, species_db[db_idx, ], best_dist)
-      }
+      result_list[[i]] <- create_match_result(sp_name, species_db[db_idx, ], best_dist)
     }
   }
 
@@ -328,12 +307,12 @@ search_with_agrep <- function(splist_unique, species_db, db_names, max_distance)
 }
 
 
-#' Batch Processing with agrep() for Large Species Lists
+#' Batch Processing for Large Species Lists
 #'
 #' @description
 #' Internal function that processes large species lists in batches, with optional
 #' parallel processing across multiple CPU cores. Each batch is processed using
-#' \code{search_with_agrep()}, ensuring identical precision to sequential processing.
+#' \code{search_with_agrep()}, ensuring identical output to sequential processing.
 #'
 #' @param splist_unique Character vector of unique, standardized species names.
 #' @param species_db Data frame containing the reference bird species database.

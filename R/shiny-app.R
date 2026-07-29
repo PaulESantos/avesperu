@@ -27,8 +27,8 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' run_avesperu_app()
+#' if (interactive()) {
+#'   run_avesperu_app()
 #' }
 run_avesperu_app <- function(host = "127.0.0.1",
                              port = NULL,

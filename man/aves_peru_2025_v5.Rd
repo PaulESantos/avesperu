@@ -148,7 +148,7 @@ List of the birds of Peru. Unión de Ornitólogos del Perú:
 \seealso{
 \itemize{
 \item UNOP Checklist: \url{https://sites.google.com/site/boletinunop/checklist}
-\item SACC: \url{http://www.museum.lsu.edu/~Remsen/SACCBaseline.htm}
+\item SACC: \url{https://www.museum.lsu.edu/~Remsen/SACCBaseline.htm}
 \item \code{\link{search_avesperu}} for species name validation
 }
 }

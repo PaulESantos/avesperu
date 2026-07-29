@@ -3,4 +3,3 @@
 export(run_avesperu_app)
 export(search_avesperu)
 export(unop_check_update)
-importFrom(utils,adist)

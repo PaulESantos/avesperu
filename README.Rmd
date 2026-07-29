@@ -12,7 +12,9 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(tibble)
 ```
 
 # avesperu <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="200" width="200" /></a>
@@ -22,11 +24,14 @@ library(tidyverse)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.org/package=avesperu)
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
-[![](http://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![](https://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
 <!-- badges: end -->
 
 The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. The current bundled checklist, `aves_peru_2026_v1`, corresponds to **March 23, 2026** and includes **1,925** bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
+
+The source checklist is maintained by the Unión de Ornitólogos del Perú (UNOP) and is available directly from the official **Lista de las aves del Perú / List of the Birds of Peru** page:
+<https://sites.google.com/site/boletinunop/checklist>
 
 ### Species Categories
 
@@ -64,67 +69,59 @@ The `avesperu` package is designed to streamline access to this data for researc
 
 
 ```{r echo=FALSE}
-df <- tibble(
-  year    = c(1968, 1980, 2001, 2007, 
-              2010, 2015, 2020, 2021,
-              2022, 2023, 2024, 2025, 2026),
-  species = c(1491, 1678, 1800, 1800, 
-              1820, 1851, 1870, 1874, 
+df <- tibble::tibble(
+  year = c(1968, 1980, 2001, 2007, 2010, 2015, 2020, 2021,
+           2022, 2023, 2024, 2025, 2026),
+  species = c(1491, 1678, 1800, 1800, 1820, 1851, 1870, 1874,
               1888, 1892, 1909, 1919, 1925)
 ) |>
-  mutate(is_current = year == max(year))
+  dplyr::mutate(
+    change = species - dplyr::lag(species),
+    is_current = year == max(year),
+    label = dplyr::if_else(is_current, paste0(species, " species"), NA_character_)
+  )
 
-base_color  <- "#1B7F79"  # teal
-highlight   <- "#D1495B"  # coral for current value
-
-ggplot(df, aes(x = year, y = species)) +
-  # línea general
-  geom_line(linewidth = 1.1, color = base_color) +
-  
-  # puntos (último año con color distinto)
-  geom_point(
-    aes(color = is_current),
-    size  = 2.8,
+ggplot2::ggplot(df, ggplot2::aes(x = year, y = species)) +
+  ggplot2::geom_line(linewidth = 1.1, color = "#2F6F73") +
+  ggplot2::geom_point(
+    ggplot2::aes(fill = is_current),
     shape = 21,
-    fill  = "white",
-    stroke = 1.1
+    size = 3,
+    color = "#1F2A2E",
+    stroke = 0.7
   ) +
-  # etiqueta especial resaltando el valor vigente
-  geom_text(
-    data = dplyr::filter(df, is_current),
-    aes(label = paste0(species, " sp.")),
-    vjust = -2.1,
-    size  = 3.2,
+  ggplot2::geom_text(
+    ggplot2::aes(label = label),
+    nudge_y = 18,
+    size = 3.4,
     fontface = "bold",
-    color = highlight
+    na.rm = TRUE
   ) +
-  
-  scale_color_manual(
-    values = c(`TRUE` = highlight, `FALSE` = base_color),
+  ggplot2::scale_fill_manual(
+    values = c(`FALSE` = "white", `TRUE` = "#D1495B"),
     guide = "none"
   ) +
-  
-  scale_x_continuous(
-    breaks = df$year,
-    guide  = guide_axis(n.dodge = 2)
+  ggplot2::scale_x_continuous(
+    breaks = c(1968, 1980, 2001, 2010, 2015, 2020, 2023, 2026)
   ) +
-  scale_y_continuous(
-    name   = "Number of species",
-    expand = expansion(mult = c(0.02, 0.18))
+  ggplot2::scale_y_continuous(
+    name = "Recognized species",
+    limits = c(1450, NA),
+    expand = ggplot2::expansion(mult = c(0.02, 0.12))
   ) +
-  
-  labs(
-    title    = "Growth of the Peruvian Bird Checklist (1968–2026)",
-    subtitle = "Total number of species recognized in major checklist updates",
-    x        = NULL
+  ggplot2::labs(
+    title = "Growth of the Peruvian Bird Checklist",
+    subtitle = "Recognized species in major checklist updates, 1968-2026",
+    x = NULL,
+    caption = "Source: UNOP checklist and historical Peruvian bird checklist updates."
   ) +
-  theme_bw() +
-  theme(
-    panel.grid.minor  = element_blank(),
-    panel.grid.major.x = element_blank(),
-    plot.title        = element_text(face = "bold"),
-    plot.subtitle     = element_text(size = 9),
-    axis.title.y      = element_text(margin = margin(r = 6))
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::theme(
+    panel.grid.minor = ggplot2::element_blank(),
+    panel.grid.major.x = ggplot2::element_blank(),
+    plot.title = ggplot2::element_text(face = "bold"),
+    plot.caption = ggplot2::element_text(color = "#5F6B73", hjust = 0),
+    axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 6))
   )
 
 ```
@@ -143,7 +140,7 @@ The chart shows the steady increase in the number of bird species recorded in Pe
 
 ```text
 Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.0. https://paulesantos.github.io/avesperu/
+R package version 0.1.1. https://paulesantos.github.io/avesperu/
 
 The bird species checklist included in this package is based on:
 

@@ -3,6 +3,7 @@
 #' @param splist Character vector of species names
 #' @return Standardized species names
 #' @keywords internal
+#' @noRd
 standardize_names <- function(splist) {
 
   # Forzar a character pero preservando NA
@@ -97,6 +98,7 @@ find_duplicates <- function(vector) {
 #' @return A character string with the date in the format "dd de mes de yyyy",
 #'         or NA if no date is found.
 #' @keywords internal
+#' @noRd
 unop_update_date <- function() {
   url_unop <- "https://sites.google.com/site/boletinunop/checklist"
 
@@ -154,6 +156,7 @@ unop_update_date <- function() {
 #'
 #' @return A Date vector of length 1, or `NA` if parsing fails.
 #' @keywords internal
+#' @noRd
 parse_unop_date <- function(fecha_str) {
   if (length(fecha_str) != 1 || is.na(fecha_str) || !nzchar(fecha_str)) {
     return(as.Date(NA))

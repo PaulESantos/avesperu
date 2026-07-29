@@ -71,9 +71,9 @@ Lower values indicate better matches. \code{NA} if no match found.}
 This function searches for bird species information in the dataset provided by
 the \code{avesperu} package, given a list of species names. It supports approximate
 (fuzzy) matching to handle typographical errors or minor variations in species
-names using optimized \code{agrep()} matching. The function is optimized for both
+names using optimized edit-distance matching. The function is optimized for both
 small and large lists through intelligent pre-filtering and optional parallel
-processing, while maintaining exact \code{agrep()} precision.
+processing.
 }
 \details{
 The function performs the following steps:
@@ -84,10 +84,9 @@ The function performs the following steps:
 \item Uses intelligent pre-filtering to reduce search space:
 \itemize{
 \item Filters by string length (mathematically guaranteed to preserve matches)
-\item Optionally filters by first character for very large candidate sets
 }
-\item Performs precise \code{agrep()} fuzzy matching on filtered candidates
-\item Calculates exact edit distances using \code{adist()}
+\item Performs exact matching before fuzzy matching to avoid unnecessary work
+\item Calculates edit distances using \code{\link[stringdist:stringdist]{stringdist::stringdist()}}
 \item Selects the best match (minimum distance) for each query
 \item For large lists (>batch_size), processes in batches with optional parallelization
 }
@@ -121,5 +120,6 @@ print(corrected[, c("name_submitted", "accepted_name", "dist")])
 
 }
 \seealso{
-\code{\link[base]{agrep}} for the underlying fuzzy matching algorithm
+\code{\link[stringdist:stringdist]{stringdist::stringdist}} for the underlying
+edit-distance calculation
 }

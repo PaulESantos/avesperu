@@ -6,6 +6,7 @@
 #' @param lib A character string indicating the path to the library.
 #' @param pkg A character string with the name of the package.
 #' @keywords internal
+#' @noRd
 
 .onAttach <- function(lib, pkg) {
 
@@ -38,6 +39,7 @@
 
 #' Determine whether to show progress bar
 #' Return logical TRUE/FALSE depending on options and interactive session
+#' @noRd
 show_progress <- function() {
   isTRUE(getOption("avesperu.show_progress")) && # Usuario activa opción
     interactive() # Sesión interactiva (no knit)
@@ -53,6 +55,7 @@ show_progress <- function() {
 #' @param libname A character string with the name of the library directory.
 #' @param pkgname A character string with the name of the package.
 #' @keywords internal
+#' @noRd
 .onLoad <- function(libname, pkgname) {
   # Leer opciones actuales
   opt <- options()

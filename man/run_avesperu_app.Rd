@@ -42,7 +42,7 @@ Synonym retrieval is not currently available because \code{avesperu} ships the
 accepted Peru checklist, not a synonymy backbone.
 }
 \examples{
-\dontrun{
-run_avesperu_app()
+if (interactive()) {
+  run_avesperu_app()
 }
 }

@@ -148,6 +148,34 @@ describe("search_avesperu()", {
       c("name_submitted", "accepted_name", "order_name", "family_name",
         "english_name", "spanish_name", "status", "dist")
     )
+    expect_type(result$name_submitted, "character")
+    expect_type(result$accepted_name, "character")
+    expect_type(result$order_name, "character")
+    expect_type(result$family_name, "character")
+    expect_type(result$english_name, "character")
+    expect_type(result$spanish_name, "character")
+    expect_type(result$status, "character")
+    expect_type(result$dist, "character")
+  })
+
+  it("keeps exact matching distance and output structure stable", {
+    splist <- c("Falco sparverius", "Crypturellus soui")
+    result <- search_avesperu(splist, max_distance = 0, return_details = TRUE)
+
+    expect_equal(result$name_submitted, splist)
+    expect_equal(result$accepted_name, splist)
+    expect_equal(result$dist, c("0", "0"))
+    expect_valid_search_result(result)
+  })
+
+  it("uses edit distance for fuzzy matching without changing output types", {
+    result <- search_avesperu("Falko sparverius", max_distance = 0.2, return_details = TRUE)
+
+    expect_equal(nrow(result), 1)
+    expect_equal(result$name_submitted, "Falko sparverius")
+    expect_equal(result$accepted_name, "Falco sparverius")
+    expect_equal(result$dist, "1")
+    expect_valid_search_result(result)
   })
 
   # Test de detección de duplicados

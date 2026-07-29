@@ -6,13 +6,13 @@ bibentry(
   author = person("Paul E.", "Santos Andrade",
                   email = "paulefrens@gmail.com",
                   comment = c(ORCID = "0000-0002-6635-0375")),
-  year = "2025",
-  note = "R package version 0.0.8",
+  year = "2026",
+  note = "R package version 0.1.1",
   url = "https://paulesantos.github.io/avesperu/",
   textVersion = paste(
-    "Santos Andrade, P. E. (2025).",
+    "Santos Andrade, P. E. (2026).",
     "avesperu: Access to the List of Birds Species of Peru.",
-    "R package version 0.0.8.",
+    "R package version 0.1.1.",
     "https://paulesantos.github.io/avesperu/"
   ),
   header = "To cite the avesperu package in publications, please use:",
@@ -26,14 +26,14 @@ bibentry(
     person("Manuel A.", "Plenge"),
     person("Fernando", "Angulo")
   ),
-  year = "2025",
-  note = "Version 29-12-2025",
+  year = "2026",
+  note = "Version 23-03-2026",
   publisher = "Unión de Ornitólogos del Perú",
   url = "https://sites.google.com/site/boletinunop/checklist",
   textVersion = paste(
-    "Plenge, M. A., & Angulo, F. (2025).",
+    "Plenge, M. A., & Angulo, F. (2026).",
     "Lista de las aves del Perú / List of the birds of Peru.",
-    "Version 29-12-2025.",
+    "Version 23-03-2026.",
     "Unión de Ornitólogos del Perú.",
     "https://sites.google.com/site/boletinunop/checklist"
   )
