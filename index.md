@@ -128,7 +128,7 @@ app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`,
 `TSV`, `XLSX`, and run metadata.
 
 You can explore the live deployed app here:
-<https://paulefrensa.shinyapps.io/avesperu/>
+<https://paulesantos-avesperu.share.connect.posit.cloud/>
 
 ``` r
 
