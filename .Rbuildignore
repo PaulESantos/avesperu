@@ -37,3 +37,4 @@ bird_of_peru_unop_v4_2025.xlsx
 ^deploy_shinyapps\.R$
 ^\.rscignore$
 ^rsconnect$
+^manifest\.json$
