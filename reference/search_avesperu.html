@@ -17,7 +17,7 @@ processing."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">avesperu</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,8 +104,8 @@ Default: <code>TRUE</code>.</p></dd>
 
 <dt id="arg-n-cores">n_cores<a class="anchor" aria-label="anchor" href="#arg-n-cores"></a></dt>
 <dd><p>Integer or <code>NULL</code>. Number of CPU cores to use for parallel
-processing. If <code>NULL</code> (default), uses <code>detectCores() - 1</code> to leave
-one core free for system operations.</p></dd>
+processing. Auto selection respects <code>mc.cores</code>, available batches and a
+limit of four workers. Unavailable core detection uses sequential execution.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -114,7 +114,7 @@ one core free for system operations.</p></dd>
 <p><strong>If return_details = FALSE (default):</strong></p>
 <p>A character vector with the same length as <code>splist</code>, containing the
 conservation/occurrence status for each species. <code>NA</code> values indicate
-no match was found.</p>
+no unique match was found, or the input contains qualifiers or hybrid markers.</p>
 <p><strong>If return_details = TRUE:</strong></p>
 <p>A data frame (tibble-compatible) with the following columns:</p><dl><dt>name_submitted</dt>
 <dd><p>Character. The species name provided as input (standardized).</p></dd>
@@ -144,7 +144,19 @@ database, or <code>NA</code> if no match found within <code>max_distance</code>.
 Lower values indicate better matches. <code>NA</code> if no match found.</p></dd>
 
 
-</dl></div>
+</dl><p>The detailed result retains eight columns. Its <code>reconciliation</code> attribute is
+a row-aligned data frame containing the original and standardized names,
+qualifier/hybrid flags, match type, candidate count, candidate names and
+review reasons. The <code>avesperu_result</code> data-frame subclass keeps this attribute
+aligned when rows are selected using <code>[</code>.
+Ambiguous matches have no accepted name or status; candidates are sorted.
+Qualified and hybrid inputs can have a suggested match but always need review.
+Attributes <code>execution</code> and <code>reference</code> record actual workers, batches,
+fallback reason and the checklist identifier/date used.
+Empty input returns a typed zero-row table or <code>character(0)</code>.
+Proportions strictly between 0 and 1 use <code>ceiling(nchar(name) * distance)</code>;
+0 means exact only and values at least 1 must be whole edit counts.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function performs the following steps:</p><ol><li><p>Validates input and converts factors to character vectors</p></li>

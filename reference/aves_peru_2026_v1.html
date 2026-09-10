@@ -13,7 +13,7 @@ revisions by the South American Checklist Committee (SACC) as of February
 
     <a class="navbar-brand me-2" href="../index.html">avesperu</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,7 +190,11 @@ available online, run <code><a href="unop_check_update.html">unop_check_update()
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>This dataset is updated periodically as new species are documented and
+    <p>Genus and epithet components are derived from the canonical <code>scientific_name</code>
+where the source components disagree. The <code>component_corrections</code> attribute
+preserves the original and derived components for the two affected rows.
+This does not change any scientific name or assert a taxonomic correction.</p>
+<p>This dataset is updated periodically as new species are documented and
 taxonomic revisions are published. Check the UNOP website for the most
 current version.</p>
     </div>
@@ -237,6 +241,12 @@ Package implementation: Paul Efren Santos Andrade</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "contact")= chr "chamaepetes@gmail.com"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "source_url")= chr "https://sites.google.com/site/boletinunop/checklist"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "created_on")= POSIXct[1:1], format: "2026-03-25 03:08:59"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "component_corrections")= tibble [2 × 5] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ scientific_name        : chr [1:2] "Pterodroma axillaris" "Diglosa melanopis"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ source_genus           : chr [1:2] "Pterodroma" "Diglossa"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ source_species_epithet : chr [1:2] "phaeopygia" "melanopis"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ derived_genus          : chr [1:2] "Pterodroma" "Diglosa"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ derived_species_epithet: chr [1:2] "axillaris" "melanopis"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Summary by status</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">aves_peru_2026_v1</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span></span>

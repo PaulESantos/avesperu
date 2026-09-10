@@ -13,7 +13,7 @@ engine."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">avesperu</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,6 +90,15 @@ Default: <code>NULL</code> (Shiny selects a free port).</p></dd>
 <li><p>Interactive review of matches and export of results and metadata</p></li>
 </ul><p>Synonym retrieval is not currently available because <code>avesperu</code> ships the
 accepted Peru checklist, not a synonymy backbone.</p>
+<p>Resolution runs in a separate R process using <code>callr</code> and <code>later</code>. Each session
+has at most one active job; changing inputs, clearing, or closing the session
+cancels it. Closing a session does not stop the shared application process.
+Runs accept at most 10,000 names, 200 characters per name and four cores.
+Imports preserve source records and missing values. Standard column headers
+are recognized automatically; other layouts require header/column selection.
+CSV/TSV source rows are record numbers, not physical lines for quoted multiline
+fields. Excel rows refer to worksheet rows. Downloads require a completed run
+for the current inputs and include review reasons and reference provenance.</p>
     </div>
 
     <div class="section level2">

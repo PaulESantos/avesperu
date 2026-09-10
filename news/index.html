@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">avesperu</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,12 +37,26 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="avesperu-development-version">avesperu (development version)<a class="anchor" aria-label="anchor" href="#avesperu-development-version"></a></h2>
+<ul><li>
+<code>aves_peru_2026_v1</code> now keeps genus and epithet consistent with the scientific-name key and preserves the original two discrepancies in <code>component_corrections</code> (reference validation follow-up).</li>
+<li>
+<code><a href="../reference/run_avesperu_app.html">run_avesperu_app()</a></code> preserves source rows during import, supports explicit header/column selection and previews, exports review reasons and actual execution provenance, invalidates stale results, closes only the current session, and resolves bounded workloads in cancellable background processes (H01, H02, H04, H05, H11).</li>
+<li>
+<code><a href="../reference/search_avesperu.html">search_avesperu()</a></code> reports ties as ambiguous instead of selecting by row order. Detailed output keeps its eight columns and adds <code>reconciliation</code>, <code>execution</code> and <code>reference</code> attributes; qualified/hybrid inputs require review and return NA in the basic status vector (H02, H03).</li>
+<li>
+<code><a href="../reference/search_avesperu.html">search_avesperu()</a></code> validates finite scalar options and integer counts, normalizes qualifiers consistently, returns typed empty results, and applies sequential batches. Parallel workers use the running source and failures record their sequential fallback (H06–H10).</li>
+<li>
+<code><a href="../reference/unop_check_update.html">unop_check_update()</a></code> tolerates one-digit days, case/spacing differences and multiple labelled update dates (UNOP parser follow-up).</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="avesperu-011">avesperu 0.1.1<a class="anchor" aria-label="anchor" href="#avesperu-011"></a></h2><p class="text-muted">CRAN release: 2026-03-27</p>
 <ul><li>Updated the bundled current checklist to <code>aves_peru_2026_v1</code>, reflecting the UNOP checklist version dated March 23, 2026.</li>
 <li>
 <code><a href="../reference/search_avesperu.html">search_avesperu()</a></code> now uses exact matching before fuzzy edit-distance matching with <code>stringdist</code>, improving performance while preserving the existing input and output structure.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

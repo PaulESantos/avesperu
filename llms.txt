@@ -515,6 +515,34 @@ my_list  |>
 #> 3  Residente 5
 ```
 
+### Reviewing uncertain results
+
+Detailed searches preserve the eight existing columns. Their
+`reconciliation` attribute includes the original name, qualifiers,
+hybrid markers, ambiguous candidates and review reasons. The
+`avesperu_result` data-frame subclass keeps this information aligned
+during row selection with `[`.
+
+``` r
+
+result <- search_avesperu(c("Falco CF. sparverius", "Falko sparverius"),
+                         return_details = TRUE)
+attr(result, "reconciliation")
+attr(result, "execution")
+attr(result, "reference")
+```
+
+Tied best candidates are not automatically accepted. Qualified or hybrid
+inputs always need review and return `NA` in the basic status vector. A
+unique fuzzy match is a suggestion for review, not taxonomic evidence.
+
+The Shiny app retains file record numbers, accepts explicit
+header/column selection, and cancels background work when inputs change.
+It requires `shiny`, `DT`, `callr` and `later`; Excel import/export
+additionally uses `readxl`/`writexl`. Closing its session leaves the
+shared application process running. Stop a local `runApp()` process from
+its owning R console when it is no longer needed.
+
 # Package index
 
 ## All functions

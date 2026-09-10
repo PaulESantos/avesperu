@@ -60,8 +60,8 @@ search_avesperu(
 - n_cores:
 
   Integer or `NULL`. Number of CPU cores to use for parallel processing.
-  If `NULL` (default), uses `detectCores() - 1` to leave one core free
-  for system operations.
+  Auto selection respects `mc.cores`, available batches and a limit of
+  four workers. Unavailable core detection uses sequential execution.
 
 ## Value
 
@@ -71,7 +71,8 @@ The return value depends on the `return_details` parameter:
 
 A character vector with the same length as `splist`, containing the
 conservation/occurrence status for each species. `NA` values indicate no
-match was found.
+unique match was found, or the input contains qualifiers or hybrid
+markers.
 
 **If return_details = TRUE:**
 
@@ -111,6 +112,20 @@ A data frame (tibble-compatible) with the following columns:
 
   Character. Edit distance between submitted and matched names. Lower
   values indicate better matches. `NA` if no match found.
+
+The detailed result retains eight columns. Its `reconciliation`
+attribute is a row-aligned data frame containing the original and
+standardized names, qualifier/hybrid flags, match type, candidate count,
+candidate names and review reasons. The `avesperu_result` data-frame
+subclass keeps this attribute aligned when rows are selected using `[`.
+Ambiguous matches have no accepted name or status; candidates are
+sorted. Qualified and hybrid inputs can have a suggested match but
+always need review. Attributes `execution` and `reference` record actual
+workers, batches, fallback reason and the checklist identifier/date
+used. Empty input returns a typed zero-row table or `character(0)`.
+Proportions strictly between 0 and 1 use
+`ceiling(nchar(name) * distance)`; 0 means exact only and values at
+least 1 must be whole edit counts.
 
 ## Details
 

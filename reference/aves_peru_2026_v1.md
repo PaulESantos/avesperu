@@ -145,6 +145,12 @@ available online, run
 
 ## Note
 
+Genus and epithet components are derived from the canonical
+`scientific_name` where the source components disagree. The
+`component_corrections` attribute preserves the original and derived
+components for the two affected rows. This does not change any
+scientific name or assert a taxonomic correction.
+
 This dataset is updated periodically as new species are documented and
 taxonomic revisions are published. Check the UNOP website for the most
 current version.
@@ -193,6 +199,12 @@ str(aves_peru_2026_v1)
 #>  - attr(*, "contact")= chr "chamaepetes@gmail.com"
 #>  - attr(*, "source_url")= chr "https://sites.google.com/site/boletinunop/checklist"
 #>  - attr(*, "created_on")= POSIXct[1:1], format: "2026-03-25 03:08:59"
+#>  - attr(*, "component_corrections")= tibble [2 × 5] (S3: tbl_df/tbl/data.frame)
+#>   ..$ scientific_name        : chr [1:2] "Pterodroma axillaris" "Diglosa melanopis"
+#>   ..$ source_genus           : chr [1:2] "Pterodroma" "Diglossa"
+#>   ..$ source_species_epithet : chr [1:2] "phaeopygia" "melanopis"
+#>   ..$ derived_genus          : chr [1:2] "Pterodroma" "Diglosa"
+#>   ..$ derived_species_epithet: chr [1:2] "axillaris" "melanopis"
 
 # Summary by status
 table(aves_peru_2026_v1$status)

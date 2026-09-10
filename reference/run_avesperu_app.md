@@ -56,6 +56,17 @@ The app supports:
 Synonym retrieval is not currently available because `avesperu` ships
 the accepted Peru checklist, not a synonymy backbone.
 
+Resolution runs in a separate R process using `callr` and `later`. Each
+session has at most one active job; changing inputs, clearing, or
+closing the session cancels it. Closing a session does not stop the
+shared application process. Runs accept at most 10,000 names, 200
+characters per name and four cores. Imports preserve source records and
+missing values. Standard column headers are recognized automatically;
+other layouts require header/column selection. CSV/TSV source rows are
+record numbers, not physical lines for quoted multiline fields. Excel
+rows refer to worksheet rows. Downloads require a completed run for the
+current inputs and include review reasons and reference provenance.
+
 ## Examples
 
 ``` r
