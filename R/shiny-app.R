@@ -23,6 +23,17 @@
 #' @param launch.browser Logical; passed to
 #'   \code{\link[shiny:runApp]{shiny::runApp}}. Default: `interactive()`.
 #'
+#' @details
+#' Resolution runs in a separate R process using `callr` and `later`. Each session
+#' has at most one active job; changing inputs, clearing, or closing the session
+#' cancels it. Closing a session does not stop the shared application process.
+#' Runs accept at most 10,000 names, 200 characters per name and four cores.
+#' Imports preserve source records and missing values. Standard column headers
+#' are recognized automatically; other layouts require header/column selection.
+#' CSV/TSV source rows are record numbers, not physical lines for quoted multiline
+#' fields. Excel rows refer to worksheet rows. Downloads require a completed run
+#' for the current inputs and include review reasons and reference provenance.
+#'
 #' @return The value returned by \code{\link[shiny:runApp]{shiny::runApp}}.
 #' @export
 #'
@@ -30,9 +41,11 @@
 #' if (interactive()) {
 #'   run_avesperu_app()
 #' }
-run_avesperu_app <- function(host = "127.0.0.1",
-                             port = NULL,
-                             launch.browser = interactive()) {
+run_avesperu_app <- function(
+  host = "127.0.0.1",
+  port = NULL,
+  launch.browser = interactive()
+) {
   check_avesperu_app_deps()
 
   shiny::runApp(
@@ -45,30 +58,41 @@ run_avesperu_app <- function(host = "127.0.0.1",
 
 #' @keywords internal
 check_avesperu_app_deps <- function() {
-  missing_pkgs <- c("shiny", "DT")
-  missing_pkgs <- missing_pkgs[!vapply(
-    missing_pkgs,
-    requireNamespace,
-    quietly = TRUE,
-    FUN.VALUE = logical(1)
-  )]
+  missing_pkgs <- c("shiny", "DT", "callr", "later")
+  missing_pkgs <- missing_pkgs[
+    !vapply(
+      missing_pkgs,
+      requireNamespace,
+      quietly = TRUE,
+      FUN.VALUE = logical(1)
+    )
+  ]
 
   if (length(missing_pkgs) > 0) {
-    cli::cli_abort("To run the Shiny app, install these packages first: {.pkg {missing_pkgs}}", call = parent.frame())
+    cli::cli_abort(
+      "To run the Shiny app, install these packages first: {.pkg {missing_pkgs}}",
+      call = parent.frame()
+    )
   }
 }
 
 #' @keywords internal
 check_avesperu_xlsx_dep <- function() {
   if (!requireNamespace("writexl", quietly = TRUE)) {
-    cli::cli_abort("To download XLSX files, install the {.pkg writexl} package first.", call = parent.frame())
+    cli::cli_abort(
+      "To download XLSX files, install the {.pkg writexl} package first.",
+      call = parent.frame()
+    )
   }
 }
 
 #' @keywords internal
 check_avesperu_excel_read_dep <- function() {
   if (!requireNamespace("readxl", quietly = TRUE)) {
-    cli::cli_abort("To upload Excel files, install the {.pkg readxl} package first.", call = parent.frame())
+    cli::cli_abort(
+      "To upload Excel files, install the {.pkg readxl} package first.",
+      call = parent.frame()
+    )
   }
 }
 
@@ -115,97 +139,166 @@ guess_name_column <- function(x) {
 }
 
 #' @keywords internal
-read_avesperu_name_file <- function(path, filename = basename(path)) {
+read_avesperu_name_file <- function(
+  path,
+  filename = basename(path),
+  header = "auto",
+  column = NULL,
+  records = FALSE
+) {
   ext <- tolower(tools::file_ext(filename))
-
+  if (!header %in% c("auto", "yes", "no")) {
+    cli::cli_abort("Invalid header selection.")
+  }
   if (ext %in% c("txt", "lst")) {
-    lines <- readLines(path, warn = FALSE, encoding = "UTF-8")
-    return(split_submitted_names(paste(lines, collapse = "\n")))
-  }
-
-  if (ext %in% c("xlsx", "xls")) {
-    check_avesperu_excel_read_dep()
-    tbl <- as.data.frame(readxl::read_excel(path), stringsAsFactors = FALSE)
-
-    if (ncol(tbl) == 0) {
-      cli::cli_abort("The uploaded Excel file could not be parsed.", call = parent.frame())
-    }
-
-    col_idx <- guess_name_column(tbl)
-    return(split_submitted_names(paste(tbl[[col_idx]], collapse = "\n")))
-  }
-
-  if (!ext %in% c("csv", "tsv")) {
-    cli::cli_abort("Only CSV, TSV, TXT, and Excel uploads are currently supported.", call = parent.frame())
-  }
-
-  sep <- if (ext == "tsv") "\t" else ","
-
-  reader <- function(header) {
-    utils::read.table(
-      path,
-      header = header,
-      sep = sep,
-      quote = "\"",
-      comment.char = "",
+    values <- readLines(path, warn = FALSE, encoding = "UTF-8")
+    out <- data.frame(
       stringsAsFactors = FALSE,
-      fill = TRUE,
-      check.names = FALSE
+      submitted_name = trimws(values),
+      source_file = rep(filename, length(values)),
+      source_row = seq_along(values)
+    )
+  } else {
+    if (ext %in% c("xlsx", "xls")) {
+      check_avesperu_excel_read_dep()
+      tbl <- as.data.frame(readxl::read_excel(
+        path,
+        col_names = FALSE,
+        col_types = "text",
+        range = readxl::cell_limits(c(1, 1), c(NA, NA))
+      ))
+    } else if (ext %in% c("csv", "tsv")) {
+      tbl <- utils::read.table(
+        path,
+        header = FALSE,
+        sep = if (ext == "tsv") "\t" else ",",
+        quote = "\"",
+        comment.char = "",
+        colClasses = "character",
+        fill = TRUE,
+        blank.lines.skip = FALSE,
+        check.names = FALSE,
+        fileEncoding = "UTF-8-BOM",
+        na.strings = "NA"
+      )
+    } else {
+      cli::cli_abort(
+        "Only CSV, TSV, TXT, and Excel uploads are currently supported."
+      )
+    }
+    if (!ncol(tbl) || !nrow(tbl)) {
+      cli::cli_abort("The uploaded file contains no rows.")
+    }
+    first <- tolower(trimws(unlist(tbl[1, ], use.names = FALSE)))
+    known <- c(
+      "scientific_name",
+      "submitted_name",
+      "species",
+      "species_name",
+      "taxon",
+      "taxon_name",
+      "name"
+    )
+    detected <- which(first %in% known)
+    has_header <- if (header == "auto") {
+      length(detected) > 0
+    } else {
+      header == "yes"
+    }
+    if (is.null(column) || identical(column, "auto")) {
+      if (length(detected) == 1L && has_header) {
+        column <- detected
+      } else if (ncol(tbl) == 1L) {
+        column <- 1L
+      } else {
+        cli::cli_abort(
+          "Select the scientific-name column number and whether the file has a header.",
+          preview = utils::head(tbl, 10)
+        )
+      }
+    }
+    column <- suppressWarnings(as.numeric(column))
+    if (!is_count(column) || column > ncol(tbl)) {
+      cli::cli_abort("Select an existing column number.")
+    }
+    rows <- seq_len(nrow(tbl))
+    if (has_header) {
+      rows <- rows[-1L]
+    }
+    values <- tbl[[column]][rows]
+    values[!is.na(values)] <- trimws(values[!is.na(values)])
+    out <- data.frame(
+      stringsAsFactors = FALSE,
+      submitted_name = values,
+      source_file = rep(filename, length(rows)),
+      source_row = rows
     )
   }
-
-  tbl <- tryCatch(reader(TRUE), error = function(e) NULL)
-
-  if (is.null(tbl) || ncol(tbl) == 0) {
-    tbl <- tryCatch(reader(FALSE), error = function(e) NULL)
-  }
-
-  if (is.null(tbl) || ncol(tbl) == 0) {
-    cli::cli_abort("The uploaded file could not be parsed.", call = parent.frame())
-  }
-
-  col_idx <- guess_name_column(tbl)
-  split_submitted_names(paste(tbl[[col_idx]], collapse = "\n"))
+  if (records) out else out$submitted_name
 }
 
-#' @keywords internal
 extract_name_parts <- function(x) {
-  x <- as.character(x)
-  x[is.na(x)] <- ""
-
-  tokens <- strsplit(trimws(x), "\\s+")
-
-  genus <- vapply(tokens, function(parts) {
-    if (length(parts) >= 1 && nzchar(parts[1])) parts[1] else NA_character_
-  }, character(1))
-
-  species_epithet <- vapply(tokens, function(parts) {
-    if (length(parts) >= 2 && nzchar(parts[2])) parts[2] else NA_character_
-  }, character(1))
-
-  infraspecific <- vapply(tokens, function(parts) {
-    if (length(parts) >= 3) paste(parts[-c(1, 2)], collapse = " ") else NA_character_
-  }, character(1))
-
-  rank_guess <- vapply(tokens, function(parts) {
-    if (length(parts) == 0 || !nzchar(parts[1])) {
-      "empty"
-    } else if (length(parts) == 1) {
-      "uninomial"
-    } else if (length(parts) == 2) {
-      "binomial"
-    } else {
-      "infraspecific"
-    }
-  }, character(1))
-
-  data.frame(
-    submitted_genus = genus,
-    submitted_species_epithet = species_epithet,
-    submitted_infraspecific = infraspecific,
-    submitted_rank_guess = rank_guess,
-    stringsAsFactors = FALSE
+  empty <- data.frame(
+    stringsAsFactors = FALSE,
+    submitted_genus = character(),
+    submitted_species_epithet = character(),
+    submitted_infraspecific = character(),
+    submitted_author = character(),
+    submitted_unparsed = character(),
+    submitted_rank_guess = character()
   )
+  if (!length(x)) {
+    return(empty)
+  }
+  rows <- lapply(as.character(x), function(name) {
+    if (is.na(name)) {
+      name <- ""
+    }
+    tokens <- strsplit(trimws(gsub("_", " ", name, fixed = TRUE)), "\\s+")[[1]]
+    tokens <- tokens[!tolower(tokens) %in% c("cf.", "aff.", "x", "\u00d7")]
+    tokens <- tokens[nzchar(tokens)]
+    genus <- if (length(tokens)) standardize_names(tokens[1]) else NA_character_
+    epithet <- if (length(tokens) >= 2L) tolower(tokens[2]) else NA_character_
+    infra <- author <- unparsed <- NA_character_
+    rank <- if (!length(tokens)) {
+      "empty"
+    } else if (length(tokens) == 1L) {
+      "uninomial"
+    } else {
+      "binomial"
+    }
+    if (length(tokens) > 2L) {
+      rest <- tokens[-c(1, 2)]
+      text <- paste(rest, collapse = " ")
+      # Authors require a year; unknown trailing text remains explicitly unparsed.
+      if (grepl("^[[:alpha:](].*[, ]+[12][0-9]{3}\\)?$", text)) {
+        author <- text
+      } else if (length(rest) == 1L && grepl("^[a-z][a-z-]+$", rest)) {
+        infra <- rest
+        rank <- "infraspecific"
+      } else if (
+        length(rest) == 2L &&
+          tolower(rest[1]) %in% c("subsp.", "ssp.", "var.", "f.") &&
+          grepl("^[a-z][a-z-]+$", rest[2])
+      ) {
+        infra <- rest[2]
+        rank <- "infraspecific"
+      } else {
+        unparsed <- text
+        rank <- "unparsed"
+      }
+    }
+    data.frame(
+      stringsAsFactors = FALSE,
+      submitted_genus = genus,
+      submitted_species_epithet = epithet,
+      submitted_infraspecific = infra,
+      submitted_author = author,
+      submitted_unparsed = unparsed,
+      submitted_rank_guess = rank
+    )
+  })
+  do.call(rbind, rows)
 }
 
 #' @keywords internal
@@ -215,68 +308,74 @@ flag_duplicate_names <- function(x) {
 
 #' @keywords internal
 build_parse_results <- function(splist) {
-  standardized <- standardize_names(splist)
-  parts <- extract_name_parts(standardized)
-
+  normalized <- normalize_name_records(splist)
+  parts <- extract_name_parts(splist)
+  reason <- ifelse(
+    normalized$has_hybrid,
+    "hybrid",
+    ifelse(normalized$has_qualifier, "qualifier", "")
+  )
+  invalid <- parts$submitted_rank_guess %in% c("empty", "uninomial", "unparsed")
+  reason[invalid] <- ifelse(
+    nzchar(reason[invalid]),
+    paste(reason[invalid], "unparsed", sep = ";"),
+    "unparsed"
+  )
   data.frame(
+    stringsAsFactors = FALSE,
     input_order = seq_along(splist),
-    submitted_name = as.character(splist),
-    standardized_name = standardized,
+    normalized,
     parts,
-    duplicate_input = flag_duplicate_names(standardized),
-    review_flag = FALSE,
-    stringsAsFactors = FALSE
+    duplicate_input = flag_duplicate_names(normalized$standardized_name),
+    review_flag = nzchar(reason),
+    review_reason = reason
   )
 }
 
-#' @keywords internal
-build_resolution_results <- function(splist,
-                                     max_distance = 0.1,
-                                     batch_size = 250,
-                                     parallel = FALSE,
-                                     n_cores = NULL) {
-  standardized <- standardize_names(splist)
-  parts <- extract_name_parts(standardized)
-
+build_resolution_results <- function(
+  splist,
+  max_distance = 0.1,
+  batch_size = 250,
+  parallel = FALSE,
+  n_cores = NULL
+) {
   resolved <- search_avesperu(
-    splist = splist,
-    max_distance = max_distance,
-    return_details = TRUE,
-    batch_size = batch_size,
-    parallel = parallel,
-    n_cores = n_cores
+    splist,
+    max_distance,
+    TRUE,
+    batch_size,
+    parallel,
+    n_cores
   )
-
-  db <- avesperu::aves_peru_2026_v1
-  matched_rows <- db[match(resolved$accepted_name, db$scientific_name), , drop = FALSE]
-  edit_distance <- suppressWarnings(as.integer(resolved$dist))
-
-  match_type <- ifelse(
-    is.na(resolved$accepted_name),
-    "unmatched",
-    ifelse(edit_distance == 0L, "exact", "fuzzy")
-  )
-
-  data.frame(
+  audit <- attr(resolved, "reconciliation")
+  db <- current_checklist()
+  matched <- db[
+    match(resolved$accepted_name, db$scientific_name),
+    ,
+    drop = FALSE
+  ]
+  out <- data.frame(
+    stringsAsFactors = FALSE,
     input_order = seq_along(splist),
-    submitted_name = as.character(splist),
-    standardized_name = standardized,
-    parts,
-    accepted_name = resolved$accepted_name,
-    matched_genus = matched_rows$genus,
-    matched_species_epithet = matched_rows$species_epithet,
-    order_name = resolved$order_name,
-    family_name = resolved$family_name,
-    english_name = resolved$english_name,
-    spanish_name = resolved$spanish_name,
-    status = resolved$status,
-    status_code = matched_rows$status_code,
-    match_type = match_type,
-    edit_distance = edit_distance,
-    duplicate_input = flag_duplicate_names(standardized),
-    review_flag = match_type != "exact",
-    stringsAsFactors = FALSE
+    audit,
+    extract_name_parts(splist),
+    resolved[, -1, drop = FALSE],
+    matched_genus = matched$genus,
+    matched_species_epithet = matched$species_epithet,
+    status_code = matched$status_code,
+    edit_distance = as.integer(resolved$dist),
+    duplicate_input = flag_duplicate_names(audit$standardized_name)
   )
+  invalid <- out$submitted_rank_guess %in% c("empty", "uninomial", "unparsed")
+  out$review_flag[invalid] <- TRUE
+  out$review_reason[invalid] <- paste(
+    out$review_reason[invalid],
+    "unparsed",
+    sep = ";"
+  )
+  attr(out, "execution") <- attr(resolved, "execution")
+  attr(out, "reference") <- attr(resolved, "reference")
+  out
 }
 
 #' @keywords internal
@@ -294,12 +393,20 @@ summarize_app_results <- function(results, mode = c("resolve", "parse")) {
 
   if (mode == "resolve") {
     data.frame(
-      label = c("Submitted", "Unique", "Exact", "Fuzzy", "Unmatched"),
+      label = c(
+        "Submitted",
+        "Unique",
+        "Exact",
+        "Fuzzy",
+        "Ambiguous",
+        "Unmatched"
+      ),
       value = c(
         nrow(results),
         length(unique(results$standardized_name)),
         sum(results$match_type == "exact", na.rm = TRUE),
         sum(results$match_type == "fuzzy", na.rm = TRUE),
+        sum(results$match_type == "ambiguous", na.rm = TRUE),
         sum(results$match_type == "unmatched", na.rm = TRUE)
       ),
       note = c(
@@ -307,6 +414,7 @@ summarize_app_results <- function(results, mode = c("resolve", "parse")) {
         "Unique standardized names",
         "Distance = 0",
         "Review recommended",
+        "Multiple best candidates",
         "No accepted name found"
       ),
       stringsAsFactors = FALSE
@@ -332,19 +440,21 @@ summarize_app_results <- function(results, mode = c("resolve", "parse")) {
 }
 
 #' @keywords internal
-build_app_metadata <- function(results,
-                               mode,
-                               max_distance,
-                               batch_size,
-                               parallel,
-                               n_cores,
-                               pasted_names,
-                               uploaded_names) {
+build_app_metadata <- function(
+  results,
+  mode,
+  max_distance,
+  batch_size,
+  parallel,
+  n_cores,
+  pasted_names,
+  uploaded_names
+) {
   metrics <- summarize_app_results(results, mode = mode)
-  checklist_date <- attr(avesperu::aves_peru_2026_v1, "version_date", exact = TRUE)
+  checklist_date <- attr(current_checklist(), "version_date", exact = TRUE)
   source_url <- "https://sites.google.com/site/boletinunop/checklist"
 
-  data.frame(
+  metadata <- data.frame(
     field = c(
       "application",
       "package_version",
@@ -365,12 +475,34 @@ build_app_metadata <- function(results,
     value = c(
       "avesperu Resolver",
       as.character(utils::packageVersion("avesperu")),
-      if (identical(mode, "resolve")) "Perform Name Resolution" else "Parse Names Only",
-      if (identical(mode, "resolve") && isTRUE(max_distance == 0)) "Exact only" else if (identical(mode, "resolve")) "Fuzzy matching" else NA_character_,
-      if (identical(mode, "resolve")) as.character(max_distance) else NA_character_,
-      if (identical(mode, "resolve")) as.character(batch_size) else NA_character_,
+      if (identical(mode, "resolve")) {
+        "Perform Name Resolution"
+      } else {
+        "Parse Names Only"
+      },
+      if (identical(mode, "resolve") && isTRUE(max_distance == 0)) {
+        "Exact only"
+      } else if (identical(mode, "resolve")) {
+        "Fuzzy matching"
+      } else {
+        NA_character_
+      },
+      if (identical(mode, "resolve")) {
+        as.character(max_distance)
+      } else {
+        NA_character_
+      },
+      if (identical(mode, "resolve")) {
+        as.character(batch_size)
+      } else {
+        NA_character_
+      },
       if (identical(mode, "resolve")) as.character(parallel) else NA_character_,
-      if (identical(mode, "resolve")) if (is.null(n_cores)) "auto" else as.character(n_cores) else NA_character_,
+      if (identical(mode, "resolve")) {
+        if (is.null(n_cores)) "auto" else as.character(n_cores)
+      } else {
+        NA_character_
+      },
       as.character(pasted_names),
       as.character(uploaded_names),
       as.character(metrics$value[metrics$label == "Submitted"][1]),
@@ -380,6 +512,31 @@ build_app_metadata <- function(results,
       format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")
     ),
     stringsAsFactors = FALSE
+  )
+  execution <- attr(results, "execution")
+  if (is.null(execution)) {
+    execution <- list(
+      mode = "parse",
+      workers = 1L,
+      batches = 1L,
+      fallback = NA_character_
+    )
+  }
+  reference <- attr(results, "reference")
+  if (is.null(reference)) {
+    reference <- checklist_metadata()
+  }
+  extra <- c(
+    stats::setNames(execution, paste0("effective_", names(execution))),
+    stats::setNames(reference, paste0("reference_", names(reference)))
+  )
+  rbind(
+    metadata,
+    data.frame(
+      stringsAsFactors = FALSE,
+      field = names(extra),
+      value = vapply(extra, as.character, character(1))
+    )
   )
 }
 
@@ -399,12 +556,16 @@ metric_cards_ui <- function(metrics) {
 
 #' @keywords internal
 avesperu_app_ui <- function() {
-  checklist_date <- attr(avesperu::aves_peru_2026_v1, "version_date", exact = TRUE)
+  checklist_date <- attr(current_checklist(), "version_date", exact = TRUE)
 
   shiny::fluidPage(
     title = "avesperu",
     shiny::tags$head(
-      shiny::tags$style(shiny::HTML("
+      shiny::tags$script(shiny::HTML(
+        "Shiny.addCustomMessageHandler('reset-upload', function(id) { var el = document.getElementById(id); if (el) { el.value = ''; var box = el.closest('.form-group'); if (box) { var text = box.querySelector('input[type=text]'); if (text) text.value = ''; } } Shiny.setInputValue(id, null, {priority: 'event'}); });"
+      )),
+      shiny::tags$style(shiny::HTML(
+        "
         :root {
           --macaw-blue: #3559a6;
           --macaw-blue-dark: #2b4783;
@@ -826,7 +987,8 @@ avesperu_app_ui <- function() {
           color: #607188;
           font-size: 12px;
         }
-      "))
+      "
+      ))
     ),
     shiny::div(
       class = "hero-shell",
@@ -834,7 +996,10 @@ avesperu_app_ui <- function() {
         class = "hero-layout",
         shiny::div(
           class = "hero-copy",
-          shiny::tags$div(class = "hero-kicker", "Batch Name Resolution For Peru Birds - avesperu"),
+          shiny::tags$div(
+            class = "hero-kicker",
+            "Batch Name Resolution For Peru Birds - avesperu"
+          ),
           #shiny::tags$h1("avesperu"),
           shiny::tags$p(
             "Application to validate, standardize, and reconcile scientific names for birds of Peru using the UNOP/SACC checklist included in avesperu."
@@ -844,7 +1009,7 @@ avesperu_app_ui <- function() {
           class = "hero-meta",
           shiny::tags$div(
             class = "hero-meta-card",
-           # shiny::tags$div(class = "hero-meta-label", "Contexto"),
+            # shiny::tags$div(class = "hero-meta-label", "Contexto"),
             shiny::tags$div(
               class = "hero-meta-line",
               paste("avesperu:", utils::packageVersion("avesperu"))
@@ -866,7 +1031,9 @@ avesperu_app_ui <- function() {
         shiny::div(
           class = "app-card",
           shiny::tags$h3("Input"),
-          shiny::tags$p("Enter one name per line or combine pasted text with a CSV, TXT, TSV, or Excel file."),
+          shiny::tags$p(
+            "Enter one name per line or combine pasted text with a CSV, TXT, TSV, or Excel file."
+          ),
           shiny::textAreaInput(
             inputId = "names_text",
             label = "Scientific names to check",
@@ -901,9 +1068,21 @@ avesperu_app_ui <- function() {
                 class = "input-actions-row",
                 shiny::div(
                   class = "input-actions",
-                  shiny::actionButton("submit_names", "Submit", class = "btn-submit-app btn-sm"),
-                  shiny::actionButton("clear_all", "Clear", class = "btn-default btn-secondary-action btn-sm"),
-                  shiny::actionButton("load_sample", "Try sample", class = "btn-default btn-secondary-action btn-sm")
+                  shiny::actionButton(
+                    "submit_names",
+                    "Submit",
+                    class = "btn-submit-app btn-sm"
+                  ),
+                  shiny::actionButton(
+                    "clear_all",
+                    "Clear",
+                    class = "btn-default btn-secondary-action btn-sm"
+                  ),
+                  shiny::actionButton(
+                    "load_sample",
+                    "Try sample",
+                    class = "btn-default btn-secondary-action btn-sm"
+                  )
                 )
               )
             )
@@ -959,32 +1138,69 @@ avesperu_app_ui <- function() {
               class = "half-span",
               shiny::conditionalPanel(
                 condition = "input.processing_mode === 'resolve'",
-                shiny::numericInput("batch_size", "Batch size", value = 250, min = 1, step = 50)
+                shiny::numericInput(
+                  "batch_size",
+                  "Batch size",
+                  value = 250,
+                  min = 1,
+                  step = 50
+                )
               )
             ),
             shiny::div(
               class = "half-span",
               shiny::conditionalPanel(
                 condition = "input.processing_mode === 'resolve'",
-                shiny::numericInput("n_cores", "Cores (0 = auto)", value = 0, min = 0, step = 1)
+                shiny::numericInput(
+                  "n_cores",
+                  "Cores (0 = auto)",
+                  value = 0,
+                  min = 0,
+                  step = 1
+                )
               )
             ),
             shiny::div(
               class = "full-span",
               shiny::conditionalPanel(
                 condition = "input.processing_mode === 'resolve'",
-                shiny::checkboxInput("use_parallel", "Parallel batches", value = FALSE)
+                shiny::checkboxInput(
+                  "use_parallel",
+                  "Parallel batches",
+                  value = FALSE
+                )
               )
             )
           ),
           shiny::uiOutput("config_overview"),
           shiny::div(
             class = "config-footer",
-            shiny::tags$div(class = "input-status", shiny::textOutput("input_overview", inline = TRUE))
+            shiny::tags$div(
+              class = "input-status",
+              shiny::textOutput("input_overview", inline = TRUE)
+            )
           )
         )
       ),
     ),
+    shiny::tags$details(
+      shiny::tags$summary("File import settings and preview"),
+      shiny::selectInput(
+        "upload_header",
+        "Header row",
+        c("Recognize standard headers" = "auto", "Yes" = "yes", "No" = "no")
+      ),
+      shiny::textInput(
+        "upload_column",
+        "Scientific-name column number (auto if blank)",
+        ""
+      ),
+      shiny::tags$p(
+        "Row numbers refer to spreadsheet rows or delimited records, including the header. Empty rows are retained. Maximum 10,000 names and 200 characters per name."
+      ),
+      DT::DTOutput("upload_preview")
+    ),
+    shiny::textOutput("processing_status"),
     shiny::div(
       class = "summary-row",
       shiny::uiOutput("summary_cards")
@@ -997,7 +1213,7 @@ avesperu_app_ui <- function() {
         shiny::div(
           class = "toolbar-text",
           shiny::tags$p(
-            "Review rows with `match_type = fuzzy` or `unmatched` first. ",
+            "Review every row with review_flag = TRUE, including ambiguous matches and qualifiers. ",
             "The table is filterable and can be exported in CSV, TSV, or XLSX."
           )
         ),
@@ -1016,7 +1232,9 @@ avesperu_app_ui <- function() {
           shiny::tags$summary("Run metadata"),
           shiny::tags$div(
             class = "meta-body",
-            shiny::tags$p("Summary of settings and source information used for this run."),
+            shiny::tags$p(
+              "Summary of settings and source information used for this run."
+            ),
             DT::DTOutput("metadata_table")
           )
         ),
@@ -1025,7 +1243,11 @@ avesperu_app_ui <- function() {
           shiny::div(
             class = "meta-actions",
             shiny::downloadButton("download_metadata", "Download settings"),
-            shiny::actionButton("stop_app", "Close application", class = "btn-danger-app")
+            shiny::actionButton(
+              "stop_app",
+              "Close session",
+              class = "btn-danger-app"
+            )
           )
         )
       )
@@ -1047,54 +1269,133 @@ avesperu_app_server <- function(input, output, session) {
     collapse = "\n"
   )
 
-  uploaded_names <- shiny::reactiveVal(character(0))
+  uploaded_records <- shiny::reactiveVal(pasted_name_records(""))
+  upload_error <- shiny::reactiveVal(NULL)
+  upload_preview <- shiny::reactiveVal(NULL)
+  processed_results <- shiny::reactiveVal(NULL)
+  processing_status <- shiny::reactiveVal("Submit a list to begin.")
+  active_job <- NULL
+  generation <- 0L
+  invalidate_results <- function() {
+    generation <<- generation + 1L
+    stop_app_job(active_job)
+    active_job <<- NULL
+    processed_results(NULL)
+    processing_status("Inputs changed. Submit to process the current list.")
+  }
+  uploaded_names <- shiny::reactive(uploaded_records()$submitted_name)
+  shiny::observeEvent(
+    list(input$upload_names, input$upload_header, input$upload_column),
+    {
+      invalidate_results()
+      uploaded_records(pasted_name_records(""))
+      upload_error(NULL)
+      upload_preview(NULL)
+      if (is.null(input$upload_names)) {
+        return(invisible(NULL))
+      }
+      header <- if (is.null(input$upload_header)) {
+        "auto"
+      } else {
+        input$upload_header
+      }
+      column <- if (
+        is.null(input$upload_column) || !nzchar(input$upload_column)
+      ) {
+        NULL
+      } else {
+        input$upload_column
+      }
+      incoming <- tryCatch(
+        {
+          records <- read_avesperu_name_file(
+            input$upload_names$datapath,
+            input$upload_names$name,
+            header = header,
+            column = column,
+            records = TRUE
+          )
+          validate_app_input(records)
+          records
+        },
+        error = function(e) e
+      )
+      if (inherits(incoming, "error")) {
+        upload_error(conditionMessage(incoming))
+        upload_preview(incoming$preview)
+        shiny::showNotification(conditionMessage(incoming), type = "error")
+      } else {
+        uploaded_records(incoming)
+      }
+    },
+    ignoreInit = TRUE,
+    priority = 20
+  )
 
-  observe_uploaded_file <- shiny::observeEvent(input$upload_names, {
-    shiny::req(input$upload_names$datapath)
+  shiny::observeEvent(
+    list(
+      input$names_text,
+      input$processing_mode,
+      input$matching_mode,
+      input$max_distance,
+      input$batch_size,
+      input$use_parallel,
+      input$n_cores
+    ),
+    {
+      invalidate_results()
+    },
+    ignoreInit = TRUE,
+    priority = 10
+  )
 
-    names_from_file <- tryCatch(
-      read_avesperu_name_file(
-        path = input$upload_names$datapath,
-        filename = input$upload_names$name
-      ),
-      error = function(e) e
-    )
+  shiny::observeEvent(
+    input$clear_all,
+    {
+      invalidate_results()
+      uploaded_records(pasted_name_records(""))
+      upload_error(NULL)
+      upload_preview(NULL)
+      shiny::updateTextAreaInput(session, "names_text", value = "")
+      session$sendCustomMessage("reset-upload", "upload_names")
+    },
+    priority = 30
+  )
 
-    if (inherits(names_from_file, "error")) {
-      shiny::showNotification(conditionMessage(names_from_file), type = "error")
-      return(invisible(NULL))
-    }
-
-    uploaded_names(names_from_file)
-    shiny::showNotification(
-      paste(length(names_from_file), "names loaded from file."),
-      type = "message"
-    )
-  }, ignoreInit = TRUE)
-
-  observe_clear <- shiny::observeEvent(input$clear_all, {
-    uploaded_names(character(0))
-    shiny::updateTextAreaInput(session, "names_text", value = "")
-  })
-
-  observe_sample <- shiny::observeEvent(input$load_sample, {
+  shiny::observeEvent(input$load_sample, {
+    invalidate_results()
+    uploaded_records(pasted_name_records(""))
+    upload_error(NULL)
+    upload_preview(NULL)
     shiny::updateTextAreaInput(session, "names_text", value = sample_names)
+    session$sendCustomMessage("reset-upload", "upload_names")
   })
 
-  observe_stop <- shiny::observeEvent(input$stop_app, {
-    shiny::stopApp(invisible(NULL))
+  shiny::observeEvent(input$stop_app, {
+    session$close()
+  })
+  session$onSessionEnded(function() {
+    generation <<- generation + 1L
+    stop_app_job(active_job)
+    active_job <<- NULL
   })
 
-  shiny::onStop(function() {
-    observe_uploaded_file$destroy()
-    observe_clear$destroy()
-    observe_sample$destroy()
-    observe_stop$destroy()
+  combined_records <- shiny::reactive({
+    rbind(pasted_name_records(input$names_text), uploaded_records())
   })
-
-  combined_names <- shiny::reactive({
-    c(split_submitted_names(input$names_text), uploaded_names())
+  combined_names <- shiny::reactive(combined_records()$submitted_name)
+  output$upload_preview <- DT::renderDT({
+    DT::datatable(
+      if (is.null(upload_preview())) {
+        utils::head(uploaded_records(), 10)
+      } else {
+        upload_preview()
+      },
+      rownames = FALSE,
+      options = list(dom = "t", scrollX = TRUE)
+    )
   })
+  output$processing_status <- shiny::renderText(processing_status())
 
   output$input_overview <- shiny::renderText({
     pasted_n <- length(split_submitted_names(input$names_text))
@@ -1102,9 +1403,12 @@ avesperu_app_server <- function(input, output, session) {
     total_n <- pasted_n + uploaded_n
 
     paste(
-      total_n, "name(s) ready |",
-      pasted_n, "from text |",
-      uploaded_n, "from file"
+      total_n,
+      "name(s) ready |",
+      pasted_n,
+      "from text |",
+      uploaded_n,
+      "from file"
     )
   })
 
@@ -1132,7 +1436,7 @@ avesperu_app_server <- function(input, output, session) {
     execution_value <- if (!identical(input$processing_mode, "resolve")) {
       "Single pass"
     } else if (isTRUE(input$use_parallel)) {
-      core_label <- if (!is.null(input$n_cores) && input$n_cores > 0) {
+      core_label <- if (is_count(input$n_cores)) {
         paste(input$n_cores, "cores")
       } else {
         "auto cores"
@@ -1165,60 +1469,97 @@ avesperu_app_server <- function(input, output, session) {
     )
   })
 
-  processed_results <- shiny::eventReactive(input$submit_names, {
-    current_names <- combined_names()
-
-    if (length(current_names) == 0) {
-      shiny::showNotification("Add at least one scientific name before submitting.", type = "warning")
-      return(NULL)
-    }
-
-    mode <- input$processing_mode
-    max_distance <- if (identical(mode, "resolve")) {
-      if (identical(input$matching_mode, "exact")) 0 else input$max_distance
-    } else {
-      NA_real_
-    }
-
-    batch_size <- if (identical(mode, "resolve")) as.integer(input$batch_size) else NA_integer_
-    use_parallel <- identical(mode, "resolve") && isTRUE(input$use_parallel)
-    n_cores <- if (identical(mode, "resolve") && !is.null(input$n_cores) && input$n_cores > 0) {
-      as.integer(input$n_cores)
-    } else {
-      NULL
-    }
-
-    results <- shiny::withProgress(message = "Processing names", value = 0.2, {
-      if (identical(mode, "resolve")) {
-        shiny::incProgress(0.5, detail = "Resolving names against avesperu")
-        build_resolution_results(
-          splist = current_names,
-          max_distance = max_distance,
-          batch_size = batch_size,
-          parallel = use_parallel,
-          n_cores = n_cores
-        )
-      } else {
-        shiny::incProgress(0.5, detail = "Parsing submitted names")
-        build_parse_results(current_names)
+  shiny::observeEvent(
+    input$submit_names,
+    {
+      invalidate_results()
+      if (!is.null(upload_error())) {
+        processing_status(paste("Fix the uploaded file:", upload_error()))
+        return(invisible(NULL))
       }
-    })
-
-    list(
-      mode = mode,
-      results = results,
-      metadata = build_app_metadata(
-        results = results,
-        mode = mode,
-        max_distance = max_distance,
-        batch_size = batch_size,
-        parallel = use_parallel,
-        n_cores = n_cores,
-        pasted_names = length(split_submitted_names(input$names_text)),
-        uploaded_names = length(uploaded_names())
+      records <- combined_records()
+      if (!nrow(records)) {
+        processing_status("Add at least one scientific name before submitting.")
+        return(invisible(NULL))
+      }
+      settings <- list(
+        mode = input$processing_mode,
+        max_distance = if (identical(input$matching_mode, "exact")) {
+          0
+        } else {
+          input$max_distance
+        },
+        batch_size = input$batch_size,
+        parallel = isTRUE(input$use_parallel),
+        n_cores = if (
+          is.null(input$n_cores) ||
+            identical(input$n_cores, 0) ||
+            identical(input$n_cores, 0L)
+        ) {
+          NULL
+        } else {
+          input$n_cores
+        }
       )
-    )
-  }, ignoreInit = TRUE)
+      error <- tryCatch(
+        {
+          validate_app_input(records)
+          if (!settings$mode %in% c("parse", "resolve")) {
+            cli::cli_abort("Select a processing mode.")
+          }
+          if (settings$mode == "resolve") {
+            validate_search_options(
+              settings$max_distance,
+              TRUE,
+              settings$batch_size,
+              settings$parallel,
+              settings$n_cores
+            )
+            if (!is.null(settings$n_cores) && settings$n_cores > 4) {
+              cli::cli_abort("Use at most four cores in the app.")
+            }
+          } else {
+            settings$max_distance <- NA_real_
+            settings$batch_size <- NA_integer_
+            settings$parallel <- FALSE
+            settings$n_cores <- NULL
+          }
+          active_job <<- start_app_job(records, settings)
+          NULL
+        },
+        error = function(e) conditionMessage(e)
+      )
+      if (!is.null(error)) {
+        processing_status(error)
+        return(invisible(NULL))
+      }
+      token <- generation
+      processing_status(
+        "Processing in the background. You can clear or change inputs to cancel."
+      )
+      poll <- function() {
+        if (token != generation || session$isClosed()) {
+          return(invisible(NULL))
+        }
+        if (active_job$is_alive()) {
+          later::later(poll, 0.1)
+        } else {
+          result <- tryCatch(active_job$get_result(), error = function(e) e)
+          active_job <<- NULL
+          if (inherits(result, "error")) {
+            processing_status(conditionMessage(result))
+          } else {
+            processed_results(result)
+            processing_status(
+              "Complete. Results and downloads correspond to the current inputs."
+            )
+          }
+        }
+      }
+      later::later(poll, 0.1)
+    },
+    ignoreInit = TRUE
+  )
 
   output$summary_cards <- shiny::renderUI({
     state <- processed_results()
@@ -1227,7 +1568,9 @@ avesperu_app_server <- function(input, output, session) {
         shiny::div(
           class = "app-card",
           shiny::tags$h3("Summary"),
-          shiny::tags$p("Submit a list to see resolution metrics and review cues.")
+          shiny::tags$p(
+            "Submit a list to see resolution metrics and review cues."
+          )
         )
       )
     }
@@ -1297,10 +1640,12 @@ avesperu_app_server <- function(input, output, session) {
   output$download_csv <- shiny::downloadHandler(
     filename = function() {
       state <- processed_results()
+      shiny::req(state)
       paste0("avesperu_", state$mode, "_", format(Sys.Date(), "%Y%m%d"), ".csv")
     },
     content = function(file) {
       state <- processed_results()
+      shiny::req(state)
       utils::write.csv(state$results, file, row.names = FALSE, na = "")
     }
   )
@@ -1308,10 +1653,12 @@ avesperu_app_server <- function(input, output, session) {
   output$download_tsv <- shiny::downloadHandler(
     filename = function() {
       state <- processed_results()
+      shiny::req(state)
       paste0("avesperu_", state$mode, "_", format(Sys.Date(), "%Y%m%d"), ".tsv")
     },
     content = function(file) {
       state <- processed_results()
+      shiny::req(state)
       utils::write.table(
         state$results,
         file = file,
@@ -1326,10 +1673,18 @@ avesperu_app_server <- function(input, output, session) {
   output$download_xlsx <- shiny::downloadHandler(
     filename = function() {
       state <- processed_results()
-      paste0("avesperu_", state$mode, "_", format(Sys.Date(), "%Y%m%d"), ".xlsx")
+      shiny::req(state)
+      paste0(
+        "avesperu_",
+        state$mode,
+        "_",
+        format(Sys.Date(), "%Y%m%d"),
+        ".xlsx"
+      )
     },
     content = function(file) {
       state <- processed_results()
+      shiny::req(state)
       check_avesperu_xlsx_dep()
       writexl::write_xlsx(
         list(
@@ -1347,6 +1702,7 @@ avesperu_app_server <- function(input, output, session) {
     },
     content = function(file) {
       state <- processed_results()
+      shiny::req(state)
       utils::write.csv(state$metadata, file, row.names = FALSE, na = "")
     }
   )

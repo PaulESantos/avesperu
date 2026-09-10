@@ -27,8 +27,8 @@
 #'   Automatically disabled for small lists. Requires the \code{parallel} package.
 #'   Default: \code{TRUE}.
 #' @param n_cores Integer or \code{NULL}. Number of CPU cores to use for parallel
-#'   processing. If \code{NULL} (default), uses \code{detectCores() - 1} to leave
-#'   one core free for system operations.
+#'   processing. Auto selection respects `mc.cores`, available batches and a
+#'   limit of four workers. Unavailable core detection uses sequential execution.
 #'
 #' @details
 #' The function performs the following steps:
@@ -54,7 +54,7 @@
 #'
 #' A character vector with the same length as \code{splist}, containing the
 #' conservation/occurrence status for each species. \code{NA} values indicate
-#' no match was found.
+#' no unique match was found, or the input contains qualifiers or hybrid markers.
 #'
 #' \strong{If return_details = TRUE:}
 #'
@@ -72,6 +72,19 @@
 #'   \item{dist}{Character. Edit distance between submitted and matched names.
 #'     Lower values indicate better matches. \code{NA} if no match found.}
 #' }
+#'
+#' The detailed result retains eight columns. Its `reconciliation` attribute is
+#' a row-aligned data frame containing the original and standardized names,
+#' qualifier/hybrid flags, match type, candidate count, candidate names and
+#' review reasons. The `avesperu_result` data-frame subclass keeps this attribute
+#' aligned when rows are selected using `[`.
+#' Ambiguous matches have no accepted name or status; candidates are sorted.
+#' Qualified and hybrid inputs can have a suggested match but always need review.
+#' Attributes `execution` and `reference` record actual workers, batches,
+#' fallback reason and the checklist identifier/date used.
+#' Empty input returns a typed zero-row table or `character(0)`.
+#' Proportions strictly between 0 and 1 use `ceiling(nchar(name) * distance)`;
+#' 0 means exact only and values at least 1 must be whole edit counts.
 #'
 #' @section Warning:
 #' For very large lists (>10,000 species) with parallel processing enabled,
@@ -103,349 +116,330 @@
 #' print(corrected[, c("name_submitted", "accepted_name", "dist")])
 #'
 #' @export
-search_avesperu <- function(splist,
-                            max_distance = 0.1,
-                            return_details = FALSE,
-                            batch_size = 100,
-                            parallel = TRUE,
-                            n_cores = NULL) {
-
-
-  # 1. VALIDACIÓN Y PREPARACIÓN
-
-
-  if (!is.character(splist) && !is.factor(splist)) {
-    cli::cli_abort("{.arg splist} must be a character vector or a factor.", call = parent.frame())
+search_avesperu <- function(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+) {
+  if ((!is.character(splist) && !is.factor(splist)) || !is.null(dim(splist))) {
+    cli::cli_abort("{.arg splist} must be a character vector or a factor.")
   }
-
-  if (is.factor(splist)) {
-    splist <- as.character(splist)
+  validate_search_options(
+    max_distance,
+    return_details,
+    batch_size,
+    parallel,
+    n_cores
+  )
+  original <- as.character(splist)
+  normalized <- normalize_name_records(original)
+  unique_names <- unique(normalized$standardized_name)
+  duplicates <- find_duplicates(normalized$standardized_name)
+  if (length(duplicates)) {
+    cli::cli_inform(
+      "The following names are repeated in the {.arg splist}: {.val {duplicates}}"
+    )
   }
-
-  if (!is.logical(return_details) || length(return_details) != 1) {
-    cli::cli_abort("{.arg return_details} must be a single logical value ({.val TRUE} or {.val FALSE}).", call = parent.frame())
-  }
-
-  if (!is.numeric(max_distance) || length(max_distance) != 1 || max_distance < 0) {
-    cli::cli_abort("{.arg max_distance} must be a single non-negative numeric value.", call = parent.frame())
-  }
-
-  if (max_distance > 0 && max_distance < 1) {
-    # Es una proporción - validar que sea razonable
-    if (max_distance > 0.5) {
-      cli::cli_warn("{.arg max_distance} > 0.5 may produce too many false matches.", call = parent.frame())
-    }
-  }
-
-  if (!is.numeric(batch_size) || length(batch_size) != 1 || batch_size < 1) {
-    cli::cli_abort("{.arg batch_size} must be a positive integer.", call = parent.frame())
-  }
-
-  if (!is.logical(parallel) || length(parallel) != 1) {
-    cli::cli_abort("{.arg parallel} must be a single logical value ({.val TRUE} or {.val FALSE}).", call = parent.frame())
-  }
-
-  if (!is.null(n_cores)) {
-    if (!is.numeric(n_cores) || length(n_cores) != 1 || n_cores < 1) {
-      cli::cli_abort("{.arg n_cores} must be {.val NULL} or a positive integer.", call = parent.frame())
-    }
-  }
-
-  # Estandarizar nombres
-  splist_st <- standardize_names(splist)
-
-  # Detectar y reportar duplicados
-  dupes_splist_st <- find_duplicates(splist_st)
-  if (length(dupes_splist_st) > 0) {
-    cli::cli_inform(c(
-      "i" = "The following names are repeated in the {.arg splist}: {.val {dupes_splist_st}}"
-    ))
-  }
-
-  # Trabajar con nombres únicos
-  splist_unique <- unique(splist_st)
-  n_unique <- length(splist_unique)
-
-  # Cargar dataset una sola vez
-  species_db <- avesperu::aves_peru_2026_v1
-  db_names <- species_db$scientific_name
-
-
-  # 2. SELECCIÓN DE ESTRATEGIA DE PROCESAMIENTO
-
-
-  if (n_unique <= batch_size || !parallel) {
-    # Procesamiento secuencial optimizado
-    result_unique <- search_with_agrep(
-      splist_unique, species_db, db_names, max_distance
+  db <- current_checklist()
+  if (length(unique_names) <= batch_size) {
+    result <- search_with_agrep(
+      unique_names,
+      db,
+      db$scientific_name,
+      max_distance
+    )
+    execution <- list(
+      mode = "sequential",
+      workers = 1L,
+      batches = as.integer(length(unique_names) > 0),
+      fallback = NA_character_
     )
   } else {
-    # Procesamiento por lotes (batch) con opción paralela
-    result_unique <- search_with_agrep_batched(
-      splist_unique, species_db, db_names, max_distance,
-      batch_size, parallel, n_cores
+    result <- search_with_agrep_batched(
+      unique_names,
+      db,
+      db$scientific_name,
+      max_distance,
+      batch_size,
+      parallel,
+      n_cores
     )
+    execution <- attr(result, "execution")
   }
-
-
-  # 3. EXPANDIR PARA INCLUIR DUPLICADOS
-
-
-  match_indices <- match(splist_st, result_unique$name_submitted)
-  result_full <- result_unique[match_indices, ]
-  rownames(result_full) <- NULL
-
-
-  # 4. RETORNAR SEGÚN FORMATO SOLICITADO
-
-
+  full <- result[
+    match(normalized$standardized_name, result$name_submitted),
+    ,
+    drop = FALSE
+  ]
+  rownames(full) <- NULL
+  audit <- cbind(
+    normalized,
+    full[, c("match_type", "candidate_count", "candidates"), drop = FALSE]
+  )
+  audit$review_reason <- ifelse(
+    audit$has_hybrid,
+    "hybrid",
+    ifelse(audit$has_qualifier, "qualifier", "")
+  )
+  needs_match_review <- audit$match_type != "exact"
+  audit$review_reason <- ifelse(
+    needs_match_review,
+    ifelse(
+      nzchar(audit$review_reason),
+      paste(audit$review_reason, audit$match_type, sep = ";"),
+      audit$match_type
+    ),
+    audit$review_reason
+  )
+  audit$review_flag <- nzchar(audit$review_reason)
+  result <- full[, names(create_empty_result("")), drop = FALSE]
+  attr(result, "reconciliation") <- audit
+  attr(result, "execution") <- execution
+  attr(result, "reference") <- checklist_metadata(db)
+  class(result) <- c("avesperu_result", "data.frame")
   if (return_details) {
-    return(result_full)
+    return(result)
+  }
+  status <- result$status
+  status[audit$has_hybrid | audit$has_qualifier] <- NA_character_
+  status
+}
+
+is_count <- function(x) {
+  is.numeric(x) &&
+    length(x) == 1L &&
+    is.finite(x) &&
+    x >= 1 &&
+    x <= .Machine$integer.max &&
+    x == floor(x)
+}
+
+validate_search_options <- function(
+  max_distance,
+  return_details,
+  batch_size,
+  parallel,
+  n_cores
+) {
+  for (arg in c("return_details", "parallel")) {
+    value <- get(arg)
+    if (!is.logical(value) || length(value) != 1L || is.na(value)) {
+      cli::cli_abort(
+        "{.arg {arg}} must be a single logical value (TRUE or FALSE)."
+      )
+    }
+  }
+  if (
+    !is.numeric(max_distance) ||
+      length(max_distance) != 1L ||
+      !is.finite(max_distance) ||
+      max_distance < 0 ||
+      max_distance > .Machine$integer.max
+  ) {
+    cli::cli_abort(
+      "{.arg max_distance} must be a single non-negative numeric value that is finite and within integer range."
+    )
+  }
+  if (max_distance >= 1 && max_distance != floor(max_distance)) {
+    cli::cli_abort(
+      "{.arg max_distance} must be an integer when it is at least 1."
+    )
+  }
+  if (max_distance > 0.5 && max_distance < 1) {
+    cli::cli_warn(
+      "{.arg max_distance} > 0.5 may produce too many false matches."
+    )
+  }
+  if (!is_count(batch_size)) {
+    cli::cli_abort("{.arg batch_size} must be a positive integer.")
+  }
+  if (!is.null(n_cores) && !is_count(n_cores)) {
+    cli::cli_abort("{.arg n_cores} must be NULL or a positive integer.")
+  }
+  if (parallel && is.null(n_cores) && !is_count(getOption("mc.cores", 2L))) {
+    cli::cli_abort("{.code options(mc.cores)} must be a positive integer.")
+  }
+}
+
+search_row <- function(name, db, indices = integer(), distance = NA_real_) {
+  candidates <- sort(db$scientific_name[indices], method = "radix")
+  row <- if (length(indices) == 1L) {
+    create_match_result(name, db[indices, , drop = FALSE], distance)
   } else {
-    return(result_full$status)
+    create_empty_result(name)
   }
+  if (length(indices)) {
+    row$dist <- as.character(distance)
+  }
+  row$match_type <- if (!length(indices)) {
+    "unmatched"
+  } else if (length(indices) > 1L) {
+    "ambiguous"
+  } else if (distance == 0) {
+    "exact"
+  } else {
+    "fuzzy"
+  }
+  row$candidate_count <- length(indices)
+  row$candidates <- paste(candidates, collapse = "; ")
+  row
 }
 
-
-#' Optimized Edit-Distance Search with Pre-filtering
-#'
-#' @description
-#' Internal function that performs exact matching first, then fuzzy matching with
-#' \code{stringdist::stringdist()} and intelligent pre-filtering to reduce the
-#' search space without changing the public output structure.
-#'
-#' @param splist_unique Character vector of unique, standardized species names to search.
-#' @param species_db Data frame containing the reference bird species database.
-#' @param db_names Character vector of scientific names from the reference database.
-#' @param max_distance Numeric. Maximum fuzzy matching distance (proportion or integer).
-#'
-#' @details
-#' The function uses two levels of mathematically-sound pre-filtering:
-#' \enumerate{
-#'   \item \strong{Length filtering}: Eliminates candidates whose length differs by
-#'     more than \code{max_distance} characters. This is guaranteed not to exclude
-#'     any valid matches because edit distance ≥ length difference.
-#' }
-#'
-#' After pre-filtering, Levenshtein edit distance is calculated on the reduced
-#' candidate set and the nearest candidate within \code{max_distance} is selected.
-#'
-#' @return A data frame with detailed species information and matching distances.
-#'
-#' @keywords internal
-#' @noRd
-search_with_agrep <- function(splist_unique, species_db, db_names, max_distance) {
-
-  n_unique <- length(splist_unique)
-  result_list <- vector("list", n_unique)
-
-  # Pre-calcular longitudes para optimización
+search_with_agrep <- function(
+  splist_unique,
+  species_db,
+  db_names,
+  max_distance
+) {
+  if (!length(splist_unique)) {
+    return(search_row("", species_db)[FALSE, , drop = FALSE])
+  }
   db_lengths <- nchar(db_names)
-
-  for (i in seq_len(n_unique)) {
-    sp_name <- splist_unique[i]
-
-    if (is.na(sp_name) || !nzchar(sp_name)) {
-      result_list[[i]] <- create_empty_result(sp_name)
-      next
+  result <- lapply(splist_unique, function(name) {
+    if (is.na(name) || !nzchar(name)) {
+      return(search_row(name, species_db))
     }
-
-    exact_idx <- match(sp_name, db_names)
-    if (!is.na(exact_idx)) {
-      result_list[[i]] <- create_match_result(sp_name, species_db[exact_idx, ], 0L)
-      next
+    exact <- which(db_names == name)
+    if (length(exact)) {
+      return(search_row(name, species_db, exact, 0L))
     }
-
-    sp_length <- nchar(sp_name)
-
-    # Calcular distancia máxima permitida
-    if (max_distance > 0 && max_distance < 1) {
-      max_dist_fixed <- ceiling(sp_length * max_distance)
+    limit <- if (max_distance > 0 && max_distance < 1) {
+      ceiling(nchar(name) * max_distance)
     } else {
-      max_dist_fixed <- as.integer(max_distance)
+      max_distance
     }
-
-    # OPTIMIZACIÓN 1: Pre-filtrado por longitud
-    # Garantía matemática: si |len(A) - len(B)| > d, entonces edit_dist(A,B) > d
-
-    length_diff <- abs(db_lengths - sp_length)
-    candidate_indices <- which(length_diff <= max_dist_fixed)
-
-    if (length(candidate_indices) == 0) {
-      result_list[[i]] <- create_empty_result(sp_name)
-      next
+    indices <- which(abs(db_lengths - nchar(name)) <= limit)
+    if (!length(indices) || limit == 0) {
+      return(search_row(name, species_db))
     }
-
-    # Trabajar solo con candidatos pre-filtrados
-    candidate_names <- db_names[candidate_indices]
-
-
-    if (max_dist_fixed == 0 || length(candidate_names) == 0) {
-      result_list[[i]] <- create_empty_result(sp_name)
-      next
+    distances <- stringdist::stringdist(
+      name,
+      db_names[indices],
+      method = "lv",
+      nthread = 1L
+    )
+    best <- min(distances)
+    if (!is.finite(best) || best > limit) {
+      return(search_row(name, species_db))
     }
-
-    distances <- stringdist::stringdist(sp_name, candidate_names, method = "lv")
-    valid_idx <- which(distances <= max_dist_fixed)
-
-    if (length(valid_idx) == 0) {
-      result_list[[i]] <- create_empty_result(sp_name)
-    } else {
-      best_local_idx <- valid_idx[which.min(distances[valid_idx])]
-      best_dist <- distances[best_local_idx]
-      db_idx <- candidate_indices[best_local_idx]
-
-      result_list[[i]] <- create_match_result(sp_name, species_db[db_idx, ], best_dist)
-    }
-  }
-
-  # Combinar resultados
-  result_unique <- do.call(rbind, result_list)
-  rownames(result_unique) <- NULL
-
-  return(result_unique)
+    search_row(name, species_db, indices[which(distances == best)], best)
+  })
+  out <- do.call(rbind, result)
+  rownames(out) <- NULL
+  out
 }
 
+# Wrappers allow testing failures without replacing bindings in parallel itself.
+create_search_cluster <- function(n) parallel::makeCluster(n)
+stop_search_cluster <- function(cl) parallel::stopCluster(cl)
+detect_search_cores <- function() parallel::detectCores(logical = FALSE)
 
-#' Batch Processing for Large Species Lists
-#'
-#' @description
-#' Internal function that processes large species lists in batches, with optional
-#' parallel processing across multiple CPU cores. Each batch is processed using
-#' \code{search_with_agrep()}, ensuring identical output to sequential processing.
-#'
-#' @param splist_unique Character vector of unique, standardized species names.
-#' @param species_db Data frame containing the reference bird species database.
-#' @param db_names Character vector of scientific names from the reference database.
-#' @param max_distance Numeric. Maximum fuzzy matching distance.
-#' @param batch_size Integer. Number of species per batch.
-#' @param parallel Logical. Whether to use parallel processing.
-#' @param n_cores Integer or NULL. Number of cores for parallel processing.
-#'
-#' @details
-#' The function divides the input list into chunks of size \code{batch_size} and
-#' processes each batch independently. When \code{parallel = TRUE}, batches are
-#' processed simultaneously across multiple CPU cores using \code{parLapply()}.
-#'
-#' Progress messages are displayed during processing to track completion status.
-#'
-#' @return A data frame with detailed species information for all input species.
-#'
-#' @keywords internal
-#' @noRd
-search_with_agrep_batched <- function(splist_unique, species_db, db_names,
-                                      max_distance, batch_size, parallel, n_cores) {
-
-  n_unique <- length(splist_unique)
-
-  # Dividir en lotes
-  n_batches <- ceiling(n_unique / batch_size)
-  batch_indices <- split(1:n_unique, ceiling(seq_along(1:n_unique) / batch_size))
-
-  cli::cli_inform("Processing {n_unique} unique species in {n_batches} batch{?es}...")
-
-  # Función para procesar un lote
-  process_batch <- function(indices) {
-    batch_species <- splist_unique[indices]
-    search_with_agrep(batch_species, species_db, db_names, max_distance)
+# Serialize the current helpers in a private environment, independent of any
+# installed avesperu namespace and without modifying a worker's global state.
+make_search_worker <- function() {
+  worker_env <- new.env(parent = baseenv())
+  helpers <- list(
+    search_with_agrep = search_with_agrep,
+    search_row = search_row,
+    create_empty_result = create_empty_result,
+    create_match_result = create_match_result
+  )
+  for (name in names(helpers)) {
+    fun <- helpers[[name]]
+    environment(fun) <- worker_env
+    worker_env[[name]] <- fun
   }
+  worker <- function(indices, names, db, db_names, distance) {
+    search_with_agrep(names[indices], db, db_names, distance)
+  }
+  environment(worker) <- worker_env
+  worker
+}
 
-  # Procesamiento paralelo o secuencial
-  if (parallel && requireNamespace("parallel", quietly = TRUE)) {
-
-    # Calcular n_cores de forma robusta
-    if (is.null(n_cores)) {
-      # Respetar opción global de cores (usada en CRAN, CI, tests)
-      max_by_option <- getOption("mc.cores", 2L)
-
-      # Auto-detectar, pero de forma prudente
-      n_cores_detected <- max(1L, parallel::detectCores(logical = FALSE) - 1L)
-
-      # Capar por número de batches (no tiene sentido más cores que batches)
-      max_by_batches <- n_batches
-
-      # Tapa prudente para evitar problemas en checks/CI (máximo 4 cores)
-      n_cores <- min(n_cores_detected, max_by_batches, max_by_option, 4L)
+search_with_agrep_batched <- function(
+  splist_unique,
+  species_db,
+  db_names,
+  max_distance,
+  batch_size,
+  parallel,
+  n_cores
+) {
+  batches <- split(
+    seq_along(splist_unique),
+    ceiling(seq_along(splist_unique) / batch_size)
+  )
+  execution <- list(
+    mode = "sequential",
+    workers = 1L,
+    batches = length(batches),
+    fallback = NA_character_
+  )
+  process_batch <- function(indices) {
+    search_with_agrep(
+      splist_unique[indices],
+      species_db,
+      db_names,
+      max_distance
+    )
+  }
+  workers <- 1L
+  if (parallel) {
+    detected <- detect_search_cores()
+    detected <- if (is_count(detected)) max(1L, detected - 1L) else 1L
+    workers <- if (is.null(n_cores)) {
+      min(detected, getOption("mc.cores", 2L), 4L, length(batches))
     } else {
-      # Usuario especificó n_cores explícitamente, respetar pero capar por batches
-      n_cores <- min(as.integer(n_cores), n_batches)
+      min(n_cores, length(batches))
     }
-
-    # Fallback seguro: intentar crear cluster, si falla volver a secuencial
+  }
+  batch_results <- NULL
+  if (workers > 1L) {
     cl <- NULL
-    cluster_created <- FALSE
-
-    cl <- tryCatch(
-      parallel::makeCluster(n_cores),
+    on.exit(if (!is.null(cl)) stop_search_cluster(cl), add = TRUE)
+    batch_results <- tryCatch(
+      {
+        cl <- create_search_cluster(workers)
+        worker <- make_search_worker()
+        parallel::parLapply(
+          cl,
+          batches,
+          worker,
+          names = splist_unique,
+          db = species_db,
+          db_names = db_names,
+          distance = max_distance
+        )
+      },
       error = function(e) {
-        cli::cli_warn(c(
-          "Could not create parallel cluster with {n_cores} core{?s}.",
-          "i" = "Falling back to sequential processing.",
-          "x" = "Error: {conditionMessage(e)}"
-        ), call = parent.frame())
+        execution$fallback <<- conditionMessage(e)
+        cli::cli_warn(
+          "Parallel processing failed. Falling back to sequential processing: {conditionMessage(e)}"
+        )
         NULL
       }
     )
-
-    if (!is.null(cl)) {
-      cluster_created <- TRUE
-      on.exit(parallel::stopCluster(cl), add = TRUE)
-
-      cli::cli_inform("Using parallel processing with {n_cores} core{?s}...")
-
-      # Exportar objetos necesarios al cluster
-      parallel::clusterExport(cl,
-                              c("species_db", "db_names", "max_distance",
-                                "search_with_agrep",
-                                "create_empty_result", "create_match_result"),
-                              envir = environment())
-
-      # Procesar lotes en paralelo
-      batch_results <- parallel::parLapply(cl, batch_indices, process_batch)
+    if (!is.null(batch_results)) {
+      execution$mode <- "parallel"
+      execution$workers <- as.integer(workers)
     }
-
-    # Si no se creó el cluster, usar procesamiento secuencial
-    if (!cluster_created) {
-      cli::cli_inform("Using sequential processing...")
-      batch_results <- lapply(seq_along(batch_indices), function(i) {
-        if (i %% 10 == 0 || i == n_batches) {
-          cli::cli_inform("  Batch {i}/{n_batches} completed...")
-        }
-        process_batch(batch_indices[[i]])
-      })
-    }
-
-  } else {
-    # Procesamiento secuencial con indicadores de progreso
-    batch_results <- lapply(seq_along(batch_indices), function(i) {
-      if (i %% 10 == 0 || i == n_batches) {
-        cli::cli_inform("  Batch {i}/{n_batches} completed...")
-      }
-      process_batch(batch_indices[[i]])
-    })
   }
-
-  # Combinar todos los resultados
-  result_unique <- do.call(rbind, batch_results)
-  rownames(result_unique) <- NULL
-
-  return(result_unique)
+  if (is.null(batch_results)) {
+    batch_results <- lapply(batches, process_batch)
+  }
+  out <- if (length(batch_results)) {
+    do.call(rbind, batch_results)
+  } else {
+    search_with_agrep(character(), species_db, db_names, max_distance)
+  }
+  rownames(out) <- NULL
+  attr(out, "execution") <- execution
+  out
 }
 
-
-#' Create Empty Result Row for Unmatched Species
-#'
-#' @description
-#' Internal helper function that creates a standardized data frame row for species
-#' that have no match in the reference database.
-#'
-#' @param sp_name Character. The submitted species name (standardized).
-#'
-#' @return A single-row data frame with \code{NA} values for all fields except
-#'   \code{name_submitted}.
-#'
-#' @keywords internal
-#' @noRd
 create_empty_result <- function(sp_name) {
   data.frame(
     name_submitted = sp_name,

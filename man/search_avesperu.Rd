@@ -38,8 +38,8 @@ Automatically disabled for small lists. Requires the \code{parallel} package.
 Default: \code{TRUE}.}
 
 \item{n_cores}{Integer or \code{NULL}. Number of CPU cores to use for parallel
-processing. If \code{NULL} (default), uses \code{detectCores() - 1} to leave
-one core free for system operations.}
+processing. Auto selection respects \code{mc.cores}, available batches and a
+limit of four workers. Unavailable core detection uses sequential execution.}
 }
 \value{
 The return value depends on the \code{return_details} parameter:
@@ -48,7 +48,7 @@ The return value depends on the \code{return_details} parameter:
 
 A character vector with the same length as \code{splist}, containing the
 conservation/occurrence status for each species. \code{NA} values indicate
-no match was found.
+no unique match was found, or the input contains qualifiers or hybrid markers.
 
 \strong{If return_details = TRUE:}
 
@@ -66,6 +66,19 @@ database, or \code{NA} if no match found within \code{max_distance}.}
 \item{dist}{Character. Edit distance between submitted and matched names.
 Lower values indicate better matches. \code{NA} if no match found.}
 }
+
+The detailed result retains eight columns. Its \code{reconciliation} attribute is
+a row-aligned data frame containing the original and standardized names,
+qualifier/hybrid flags, match type, candidate count, candidate names and
+review reasons. The \code{avesperu_result} data-frame subclass keeps this attribute
+aligned when rows are selected using \code{[}.
+Ambiguous matches have no accepted name or status; candidates are sorted.
+Qualified and hybrid inputs can have a suggested match but always need review.
+Attributes \code{execution} and \code{reference} record actual workers, batches,
+fallback reason and the checklist identifier/date used.
+Empty input returns a typed zero-row table or \code{character(0)}.
+Proportions strictly between 0 and 1 use \code{ceiling(nchar(name) * distance)};
+0 means exact only and values at least 1 must be whole edit counts.
 }
 \description{
 This function searches for bird species information in the dataset provided by

@@ -386,3 +386,22 @@ my_list  |>
 my_list  |> 
   dplyr::count(status)
 ```
+
+
+### Reviewing uncertain results
+
+Detailed output retains eight columns and carries row-aligned `reconciliation`,
+`execution` and `reference` attributes. `[` preserves audit alignment. Tied
+candidates have no accepted name. Qualifiers and hybrid markers always require
+review and return `NA` in the basic status vector.
+
+```{r audit-example, eval=FALSE}
+result <- search_avesperu("Falco CF. sparverius", return_details = TRUE)
+attr(result, "reconciliation")
+attr(result, "execution")
+attr(result, "reference")
+```
+
+The Shiny app uses `callr` and `later` for cancellable background jobs. File
+imports preserve source records and expose header/column settings. Closing a
+session does not stop other sessions or the application process.

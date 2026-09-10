@@ -1,5 +1,4 @@
 describe("find_duplicates()", {
-
   it("finds exact duplicates in vector", {
     vector <- c("Falco", "Crypturellus", "Falco", "Tinamus")
     result <- find_duplicates(vector)

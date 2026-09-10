@@ -41,15 +41,14 @@ library(usethis)
 ## ------------------------------------------------------------------------------
 
 VERSION_DATE <- "23 de marzo de 2026"
-SACC_DATE    <- "27 de febrero de 2026"
-AUTHORS      <- c("Manuel A. Plenge", "Fernando Angulo")
-CONTACT      <- "chamaepetes@gmail.com"
-SOURCE_URL   <- "https://sites.google.com/site/boletinunop/checklist"
+SACC_DATE <- "27 de febrero de 2026"
+AUTHORS <- c("Manuel A. Plenge", "Fernando Angulo")
+CONTACT <- "chamaepetes@gmail.com"
+SOURCE_URL <- "https://sites.google.com/site/boletinunop/checklist"
 
 ## ------------------------------------------------------------------------------
 ## LECTURA Y LIMPIEZA BÁSICA
 ## ------------------------------------------------------------------------------
-
 
 raw_path <- "org_data/Lista de las aves del Peru 23 marzo 2026 web.xlsx"
 
@@ -58,31 +57,17 @@ if (!file.exists(raw_path)) {
   stop("Archivo no encontrado: ", raw_path, call. = FALSE)
 }
 
-aves_peru_raw <- read_excel(raw_path, skip = 18) |>
-  clean_names() |>
-  # Renombrar columnas con nombres descriptivos en inglés
-  set_names(
-    c(
-      "order_name", "family_name", "genus", "species_epithet",
-      "scientific_name", "spanish_name", "english_name", "status"
-    )
-  ) |>
-  # Limpiar espacios en blanco
-  mutate(
-    across(
-      everything(),
-      ~ stringr::str_trim(.x)
-    )
-  ) |>
-  # Remover filas sin nombre científico
-  filter(!is.na(scientific_name) & scientific_name != "")
+if (!requireNamespace("pkgload", quietly = TRUE)) {
+  stop("Install pkgload first.")
+}
+pkgload::load_all(quiet = TRUE)
+aves_peru_raw <- avesperu:::read_checklist_source(raw_path)
 
 message("Datos importados: ", nrow(aves_peru_raw), " especies")
 
 ## ------------------------------------------------------------------------------
 ## VALIDACIÓN: DUPLICADOS POR NOMBRE CIENTÍFICO
 ## ------------------------------------------------------------------------------
-
 
 dup_sci <- aves_peru_raw |>
   count(scientific_name) |>
@@ -103,20 +88,19 @@ message("No se encontraron duplicados")
 ## ------------------------------------------------------------------------------
 
 status_categories <- tibble::tribble(
-  ~code, ~spanish,        ~english,       ~description,
-  "E",   "Endémico",      "Endemic",      "Especie endémica de Perú hasta que se publique registro fuera de fronteras",
-  "NB",  "Migratorio",    "Migratory",    "Especies que ocurren regularmente solo en período no reproductivo",
-  "V",   "Divagante",     "Vagrant",      "Especies que ocurren ocasionalmente; no parte de la avifauna habitual",
-  "IN",  "Introducido",   "Introduced",   "Introducidas por humanos con poblaciones reproductivas autosuficientes",
-  "U",   "No confirmado", "Unconfirmed",  "Registros no confirmados: observaciones, especímenes dudosos, evidencia no publicada",
-  "EX",  "Extirpado",     "Extirpated",   "Especies extintas o extirpadas de Perú",
-  "X",   "Residente",     "Resident",     "Especies residentes"
+  ~code , ~spanish        , ~english      , ~description                                                                            ,
+  "E"   , "Endémico"     , "Endemic"     , "Especie endémica de Perú hasta que se publique registro fuera de fronteras"          ,
+  "NB"  , "Migratorio"    , "Migratory"   , "Especies que ocurren regularmente solo en período no reproductivo"                    ,
+  "V"   , "Divagante"     , "Vagrant"     , "Especies que ocurren ocasionalmente; no parte de la avifauna habitual"                 ,
+  "IN"  , "Introducido"   , "Introduced"  , "Introducidas por humanos con poblaciones reproductivas autosuficientes"                ,
+  "U"   , "No confirmado" , "Unconfirmed" , "Registros no confirmados: observaciones, especímenes dudosos, evidencia no publicada" ,
+  "EX"  , "Extirpado"     , "Extirpated"  , "Especies extintas o extirpadas de Perú"                                               ,
+  "X"   , "Residente"     , "Resident"    , "Especies residentes"
 )
 
 ## ------------------------------------------------------------------------------
 ## VALIDACIÓN: CÓDIGOS DE ESTATUS
 ## ------------------------------------------------------------------------------
-
 
 unknown_status <- setdiff(unique(aves_peru_raw$status), status_categories$code)
 
@@ -145,9 +129,11 @@ status_map
 
 aves_peru_2026_v1 <- aves_peru_raw |>
   mutate(
-    status_code = status,                # conservar código original
-    status      = dplyr::recode(status,  # etiqueta en español
-                                !!!status_map)
+    status_code = status, # conservar código original
+    status = dplyr::recode(
+      status, # etiqueta en español
+      !!!status_map
+    )
   ) |>
   select(
     order_name,
@@ -157,8 +143,8 @@ aves_peru_2026_v1 <- aves_peru_raw |>
     scientific_name,
     english_name,
     spanish_name,
-    status,       # etiqueta en español
-    status_code   # código original de la lista
+    status, # etiqueta en español
+    status_code # código original de la lista
   )
 
 message("Dataset construido: ", nrow(aves_peru_2026_v1), " especies")
@@ -171,13 +157,13 @@ message("Añadiendo metadatos al dataset...")
 
 # Atributos principales
 attr(aves_peru_2026_v1, "version_date") <- VERSION_DATE
-attr(aves_peru_2026_v1, "sacc_date")    <- SACC_DATE
-attr(aves_peru_2026_v1, "authors")      <- AUTHORS
-attr(aves_peru_2026_v1, "contact")      <- CONTACT
-attr(aves_peru_2026_v1, "source_url")   <- SOURCE_URL
+attr(aves_peru_2026_v1, "sacc_date") <- SACC_DATE
+attr(aves_peru_2026_v1, "authors") <- AUTHORS
+attr(aves_peru_2026_v1, "contact") <- CONTACT
+attr(aves_peru_2026_v1, "source_url") <- SOURCE_URL
 
 # Metadatos adicionales
-attr(aves_peru_2026_v1, "created_on")   <- Sys.time()
+attr(aves_peru_2026_v1, "created_on") <- Sys.time()
 
 # Estadísticas del dataset
 species_counts <- aves_peru_2026_v1 |>
@@ -193,7 +179,11 @@ species_counts
 message("Verificando atributos del dataset...")
 
 required_attrs <- c(
-  "version_date", "sacc_date", "authors", "contact", "source_url",
+  "version_date",
+  "sacc_date",
+  "authors",
+  "contact",
+  "source_url",
   "created_on"
 )
 
@@ -226,11 +216,12 @@ for (attr_name in required_attrs) {
 ## GUARDAR DATOS EN EL PAQUETE
 ## ------------------------------------------------------------------------------
 
+aves_peru_2026_v1 <- avesperu:::reconcile_checklist_parts(aves_peru_2026_v1)
+avesperu:::validate_checklist(aves_peru_2026_v1)
+
 usethis::use_data(
   aves_peru_2026_v1,
-  compress  = "xz",
+  compress = "xz",
   overwrite = TRUE,
-  version   = 3  # Para compatibilidad con R >= 3.5.0
+  version = 3 # Para compatibilidad con R >= 3.5.0
 )
-
-

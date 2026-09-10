@@ -2,50 +2,56 @@
 library(pdftools)
 library(tidyverse)
 
-text <- pdf_text("List of the Birds of Peru 2025 04_1.pdf" )
+text <- pdf_text("List of the Birds of Peru 2025 04_1.pdf")
 
 length(text)
 
-get_aves_tab <- function(text){
+get_aves_tab <- function(text) {
   text_ <- text |>
     stringr::str_split("\r|\n") |>
     unlist()
 
   text_ |>
     tibble::enframe() |>
-    dplyr::mutate(value = stringr::str_trim(value)) |>  # Elimina espacios en blanco al inicio y al final
+    dplyr::mutate(value = stringr::str_trim(value)) |> # Elimina espacios en blanco al inicio y al final
     dplyr::filter(nchar(value) > 0) |>
-    tidyr::separate(value,
-             into = c("scientific_name", "english_name", "spanish_name"), # Cambiado el orden de columnas
-             sep = "\\s{2,}",            # Divide por al menos dos espacios consecutivos
-             extra = "merge",            # Une valores adicionales si hay más de 3 columnas
-             fill = "right",
-             remove = FALSE)    |>
+    tidyr::separate(
+      value,
+      into = c("scientific_name", "english_name", "spanish_name"), # Cambiado el orden de columnas
+      sep = "\\s{2,}", # Divide por al menos dos espacios consecutivos
+      extra = "merge", # Une valores adicionales si hay más de 3 columnas
+      fill = "right",
+      remove = FALSE
+    ) |>
     dplyr::select(-c(1:2)) |>
-    dplyr::mutate(family_name =
-                    dplyr::if_else(
-                    stringr::str_detect(scientific_name, "F[a-z]{1,} [A-Z]{1,}"),
-               scientific_name,
-               NA_character_
-             )) |>
-    dplyr::mutate(order_name =
-                    dplyr::if_else(
-               stringr::str_detect(scientific_name, "O[a-z]{1,} [A-Z]{1,}"),
-               scientific_name,
-               NA_character_
-             )) |>
-    dplyr::mutate(status = dplyr::case_when(
-      stringr::str_detect(scientific_name, "\\(.*?\\)")~
-        stringr::str_extract(scientific_name,
-                    "(?<=\\().*?(?=\\))"),
-      TRUE ~ "X"
-    )
+    dplyr::mutate(
+      family_name = dplyr::if_else(
+        stringr::str_detect(scientific_name, "F[a-z]{1,} [A-Z]{1,}"),
+        scientific_name,
+        NA_character_
+      )
+    ) |>
+    dplyr::mutate(
+      order_name = dplyr::if_else(
+        stringr::str_detect(scientific_name, "O[a-z]{1,} [A-Z]{1,}"),
+        scientific_name,
+        NA_character_
+      )
+    ) |>
+    dplyr::mutate(
+      status = dplyr::case_when(
+        stringr::str_detect(scientific_name, "\\(.*?\\)") ~
+          stringr::str_extract(scientific_name, "(?<=\\().*?(?=\\))"),
+        TRUE ~ "X"
+      )
     ) |>
     tidyr::fill(family_name, .direction = "down") |>
     tidyr::fill(order_name, .direction = "down") |>
     dplyr::relocate(order_name, family_name, dplyr::everything()) |>
-    dplyr::filter(#!is.na(family_name),
-           !is.na(spanish_name)) |>
+    dplyr::filter(
+      #!is.na(family_name),
+      !is.na(spanish_name)
+    ) |>
     dplyr::mutate(
       order_name = stringr::str_extract(order_name, "\\b[A-Z]+\\b") |>
         stringr::str_to_sentence(),
@@ -53,24 +59,23 @@ get_aves_tab <- function(text){
         stringr::str_to_sentence()
     ) |>
     #  select(scientific_name, categoria) |>
-    dplyr::mutate(scientific_name = dplyr::case_when(
-      stringr::str_detect(scientific_name, "\\(.*?\\)") ~
-        stringr::str_remove(scientific_name, "\\(.*?\\)") |>
-        stringr::str_trim() |>
-        stringr::str_squish(),
-      TRUE ~ scientific_name
-    ))
-
+    dplyr::mutate(
+      scientific_name = dplyr::case_when(
+        stringr::str_detect(scientific_name, "\\(.*?\\)") ~
+          stringr::str_remove(scientific_name, "\\(.*?\\)") |>
+          stringr::str_trim() |>
+          stringr::str_squish(),
+        TRUE ~ scientific_name
+      )
+    )
 }
 
-aves_peru_2025_4 <- purrr::map_dfr(text[1:33],
-                            ~ get_aves_tab(.))
+aves_peru_2025_4 <- purrr::map_dfr(text[1:33], ~ get_aves_tab(.))
 
 aves_peru_2025_v4 <- aves_peru_2025_4 |>
   tidyr::fill(family_name, .direction = "down") |>
   tidyr::fill(order_name, .direction = "down") |>
-  dplyr::filter(!is.na(order_name),
-         !is.na(family_name))
+  dplyr::filter(!is.na(order_name), !is.na(family_name))
 
 
 aves_peru_2025_v4
@@ -157,22 +162,22 @@ aves_peru_2025_v4 |>
 # H = hipotético:     23 *
 # Total: 1917
 
-
-usethis::use_data(aves_peru_2025_v4,
-                  compress = "xz",
-                  overwrite = TRUE)
+usethis::use_data(aves_peru_2025_v4, compress = "xz", overwrite = TRUE)
 
 # Data for septiembre 2025 imported from Excel file
-df <- readxl::read_excel("org_data\\Lista de las aves del Peru 04 oct 2025.xlsx") |>
-  dplyr::select(-c(3,4)) |>
-  purrr::set_names(c("order_name",
-                     "family_name",
-                     "scientific_name",
-                     "spanish_name",
-                     "english_name",
-                     "status_code",
-                     "status"
-                     ))
+df <- readxl::read_excel(
+  "org_data\\Lista de las aves del Peru 04 oct 2025.xlsx"
+) |>
+  dplyr::select(-c(3, 4)) |>
+  purrr::set_names(c(
+    "order_name",
+    "family_name",
+    "scientific_name",
+    "spanish_name",
+    "english_name",
+    "status_code",
+    "status"
+  ))
 df
 df |>
   dplyr::distinct(order_name) |>
@@ -225,9 +230,7 @@ aves_peru_2025_v4 <-
 aves_peru_2025_v4
 
 
-usethis::use_data(aves_peru_2025_v4,
-                  compress = "xz",
-                  overwrite = TRUE)
+usethis::use_data(aves_peru_2025_v4, compress = "xz", overwrite = TRUE)
 
 
 aves_peru_2025_v4 |>

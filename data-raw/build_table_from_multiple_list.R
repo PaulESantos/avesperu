@@ -3,9 +3,7 @@ library(tidyverse)
 
 # Lista de archivos a procesar (puedes añadir los nombres de tus archivos aquí)
 archivos <-
- list.files("oldest_data\\listas",
-            pattern = "\\.pdf$",
-            full.names = TRUE)
+  list.files("oldest_data\\listas", pattern = "\\.pdf$", full.names = TRUE)
 archivos
 get_aves_tab_universal <- function(pdf_path) {
   text <- pdf_text(pdf_path)
@@ -21,12 +19,25 @@ get_aves_tab_universal <- function(pdf_path) {
     lines |>
       mutate(
         # Captura de Orden y Familia (en mayúsculas tras la palabra clave)
-        order_name = if_else(str_detect(raw, "^Order"), str_extract(raw, "(?<=Order\\s)[A-Z]+"), NA_character_),
-        family_name = if_else(str_detect(raw, "^Family"), str_extract(raw, "(?<=Family\\s)[A-Z]+"), NA_character_)
+        order_name = if_else(
+          str_detect(raw, "^Order"),
+          str_extract(raw, "(?<=Order\\s)[A-Z]+"),
+          NA_character_
+        ),
+        family_name = if_else(
+          str_detect(raw, "^Family"),
+          str_extract(raw, "(?<=Family\\s)[A-Z]+"),
+          NA_character_
+        )
       ) |>
       fill(order_name, family_name, .direction = "down") |>
       # Filtrar encabezados y metadatos del PDF
-      filter(!str_detect(raw, "^Order|^Family|SCIENTIFIC NAME|By/por|\\bPage\\b|\\b\\d+\\b|^-$")) |>
+      filter(
+        !str_detect(
+          raw,
+          "^Order|^Family|SCIENTIFIC NAME|By/por|\\bPage\\b|\\b\\d+\\b|^-$"
+        )
+      ) |>
       # Extracción del Estatus
       mutate(
         status = str_extract(raw, "\\((E|NB|V|IN|H|EX)\\)"),
@@ -41,10 +52,22 @@ get_aves_tab_universal <- function(pdf_path) {
           str_trim()
       ) |>
       # Separar nombres comunes (Inglés vs Español)
-      separate(common_parts, into = c("english_name", "spanish_name"),
-               sep = "\\s{2,}", extra = "merge", fill = "right") |>
+      separate(
+        common_parts,
+        into = c("english_name", "spanish_name"),
+        sep = "\\s{2,}",
+        extra = "merge",
+        fill = "right"
+      ) |>
       filter(!is.na(scientific_name)) |>
-      select(order_name, family_name, scientific_name, english_name, spanish_name, status)
+      select(
+        order_name,
+        family_name,
+        scientific_name,
+        english_name,
+        spanish_name,
+        status
+      )
   }
 
   map_dfr(text, parse_page) |>
@@ -60,18 +83,20 @@ todas_las_listas |>
   filter(is.na(spanish_name))
 
 lista_aves <- todas_las_listas |>
-  filter(!str_detect(scientific_name,
-                     "^For |^Para |^According to|^De acuerdo a"))
+  filter(
+    !str_detect(scientific_name, "^For |^Para |^According to|^De acuerdo a")
+  )
 
-  lista_aves
+lista_aves
 
-  # ── Exportar listas individuales ──────────────────────────────────────────────
-  # Directorio de salida = misma carpeta de los PDFs
-  dir_salida <- dirname(archivos[1])  # "oldest_data/listas"
-  dir_salida
-  lista_aves |>
-    group_by(version_source) |>
-    group_walk(~ {
+# ── Exportar listas individuales ──────────────────────────────────────────────
+# Directorio de salida = misma carpeta de los PDFs
+dir_salida <- dirname(archivos[1]) # "oldest_data/listas"
+dir_salida
+lista_aves |>
+  group_by(version_source) |>
+  group_walk(
+    ~ {
       # Construir nombre de salida: mismo nombre del PDF pero con .csv
       nombre_xlsx <- file.path(
         dir_salida,
@@ -79,4 +104,5 @@ lista_aves <- todas_las_listas |>
       )
       writexl::write_xlsx(.x, nombre_xlsx)
       message("Exportado: ", basename(nombre_xlsx), " (", nrow(.x), " filas)")
-    })
+    }
+  )

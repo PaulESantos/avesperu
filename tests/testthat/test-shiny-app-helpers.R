@@ -1,5 +1,4 @@
 describe("Shiny app helpers", {
-
   it("splits pasted names by line and trims whitespace", {
     input <- "  Falco sparverius \n\n Tinamus osgoodi\r\nPenelope albipennis  "
     result <- split_submitted_names(input)
@@ -16,7 +15,7 @@ describe("Shiny app helpers", {
 
     result <- read_avesperu_name_file(path, filename = "birds.txt")
 
-    expect_equal(result, c("Falco sparverius", "Tinamus osgoodi"))
+    expect_equal(result, c("Falco sparverius", "", "Tinamus osgoodi"))
   })
 
   it("prefers a scientific_name column in uploaded csv files", {
@@ -88,7 +87,10 @@ describe("Shiny app helpers", {
   })
 
   it("summarizes parse and resolve results for metric cards", {
-    parse_results <- build_parse_results(c("Falco sparverius", "Falco sparverius"))
+    parse_results <- build_parse_results(c(
+      "Falco sparverius",
+      "Falco sparverius"
+    ))
     resolve_results <- build_resolution_results(
       c("Falco sparverius", "Invented bird species"),
       max_distance = 0,

@@ -1,73 +1,56 @@
-#' Standardize Species Names
-#'
-#' @param splist Character vector of species names
-#' @return Standardized species names
-#' @keywords internal
-#' @noRd
-standardize_names <- function(splist) {
-
-  # Forzar a character pero preservando NA
-  splist <- as.character(splist)
-
-  # Guardar NA y trabajar solo con no-NA
-  na_idx <- is.na(splist)
-  out <- splist
-
-  if (all(na_idx)) return(out)
-
-  x <- splist[!na_idx]
-
-  # Paso 1: trim
-  x <- trimws(x)
-
-  # Paso 2: detectar y remover hibridos ANTES de capitalizar (x/× como token aislado)
-  hybrid_pat <- "(^|\\s)[x\\u00D7](\\s|$)"
-  has_hybrid <- grepl(hybrid_pat, x, ignore.case = TRUE)
-
-  # Remover y normalizar espacios inmediatamente
-  x <- gsub(hybrid_pat, " ", x, ignore.case = TRUE)
-  x <- gsub("\\s{2,}", " ", x)
-  x <- trimws(x)
-
-  # Paso 3: limpieza general
-  x <- gsub("\\s*cf\\.\\s*|\\s*aff\\.\\s*", " ", x)
-  x <- gsub("_", " ", x)
-  x <- gsub("\\s{2,}", " ", x)
-  x <- trimws(x)
-
-  # Warning (solo sobre no-NA)
-  if (any(has_hybrid, na.rm = TRUE)) {
-    cli::cli_warn(c(
-      "!" = "The 'x' sign indicating hybrids have been removed in {length(unique(x[has_hybrid]))} name{?s} before search."
-    ), call = parent.frame())
+normalize_name_records <- function(splist, warn = TRUE) {
+  original <- as.character(splist)
+  clean <- gsub("_", " ", original, fixed = TRUE)
+  tokens <- strsplit(trimws(clean), "[[:space:]\\x{00a0}]+", perl = TRUE)
+  hybrid <- vapply(
+    tokens,
+    function(x) any(tolower(x) %in% c("x", "\u00d7")),
+    logical(1)
+  )
+  qualifier <- vapply(
+    tokens,
+    function(x) any(tolower(x) %in% c("cf.", "aff.")),
+    logical(1)
+  )
+  standardized <- vapply(
+    tokens,
+    function(x) {
+      if (length(x) == 1L && is.na(x)) {
+        return(NA_character_)
+      }
+      x <- tolower(x)
+      x <- x[!x %in% c("x", "\u00d7", "cf.", "aff.")]
+      text <- paste(x, collapse = " ")
+      paste0(toupper(substr(text, 1, 1)), substring(text, 2))
+    },
+    character(1),
+    USE.NAMES = FALSE
+  )
+  if (warn && any(hybrid)) {
+    count <- length(unique(standardized[hybrid]))
+    cli::cli_warn(
+      "The 'x' sign indicating hybrids have been removed in {count} name{?s} before search. Review is required."
+    )
   }
+  data.frame(
+    submitted_name = original,
+    standardized_name = standardized,
+    has_qualifier = qualifier,
+    has_hybrid = hybrid,
+    stringsAsFactors = FALSE
+  )
+}
 
-  # Paso 4: capitalizacion
-  x <- vapply(x, function(s) {
-    words <- strsplit(tolower(s), "\\s+")[[1]]
-
-    if (length(words) >= 1) {
-      words[1] <- paste0(
-        toupper(substring(words[1], 1, 1)),
-        substring(words[1], 2)
-      )
-    }
-    if (length(words) >= 2) {
-      words[2] <- tolower(words[2])
-    }
-
-    paste(words, collapse = " ")
-  }, character(1), USE.NAMES = FALSE)
-
-  # Reinsertar
-  out[!na_idx] <- x
-  out
+standardize_names <- function(splist) {
+  normalize_name_records(splist)$standardized_name
 }
 
 #' @keywords internal
 simple_cap <- function(x) {
   # Split each string into words, remove unnecessary white spaces, and convert to lowercase
-  words <- sapply(strsplit(x, "\\s+"), function(words) paste(tolower(words), collapse = " "))
+  words <- sapply(strsplit(x, "\\s+"), function(words) {
+    paste(tolower(words), collapse = " ")
+  })
 
   # Capitalize the first letter of each word
   capitalized <- sapply(strsplit(words, ""), function(word) {
@@ -104,7 +87,10 @@ unop_update_date <- function() {
 
   if (!requireNamespace("xml2", quietly = TRUE)) {
     out <- NA_character_
-    attr(out, "reason") <- "Package 'xml2' is required to check the UNOP website."
+    attr(
+      out,
+      "reason"
+    ) <- "Package 'xml2' is required to check the UNOP website."
     attr(out, "source_url") <- url_unop
     return(out)
   }
@@ -121,33 +107,36 @@ unop_update_date <- function() {
     return(out)
   }
 
-  raw_text <- xml2::xml_text(page)
-  clean_text <- gsub("\\s+", " ", raw_text)
-  clean_text <- gsub("([a-zA-Z])\\.([A-Z])", "\\1. \\2", clean_text)
-  clean_text <- trimws(clean_text)
-
-  text_lines <- unlist(strsplit(clean_text, "(?<=\\.)\\s+", perl = TRUE))
-  date_line <- grep("Actualizado", text_lines, value = TRUE)
-
-  if (length(date_line) == 0) {
-    out <- NA_character_
-    attr(out, "reason") <- "Could not find the 'Actualizado' line on the UNOP website."
-    attr(out, "source_url") <- url_unop
-    return(out)
-  }
-
-  match <- regexpr("[0-9]{2} de [a-z]+ de [0-9]{4}", date_line[1])
-
-  if (match[1] != -1) {
-    fecha <- substr(date_line[1], match[1], match[1] + attr(match, "match.length") - 1)
-    attr(fecha, "source_url") <- url_unop
-  } else {
-    fecha <- NA_character_
-    attr(fecha, "reason") <- "Could not parse the update date from the UNOP website."
-    attr(fecha, "source_url") <- url_unop
-  }
+  fecha <- extract_unop_update_date(xml2::xml_text(page))
+  attr(fecha, "source_url") <- url_unop
 
   fecha
+}
+
+extract_unop_update_date <- function(text) {
+  text <- tolower(gsub("[[:space:]\\x{00a0}]+", " ", text, perl = TRUE))
+  pattern <- "actualizad[oa][^0-9]{0,80}[0-9]{1,2} de [a-z]+ de [0-9]{4}"
+  hits <- regmatches(text, gregexpr(pattern, text, perl = TRUE))[[1]]
+  dates <- sub(
+    "^.*?([0-9]{1,2} de [a-z]+ de [0-9]{4})$",
+    "\\1",
+    hits,
+    perl = TRUE
+  )
+  parsed <- as.Date(vapply(
+    dates,
+    function(x) as.character(parse_unop_date(x)),
+    character(1)
+  ))
+  if (!length(parsed) || all(is.na(parsed))) {
+    out <- NA_character_
+    attr(
+      out,
+      "reason"
+    ) <- "Could not parse an update date associated with 'Actualizado' on the UNOP website."
+    return(out)
+  }
+  dates[which.max(parsed)]
 }
 
 #' Parse a UNOP checklist date
@@ -162,10 +151,26 @@ parse_unop_date <- function(fecha_str) {
     return(as.Date(NA))
   }
 
-  meses <- c("enero", "febrero", "marzo", "abril", "mayo", "junio",
-             "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
+  meses <- c(
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
+  )
 
   fecha_str <- tolower(trimws(fecha_str))
+  fecha_str <- sub("setiembre", "septiembre", fecha_str, fixed = TRUE)
+  if (!grepl("^[0-9]{1,2} de [a-z]+ de [0-9]{4}$", fecha_str)) {
+    return(as.Date(NA))
+  }
 
   for (i in seq_along(meses)) {
     fecha_str <- gsub(meses[i], sprintf("%02d", i), fecha_str, fixed = TRUE)
@@ -191,12 +196,15 @@ parse_unop_date <- function(fecha_str) {
 #' @export
 unop_check_update <- function(verbose = interactive()) {
   if (!is.logical(verbose) || length(verbose) != 1 || is.na(verbose)) {
-    cli::cli_abort("{.arg verbose} must be a single TRUE or FALSE value.", call = parent.frame())
+    cli::cli_abort(
+      "{.arg verbose} must be a single TRUE or FALSE value.",
+      call = parent.frame()
+    )
   }
 
   source_url <- "https://sites.google.com/site/boletinunop/checklist"
   site_date <- unop_update_date()
-  version_date <- attr(avesperu::aves_peru_2026_v1, "version_date")
+  version_date <- attr(current_checklist(), "version_date")
   result <- list(
     success = FALSE,
     is_up_to_date = NA,
@@ -230,8 +238,10 @@ unop_check_update <- function(verbose = interactive()) {
   if (is.na(fecha_sitio) || is.na(fecha_version)) {
     result$message <- paste(
       "Could not parse one or both dates.",
-      "Local version date:", version_date,
-      "| Online version date:", site_date
+      "Local version date:",
+      version_date,
+      "| Online version date:",
+      site_date
     )
 
     if (verbose) {
@@ -248,8 +258,10 @@ unop_check_update <- function(verbose = interactive()) {
   if (result$has_update) {
     result$message <- paste(
       "A newer UNOP checklist version is available.",
-      "Local dataset date:", version_date,
-      "| Online checklist date:", site_date
+      "Local dataset date:",
+      version_date,
+      "| Online checklist date:",
+      site_date
     )
 
     if (verbose) {
@@ -260,8 +272,10 @@ unop_check_update <- function(verbose = interactive()) {
   } else {
     result$message <- paste(
       "The local avesperu dataset is up to date.",
-      "Local dataset date:", version_date,
-      "| Online checklist date:", site_date
+      "Local dataset date:",
+      version_date,
+      "| Online checklist date:",
+      site_date
     )
 
     if (verbose) {

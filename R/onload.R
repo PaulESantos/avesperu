@@ -9,8 +9,9 @@
 #' @noRd
 
 .onAttach <- function(lib, pkg) {
-
-  if (!interactive()) return(invisible(NULL))
+  if (!interactive()) {
+    return(invisible(NULL))
+  }
 
   packageStartupMessage(
     cli::rule(
@@ -20,7 +21,9 @@
   )
 
   packageStartupMessage(cli::col_green("\u2714 Package successfully loaded."))
-  packageStartupMessage(cli::col_blue("\u2139 Run `unop_check_update()` to compare this dataset with the latest UNOP checklist."))
+  packageStartupMessage(cli::col_blue(
+    "\u2139 Run `unop_check_update()` to compare this dataset with the latest UNOP checklist."
+  ))
 
   if (isTRUE(getOption("avesperu.check_updates"))) {
     tryCatch(
@@ -68,7 +71,9 @@ show_progress <- function() {
 
   # Solo establecer opciones si no están ya definidas
   to_set <- !(names(opt_avesperu) %in% names(opt))
-  if (any(to_set)) options(opt_avesperu[to_set])
+  if (any(to_set)) {
+    options(opt_avesperu[to_set])
+  }
 
   invisible()
 }

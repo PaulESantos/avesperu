@@ -18,8 +18,16 @@ expect_valid_search_result <- function(result) {
   testthat::expect_s3_class(result, "data.frame")
   testthat::expect_named(
     result,
-    c("name_submitted", "accepted_name", "order_name", "family_name",
-      "english_name", "spanish_name", "status", "dist")
+    c(
+      "name_submitted",
+      "accepted_name",
+      "order_name",
+      "family_name",
+      "english_name",
+      "spanish_name",
+      "status",
+      "dist"
+    )
   )
   testthat::expect_type(result$name_submitted, "character")
   testthat::expect_type(result$accepted_name, "character")

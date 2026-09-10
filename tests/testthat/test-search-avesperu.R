@@ -1,10 +1,13 @@
 describe("search_avesperu()", {
-
   # Test con múltiples especies exactas
   it("returns expected results for multiple species", {
     result <- search_avesperu(
-      c("Patagioenas picazuros", "Columba livia",
-        "Chordeiles nacunda", "Laterallus albigularis"),
+      c(
+        "Patagioenas picazuros",
+        "Columba livia",
+        "Chordeiles nacunda",
+        "Laterallus albigularis"
+      ),
       return_details = TRUE
     )
 
@@ -12,18 +15,25 @@ describe("search_avesperu()", {
     expect_equal(ncol(result), 8)
     expect_equal(
       result$name_submitted,
-      c("Patagioenas picazuros", "Columba livia",
-        "Chordeiles nacunda", "Laterallus albigularis")
+      c(
+        "Patagioenas picazuros",
+        "Columba livia",
+        "Chordeiles nacunda",
+        "Laterallus albigularis"
+      )
     )
     expect_equal(
       result$accepted_name,
-      c("Patagioenas picazuro", "Columba livia",
-        "Chordeiles nacunda", "Laterallus albigularis")
+      c(
+        "Patagioenas picazuro",
+        "Columba livia",
+        "Chordeiles nacunda",
+        "Laterallus albigularis"
+      )
     )
     expect_equal(
       result$order_name,
-      c("Columbiformes", "Columbiformes",
-        "Caprimulgiformes", "Gruiformes")
+      c("Columbiformes", "Columbiformes", "Caprimulgiformes", "Gruiformes")
     )
   })
 
@@ -145,8 +155,16 @@ describe("search_avesperu()", {
 
     expect_named(
       result,
-      c("name_submitted", "accepted_name", "order_name", "family_name",
-        "english_name", "spanish_name", "status", "dist")
+      c(
+        "name_submitted",
+        "accepted_name",
+        "order_name",
+        "family_name",
+        "english_name",
+        "spanish_name",
+        "status",
+        "dist"
+      )
     )
     expect_type(result$name_submitted, "character")
     expect_type(result$accepted_name, "character")
@@ -169,7 +187,11 @@ describe("search_avesperu()", {
   })
 
   it("uses edit distance for fuzzy matching without changing output types", {
-    result <- search_avesperu("Falko sparverius", max_distance = 0.2, return_details = TRUE)
+    result <- search_avesperu(
+      "Falko sparverius",
+      max_distance = 0.2,
+      return_details = TRUE
+    )
 
     expect_equal(nrow(result), 1)
     expect_equal(result$name_submitted, "Falko sparverius")

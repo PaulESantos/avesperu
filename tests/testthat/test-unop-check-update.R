@@ -1,5 +1,4 @@
 describe("unop_check_update()", {
-
   it("returns a structured result when the local dataset is current", {
     local_mocked_bindings(
       unop_update_date = function() "23 de marzo de 2026"

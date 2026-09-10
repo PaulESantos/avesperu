@@ -38,3 +38,9 @@ bird_of_peru_unop_v4_2025.xlsx
 ^\.rscignore$
 ^rsconnect$
 ^manifest\.json$
+
+^REVISION-IMPLEMENTACION\.md$
+^DECISIONES-REVISION\.md$
+^VALIDACION-IMPLEMENTACION\.md$
+^air\.toml$
+^\.validation$

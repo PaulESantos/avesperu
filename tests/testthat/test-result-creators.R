@@ -1,5 +1,4 @@
 describe("create_empty_result()", {
-
   it("creates a single-row data frame", {
     result <- create_empty_result("Falco sparverius")
     expect_s3_class(result, "data.frame")
@@ -10,8 +9,16 @@ describe("create_empty_result()", {
     result <- create_empty_result("Falco sparverius")
     expect_named(
       result,
-      c("name_submitted", "accepted_name", "order_name", "family_name",
-        "english_name", "spanish_name", "status", "dist")
+      c(
+        "name_submitted",
+        "accepted_name",
+        "order_name",
+        "family_name",
+        "english_name",
+        "spanish_name",
+        "status",
+        "dist"
+      )
     )
   })
 
@@ -47,7 +54,6 @@ describe("create_empty_result()", {
 })
 
 describe("create_match_result()", {
-
   it("creates a single-row data frame", {
     matched_row <- data.frame(
       scientific_name = "Falco sparverius",
@@ -74,8 +80,16 @@ describe("create_match_result()", {
     result <- create_match_result("Falco sparverius", matched_row, 0)
     expect_named(
       result,
-      c("name_submitted", "accepted_name", "order_name", "family_name",
-        "english_name", "spanish_name", "status", "dist")
+      c(
+        "name_submitted",
+        "accepted_name",
+        "order_name",
+        "family_name",
+        "english_name",
+        "spanish_name",
+        "status",
+        "dist"
+      )
     )
   })
 

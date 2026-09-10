@@ -121,6 +121,11 @@ available online, run \code{\link{unop_check_update}()}.
 }
 }
 \note{
+Genus and epithet components are derived from the canonical \code{scientific_name}
+where the source components disagree. The \code{component_corrections} attribute
+preserves the original and derived components for the two affected rows.
+This does not change any scientific name or assert a taxonomic correction.
+
 This dataset is updated periodically as new species are documented and
 taxonomic revisions are published. Check the UNOP website for the most
 current version.

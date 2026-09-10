@@ -1,208 +1,142 @@
-describe("Parallel processing in search_avesperu()", {
+test_that("parallel and serial batches agree on all rows and audit information", {
+  input <- c(
+    "Falco sparverius",
+    "Falko sparverius",
+    NA,
+    "Invented bird",
+    "Falco sparverius"
+  )
+  serial <- search_avesperu(
+    input,
+    batch_size = 1,
+    parallel = FALSE,
+    return_details = TRUE
+  )
+  parallel <- search_avesperu(
+    input,
+    batch_size = 1,
+    parallel = TRUE,
+    n_cores = 2L,
+    return_details = TRUE
+  )
+  expect_identical(attr(parallel, "execution")$mode, "parallel")
+  expect_identical(attr(parallel, "execution")$workers, 2L)
+  expect_identical(attr(serial, "execution")$batches, 4L)
+  expect_identical(
+    attr(parallel, "reconciliation"),
+    attr(serial, "reconciliation")
+  )
+  attr(serial, "execution") <- NULL
+  attr(parallel, "execution") <- NULL
+  expect_identical(parallel, serial)
+})
 
-  it("returns same results with parallel = TRUE and parallel = FALSE", {
-    skip_if_not_installed("parallel")
-
-    splist <- c("Falco sparverius", "Crypturellus soui", "Tinamus major")
-
-    # Usar n_cores = 2 explícitamente para tests seguros
-    result_seq <- search_avesperu(
-      splist,
-      parallel = FALSE,
-      return_details = TRUE
-    )
-    result_par <- search_avesperu(
-      splist,
-      parallel = TRUE,
-      n_cores = 2L,
-      return_details = TRUE
-    )
-
-    expect_equal(result_seq, result_par)
+test_that("serial batching splits work and preserves duplicates and order", {
+  sizes <- integer()
+  original <- search_with_agrep
+  local_mocked_bindings(search_with_agrep = function(splist_unique, ...) {
+    sizes <<- c(sizes, length(splist_unique))
+    original(splist_unique, ...)
   })
+  input <- c(
+    "Falco sparverius",
+    "Tinamus major",
+    "Falko sparverius",
+    NA,
+    "",
+    "Falco sparverius"
+  )
+  out <- search_avesperu(
+    input,
+    batch_size = 2,
+    parallel = FALSE,
+    return_details = TRUE
+  )
+  expect_identical(sizes, c(2L, 2L, 1L))
+  expect_identical(out$name_submitted, input)
+})
 
-  it("processes lists with batching correctly", {
-    skip_if_not_installed("parallel")
-
-    splist <- c(
-      "Falco sparverius", "Crypturellus soui", "Tinamus major",
-      "Penelope jacquacu", "Ortalis motmot", "Colinus cristatus"
-    )
-
-    # Test con procesamiento secuencial (más seguro)
-    result_batch <- search_avesperu(
-      splist,
-      batch_size = 2,
-      parallel = FALSE,
-      return_details = TRUE
-    )
-
-    expect_equal(nrow(result_batch), length(splist))
-    expect_equal(ncol(result_batch), 8)
+test_that("cluster creation failure returns sequential results and records fallback", {
+  calls <- 0L
+  local_mocked_bindings(create_search_cluster = function(n) {
+    calls <<- calls + 1L
+    stop("simulated creation failure")
   })
-
-  it("respects batch_size parameter", {
-    skip_if_not_installed("parallel")
-
-    splist <- c(
-      "Falco sparverius", "Crypturellus soui", "Tinamus major",
-      "Penelope jacquacu", "Ortalis motmot"
-    )
-
-    # No debería error con diferentes tamaños de batch
-    expect_no_error(
-      search_avesperu(splist, batch_size = 1, parallel = FALSE)
-    )
-    expect_no_error(
-      search_avesperu(splist, batch_size = 10, parallel = FALSE)
-    )
-  })
-
-  it("validates batch_size parameter", {
-    splist <- c("Falco sparverius", "Crypturellus soui")
-
-    expect_error(
-      search_avesperu(splist, batch_size = -1),
-      "must be a positive integer"
-    )
-    expect_error(
-      search_avesperu(splist, batch_size = 0),
-      "must be a positive integer"
-    )
-  })
-
-  it("validates n_cores parameter", {
-    splist <- c("Falco sparverius", "Crypturellus soui")
-
-    expect_error(
-      search_avesperu(splist, n_cores = -1),
-      "must be .*NULL.* or a positive integer"
-    )
-    expect_error(
-      search_avesperu(splist, n_cores = 0),
-      "must be .*NULL.* or a positive integer"
-    )
-  })
-
-  it("accepts NULL for n_cores to auto-detect safely", {
-    skip_if_not_installed("parallel")
-
-    splist <- c("Falco sparverius", "Crypturellus soui")
-
-    # Usar mc.cores opción para controlar cores en tests
-    withr::local_options(list(mc.cores = 2L))
-
-    expect_no_error(
-      search_avesperu(splist, n_cores = NULL, parallel = FALSE)
-    )
-  })
-
-  it("caps n_cores to reasonable values in any environment", {
-    skip_if_not_installed("parallel")
-
-    splist <- c(
-      "Falco sparverius", "Crypturellus soui", "Tinamus major",
-      "Penelope jacquacu", "Ortalis motmot", "Colinus cristatus"
-    )
-
-    # Setear opción mc.cores para simular restricciones de check/CI
-    withr::local_options(list(mc.cores = 2L))
-
-    # Debe ejecutarse sin error incluso con mc.cores = 2
-    expect_no_error(
-      search_avesperu(
-        splist,
-        batch_size = 2,
-        parallel = TRUE,
-        n_cores = NULL
-      )
-    )
-  })
-
-  it("validates parallel parameter", {
-    splist <- c("Falco sparverius")
-
-    expect_error(
-      search_avesperu(splist, parallel = "yes"),
-      "must be a single logical value"
-    )
-    expect_error(
-      search_avesperu(splist, parallel = c(TRUE, FALSE)),
-      "must be a single logical value"
-    )
-  })
-
-  it("disables parallel for small lists automatically", {
-    skip_if_not_installed("parallel")
-
-    # Una lista pequeña (< batch_size) no debería usar paralelización
-    splist <- c("Falco sparverius")
-    result <- search_avesperu(
-      splist,
-      batch_size = 100,
-      parallel = TRUE,
-      return_details = TRUE
-    )
-
-    expect_equal(nrow(result), 1)
-  })
-
-  it("maintains result order with explicit n_cores", {
-    skip_if_not_installed("parallel")
-
-    splist <- c("Falco sparverius", "Crypturellus soui", "Tinamus major")
-
-    # Usar n_cores = 2 explícitamente para seguridad
-    result_par <- search_avesperu(
-      splist,
+  expect_snapshot({
+    out <- search_avesperu(
+      c("Falko sparverius", "Tinamus major"),
       batch_size = 1,
-      parallel = TRUE,
-      n_cores = 2L,
+      n_cores = 2,
       return_details = TRUE
     )
-
-    # El orden debe coincidir con el input
-    expect_equal(result_par$name_submitted, splist)
   })
+  expect_identical(calls, 1L)
+  expect_identical(out$accepted_name, c("Falco sparverius", "Tinamus major"))
+  expect_identical(
+    attr(out, "execution")$fallback,
+    "simulated creation failure"
+  )
+  expect_identical(attr(out, "execution")$mode, "sequential")
+})
 
-  it("recovers gracefully if cluster creation fails", {
-    skip_if_not_installed("parallel")
-
-    splist <- c("Falco sparverius", "Crypturellus soui")
-
-    # Incluso con una configuración problemática, debe devolver resultado
-    # usando fallback secuencial
-    expect_no_error(
-      result <- search_avesperu(
-        splist,
-        parallel = TRUE,
-        n_cores = 2L,
-        return_details = TRUE
-      )
-    )
-
-    expect_equal(nrow(result), 2)
-  })
-
-  it("respects mc.cores option when n_cores is NULL", {
-    skip_if_not_installed("parallel")
-
-    splist <- c(
-      "Falco sparverius", "Crypturellus soui", "Tinamus major",
-      "Penelope jacquacu"
-    )
-
-    # Simular restricción CRAN/CI con mc.cores = 1
-    withr::local_options(list(mc.cores = 1L))
-
-    # Debe respetar la opción global
-    expect_no_error(
-      search_avesperu(
-        splist,
-        batch_size = 2,
-        parallel = TRUE,
-        n_cores = NULL
-      )
+test_that("cluster dispatch failure cleans up resources and falls back", {
+  stopped <- 0L
+  local_mocked_bindings(
+    create_search_cluster = function(n) {
+      structure(list(), class = "invalid_cluster")
+    },
+    stop_search_cluster = function(cl) {
+      stopped <<- stopped + 1L
+    }
+  )
+  expect_snapshot({
+    out <- search_avesperu(
+      c("Falco sparverius", "Tinamus major"),
+      batch_size = 1,
+      n_cores = 2,
+      return_details = TRUE
     )
   })
+  expect_identical(stopped, 1L)
+  expect_identical(attr(out, "execution")$mode, "sequential")
+})
+
+test_that("core selection handles unknown detection and respects configured limits", {
+  input <- c("Falco sparverius", "Tinamus major")
+  local_mocked_bindings(
+    detect_search_cores = function() NA_integer_,
+    create_search_cluster = function(n) stop("unexpected cluster")
+  )
+  out <- search_avesperu(input, batch_size = 1, return_details = TRUE)
+  expect_identical(attr(out, "execution")$workers, 1L)
+  withr::local_options(mc.cores = 1L)
+  expect_no_error(search_avesperu(input, batch_size = 1))
+  withr::local_options(mc.cores = NA)
+  expect_snapshot(error = TRUE, search_avesperu(input))
+})
+
+test_that("serialized workers keep current helpers private", {
+  cl <- parallel::makeCluster(1L)
+  withr::defer(parallel::stopCluster(cl))
+  before <- parallel::clusterCall(cl, function() {
+    ls(envir = globalenv(), all.names = TRUE)
+  })
+  worker <- make_search_worker()
+  expect_identical(parent.env(environment(worker)), baseenv())
+  db <- current_checklist()
+  out <- parallel::parLapply(
+    cl,
+    list(1L),
+    worker,
+    names = "Falko sparverius",
+    db = db,
+    db_names = db$scientific_name,
+    distance = 1
+  )
+  expect_identical(out[[1]]$accepted_name, "Falco sparverius")
+  expect_identical(out[[1]]$match_type, "fuzzy")
+  after <- parallel::clusterCall(cl, function() {
+    ls(envir = globalenv(), all.names = TRUE)
+  })
+  expect_identical(after, before)
 })
