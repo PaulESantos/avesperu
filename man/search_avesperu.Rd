@@ -2,9 +2,29 @@
 % Please edit documentation in R/get_avesperu.R
 \name{search_avesperu}
 \alias{search_avesperu}
+\alias{ap_search}
+\alias{ap_match}
 \title{Search for Bird Species Data in the Birds of Peru Dataset}
 \usage{
 search_avesperu(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+)
+
+ap_search(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+)
+
+ap_match(
   splist,
   max_distance = 0.1,
   return_details = FALSE,

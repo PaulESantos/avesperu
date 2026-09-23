@@ -56,6 +56,10 @@ run_avesperu_app <- function(
   )
 }
 
+#' @rdname run_avesperu_app
+#' @export
+ap_app <- run_avesperu_app
+
 #' @keywords internal
 check_avesperu_app_deps <- function() {
   missing_pkgs <- c("shiny", "DT", "callr", "later")

@@ -2,6 +2,7 @@
 % Please edit documentation in R/shiny-app.R
 \name{run_avesperu_app}
 \alias{run_avesperu_app}
+\alias{ap_app}
 \title{Run a TNRS-style Shiny app for avesperu}
 \usage{
 run_avesperu_app(
@@ -9,6 +10,8 @@ run_avesperu_app(
   port = NULL,
   launch.browser = interactive()
 )
+
+ap_app(host = "127.0.0.1", port = NULL, launch.browser = interactive())
 }
 \arguments{
 \item{host}{Host interface passed to \code{\link[shiny:runApp]{shiny::runApp}}.

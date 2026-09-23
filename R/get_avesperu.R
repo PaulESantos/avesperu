@@ -482,3 +482,11 @@ create_match_result <- function(sp_name, matched_row, distance) {
     stringsAsFactors = FALSE
   )
 }
+
+#' @rdname search_avesperu
+#' @export
+ap_search <- search_avesperu
+
+#' @rdname search_avesperu
+#' @export
+ap_match <- search_avesperu

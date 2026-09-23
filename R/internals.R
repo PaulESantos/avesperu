@@ -287,3 +287,7 @@ unop_check_update <- function(verbose = interactive()) {
 
   invisible(result)
 }
+
+#' @rdname unop_check_update
+#' @export
+ap_check_update <- unop_check_update

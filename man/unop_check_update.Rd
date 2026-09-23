@@ -2,9 +2,12 @@
 % Please edit documentation in R/internals.R
 \name{unop_check_update}
 \alias{unop_check_update}
+\alias{ap_check_update}
 \title{Check whether the local dataset is up to date against UNOP}
 \usage{
 unop_check_update(verbose = interactive())
+
+ap_check_update(verbose = interactive())
 }
 \arguments{
 \item{verbose}{Logical. If \code{TRUE}, prints a summary with \code{cli} alerts.
