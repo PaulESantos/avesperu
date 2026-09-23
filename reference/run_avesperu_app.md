@@ -13,6 +13,8 @@ run_avesperu_app(
   port = NULL,
   launch.browser = interactive()
 )
+
+ap_app(host = "127.0.0.1", port = NULL, launch.browser = interactive())
 ```
 
 ## Arguments

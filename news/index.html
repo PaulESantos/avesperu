@@ -39,6 +39,20 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="avesperu-development-version">avesperu (development version)<a class="anchor" aria-label="anchor" href="#avesperu-development-version"></a></h2>
 <ul><li>
+<strong>Alineación con el ecosistema <code>perufauna</code> (Tidyverse Style):</strong>
+<ul><li>Se incorporaron alias canónicos con prefijo de dominio <code>ap_*</code> para consistencia transversal en el ecosistema de biodiversidad peruana:
+<ul><li>
+<code><a href="../reference/search_avesperu.html">ap_match()</a></code>: alias canónico de <code><a href="../reference/search_avesperu.html">search_avesperu()</a></code>.</li>
+<li>
+<code><a href="../reference/search_avesperu.html">ap_search()</a></code>: alias canónico de <code><a href="../reference/search_avesperu.html">search_avesperu()</a></code>.</li>
+<li>
+<code><a href="../reference/unop_check_update.html">ap_check_update()</a></code>: alias canónico de <code><a href="../reference/unop_check_update.html">unop_check_update()</a></code>.</li>
+<li>
+<code><a href="../reference/run_avesperu_app.html">ap_app()</a></code>: alias canónico de <code><a href="../reference/run_avesperu_app.html">run_avesperu_app()</a></code>.</li>
+</ul></li>
+<li>Se preserva el 100% de compatibilidad hacia atrás; todas las funciones previas continúan completamente operativas.</li>
+</ul></li>
+<li>
 <code>aves_peru_2026_v1</code> now keeps genus and epithet consistent with the scientific-name key and preserves the original two discrepancies in <code>component_corrections</code> (reference validation follow-up).</li>
 <li>
 <code><a href="../reference/run_avesperu_app.html">run_avesperu_app()</a></code> preserves source rows during import, supports explicit header/column selection and previews, exports review reasons and actual execution provenance, invalidates stale results, closes only the current session, and resolves bounded workloads in cancellable background processes (H01, H02, H04, H05, H11).</li>

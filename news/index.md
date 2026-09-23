@@ -2,6 +2,23 @@
 
 ## avesperu (development version)
 
+- **Alineación con el ecosistema `perufauna` (Tidyverse Style):**
+  - Se incorporaron alias canónicos con prefijo de dominio `ap_*` para
+    consistencia transversal en el ecosistema de biodiversidad peruana:
+    - [`ap_match()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md):
+      alias canónico de
+      [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md).
+    - [`ap_search()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md):
+      alias canónico de
+      [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md).
+    - [`ap_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md):
+      alias canónico de
+      [`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md).
+    - [`ap_app()`](https://paulesantos.github.io/avesperu/reference/run_avesperu_app.md):
+      alias canónico de
+      [`run_avesperu_app()`](https://paulesantos.github.io/avesperu/reference/run_avesperu_app.md).
+  - Se preserva el 100% de compatibilidad hacia atrás; todas las
+    funciones previas continúan completamente operativas.
 - `aves_peru_2026_v1` now keeps genus and epithet consistent with the
   scientific-name key and preserves the original two discrepancies in
   `component_corrections` (reference validation follow-up).

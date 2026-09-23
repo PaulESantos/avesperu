@@ -18,6 +18,24 @@ search_avesperu(
   parallel = TRUE,
   n_cores = NULL
 )
+
+ap_search(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+)
+
+ap_match(
+  splist,
+  max_distance = 0.1,
+  return_details = FALSE,
+  batch_size = 100,
+  parallel = TRUE,
+  n_cores = NULL
+)
 ```
 
 ## Arguments

@@ -9,6 +9,8 @@ or enabled through the `avesperu.check_updates` option.
 
 ``` r
 unop_check_update(verbose = interactive())
+
+ap_check_update(verbose = interactive())
 ```
 
 ## Arguments

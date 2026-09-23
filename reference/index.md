@@ -9,8 +9,12 @@
 - [`aves_peru_2026_v1`](https://paulesantos.github.io/avesperu/reference/aves_peru_2026_v1.md)
   : aves_peru_2026_v1
 - [`run_avesperu_app()`](https://paulesantos.github.io/avesperu/reference/run_avesperu_app.md)
+  [`ap_app()`](https://paulesantos.github.io/avesperu/reference/run_avesperu_app.md)
   : Run a TNRS-style Shiny app for avesperu
 - [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
+  [`ap_search()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
+  [`ap_match()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
   : Search for Bird Species Data in the Birds of Peru Dataset
 - [`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md)
+  [`ap_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md)
   : Check whether the local dataset is up to date against UNOP
