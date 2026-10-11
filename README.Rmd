@@ -4,404 +4,78 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-library(dplyr)
-library(ggplot2)
-library(tibble)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "man/figures/README-", out.width = "100%")
 ```
 
-# avesperu <a href='https://github.com/PaulESantos/avesperu'><img src='man/figures/avesperu.svg' align="right" height="200" width="200" /></a>
-
+# avesperu <a href="https://github.com/PaulESantos/avesperu"><img src="man/figures/avesperu.svg" align="right" height="139" alt="avesperu logo" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.org/package=avesperu)
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
-[![](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
-[![](https://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green)](https://cran.r-project.org/package=avesperu)
+[![Codecov test coverage](https://codecov.io/gh/PaulESantos/avesperu/graph/badge.svg)](https://app.codecov.io/gh/PaulESantos/avesperu)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://CRAN.R-project.org/package=avesperu)
 <!-- badges: end -->
 
-The `avesperu` package provides access to the most up-to-date and comprehensive dataset on Peru's avian diversity. The current bundled checklist, `aves_peru_2026_v1`, corresponds to **March 23, 2026** and includes **1,925** bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).
+`avesperu` gives R users a local, versioned checklist of the birds of Peru and tools to find and reconcile scientific names. It supports reproducible work on field records, biodiversity databases, and taxonomic reviews without requiring an internet connection for ordinary searches.
 
-The source checklist is maintained by the Unión de Ornitólogos del Perú (UNOP) and is available directly from the official **Lista de las aves del Perú / List of the Birds of Peru** page:
-<https://sites.google.com/site/boletinunop/checklist>
+The bundled `aves_peru_2026_v1` checklist contains 1,925 species and follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March 2026. It combines the checklist with exact and approximate matching for practical data cleaning.
 
-### Species Categories
+## Get started in 60 seconds
 
-Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:
-
-- X Resident: 1,552 species
-- E Endemic: 119 species
-- NB Migratory (non-breeding): 140 species
-- V Vagrant: 90 species
-- IN Introduced: 3 species
-- EX Extirpated: 0 species
-- U Unconfirmed records: 21 species
-
-This results in a total of 1,925 species, showcasing Peru's extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.
-
-### Checking for Checklist Updates
-
-The package includes `unop_check_update()`, which compares the local dataset version date against the latest date published on the UNOP checklist website. This check is no longer triggered automatically on package attach; run it explicitly when you want to verify whether `avesperu` is up to date.
-
-```{r eval = FALSE}
-unop_check_update()
-```
-
-## Features
-
-The `avesperu` package is designed to streamline access to this data for researchers, conservationists, and bird enthusiasts alike. It provides:
-
-- A comprehensive and updated bird species dataset following the latest SACC classification.
-
-- Taxonomy validation tools, ensuring consistency with international standards.
-
-- Fuzzy matching capabilities for improved species name retrieval and validation.
-
-- An interactive Shiny interface for batch name validation, parsing, review, and export.
-
-
-```{r echo=FALSE}
-df <- tibble::tibble(
-  year = c(1968, 1980, 2001, 2007, 2010, 2015, 2020, 2021,
-           2022, 2023, 2024, 2025, 2026),
-  species = c(1491, 1678, 1800, 1800, 1820, 1851, 1870, 1874,
-              1888, 1892, 1909, 1919, 1925)
-) |>
-  dplyr::mutate(
-    change = species - dplyr::lag(species),
-    is_current = year == max(year),
-    label = dplyr::if_else(is_current, paste0(species, " species"), NA_character_)
-  )
-
-ggplot2::ggplot(df, ggplot2::aes(x = year, y = species)) +
-  ggplot2::geom_line(linewidth = 1.1, color = "#2F6F73") +
-  ggplot2::geom_point(
-    ggplot2::aes(fill = is_current),
-    shape = 21,
-    size = 3,
-    color = "#1F2A2E",
-    stroke = 0.7
-  ) +
-  ggplot2::geom_text(
-    ggplot2::aes(label = label),
-    nudge_y = 18,
-    size = 3.4,
-    fontface = "bold",
-    na.rm = TRUE
-  ) +
-  ggplot2::scale_fill_manual(
-    values = c(`FALSE` = "white", `TRUE` = "#D1495B"),
-    guide = "none"
-  ) +
-  ggplot2::scale_x_continuous(
-    breaks = c(1968, 1980, 2001, 2010, 2015, 2020, 2023, 2026)
-  ) +
-  ggplot2::scale_y_continuous(
-    name = "Recognized species",
-    limits = c(1450, NA),
-    expand = ggplot2::expansion(mult = c(0.02, 0.12))
-  ) +
-  ggplot2::labs(
-    title = "Growth of the Peruvian Bird Checklist",
-    subtitle = "Recognized species in major checklist updates, 1968-2026",
-    x = NULL,
-    caption = "Source: UNOP checklist and historical Peruvian bird checklist updates."
-  ) +
-  ggplot2::theme_minimal(base_size = 11) +
-  ggplot2::theme(
-    panel.grid.minor = ggplot2::element_blank(),
-    panel.grid.major.x = ggplot2::element_blank(),
-    plot.title = ggplot2::element_text(face = "bold"),
-    plot.caption = ggplot2::element_text(color = "#5F6B73", hjust = 0),
-    axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 6))
-  )
-
-```
-
-
-### Insights and Trends
-
-The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2026, reflecting continuous research and improvements in taxonomic resolution:
-
-- A substantial jump occurred between 1968 and 1980, with 187 new species recorded.
-
-- In recent years, updates have slowed but continued to increase steadily, reflecting meticulous reviews of published records and taxonomic refinements.
-
-
-## Suggested citation:
-
-```text
-Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.1. https://paulesantos.github.io/avesperu/
-
-The bird species checklist included in this package is based on:
-
-Plenge, M. A., & Angulo, F. (2026). Lista de las aves del Perú / List of the birds
-of Peru. Version 23-03-2026. Unión de Ornitólogos del Perú.
-https://sites.google.com/site/boletinunop/checklist
-```
-
-## Installation
-
-You can install the `avesperu` package from CRAN using:
+Install the released package from CRAN:
 
 ```r
 install.packages("avesperu")
-# or
-pak::pak("avesperu")
 ```
 
-Also you can install the development version of `avesperu` like so:
+Or install the development version:
 
-``` r
+```r
 pak::pak("PaulESantos/avesperu")
 ```
 
-## Usage
-
-### Current dataset
-
-The current checklist shipped with the package is `aves_peru_2026_v1`.
+Search a short list of submitted names:
 
 ```{r}
-data("aves_peru_2026_v1")
-```
-
-### Shiny app
-
-The package includes an interactive Shiny application for batch scientific-name validation against the local `avesperu` checklist. The app supports pasted names, file upload (`TXT`, `CSV`, `TSV`, `XLS`, `XLSX`), exact or fuzzy matching, review tables, and export to `CSV`, `TSV`, `XLSX`, and run metadata.
-
-You can explore the live deployed app here:
-<https://paulefrensa.shinyapps.io/avesperu/>
-
-```{r eval = FALSE}
-avesperu::run_avesperu_app()
-```
-
-![](man/figures/shiny_app.png)
-
-### Basic Search
-The `search_avesperu()` function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.
-
-
-```{r}
-
 library(avesperu)
-
-# Define species list
-splist <- c("Falco sparverius",
-            "Tinamus osgoodi",
-            "Phoenicoparrus jamesi",
-            "Crypturellus soui",
-            "Thraupis palmarum",
-            "Thamnophilus praecox",
-            "Penelope albipennis")
-
-# Search for species information
-search_avesperu(splist = splist)
-```
-
-
-### Integration with Data Frames
-
-The function integrates seamlessly with data.frame and tibble objects, enabling efficient taxonomic validation within data processing pipelines:
-
-```{r}
-# Create a data frame with species names
-bird_data <- tibble::tibble(species = splist)
-
-# Add taxonomic information
-bird_data |> 
-  dplyr::mutate(taxonomy = search_avesperu(species)) 
-
-# Or extract specific fields
-bird_data  |> 
-  dplyr::mutate(
-    status = search_avesperu(species, return_details = TRUE)$status,
-    family = search_avesperu(species, return_details = TRUE)$family_name,
-    order = search_avesperu(species, return_details = TRUE)$order_name
-  )
-```
-
-### Fuzzy Matching for Name Variations
-
-The package implements approximate string matching (fuzzy matching) to handle typographical errors, spelling variations, and incomplete names. This feature significantly improves data quality when working with field observations or legacy datasets that may contain inconsistencies.
-
--  How Fuzzy Matching Works
-The max_distance parameter controls the matching tolerance:
-
-Values between 0 and 1 (e.g., 0.1): Interpreted as a proportion of the name length
-
-  "Tinamus osgoodi" (14 chars): allows up to 1 character difference (14 × 0.1)
-
-Integer values (e.g., 2): Interpreted as absolute number of character differences allowed
-
-```{r}
-# Species list with intentional typos
-splist_typos <- c(
-  "Falco sparverius",      # Correct
-  "Tinamus osgodi",        # Missing 'o' should match "Tinamus osgoodi"
-  "Crypturellus sooui",    # Extra 'o' should match "Crypturellus soui"
-  "Tinamus guttatus",      # Correct
-  "Tinamus guttattus",     # Extra 't' should match "Tinamus guttatus"
-  "Thamnophilus praecox",  # Correct
-  "Penelope albipenis"     # Missing 'n' should match "Penelope albipennis"
+result <- search_avesperu(
+  c("Falco sparverius", "Tinamus osgoodi"),
+  return_details = TRUE
 )
-
-# Search with moderate tolerance (5% of name length)
-results <- search_avesperu(splist_typos, max_distance = 0.05, return_details = TRUE)
-
-# Display matching results
-results[, c("name_submitted", "accepted_name", "dist")]
+result[, c("name_submitted", "accepted_name", "status", "dist")]
 ```
 
+The result preserves the submitted name and returns the accepted name, status, and taxonomy. For a visual workflow, launch the [interactive Shiny app](https://paulefrensa.shinyapps.io/avesperu/):
 
-### Understanding the Output
-
-- name_submitted: The original name provided by the user
-- accepted_name: The matched species name from the database
-- dist: Levenshtein distance (number of single-character edits required to transform one string into another)
-
-  - 0 = exact match
-  - 1 = one character difference (insertion, deletion, or substitution)
-  - Higher values indicate greater divergence
-
-### Adjusting Matching Sensitivity
-
-```{r}
-# Strict matching: only 1 character difference allowed
-search_avesperu(splist_typos, max_distance = 1, return_details = TRUE)
-
-# Proportional matching: 10% of name length
-search_avesperu(splist_typos, max_distance = 0.1, return_details = TRUE)
-
-# Lenient matching: up to 2 character differences
-search_avesperu(splist_typos, max_distance = 2, return_details = TRUE)
-
-# Exact matching only
-search_avesperu(splist_typos, max_distance = 0, return_details = TRUE)
+```r
+run_avesperu_app()
 ```
 
+![Screenshot of the avesperu Shiny app for validating scientific names](man/figures/shiny_app.png)
 
+## What you can do
 
-### Best Practices
+- **Search the current Peru checklist** with `search_avesperu()` and retrieve taxonomic details for one name or a vector of names.
+- **Reconcile spelling variants** with controlled approximate matching; see the [approximate matching guide](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html).
+- **Validate field-data workflows** while keeping submitted values and review information; see [advanced use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html).
+- **Compare checklist releases** in the existing [2025–2026 comparison](https://paulesantos.github.io/avesperu/articles/comparison.html).
+- **Review and export batches interactively** with the local Shiny application.
 
-Start conservative: Use max_distance = 0.05 (5%) for initial data cleaning
-Review ambiguous matches: Check entries with dist > 0 to verify correctness
-Handle unmatched species: Names returning NA require manual verification
-Document your threshold: Always report the max_distance parameter used
+## Scope and source
 
-- Handling Unmatched Names
+`avesperu` covers the bird species checklist of Peru distributed by UNOP. It is not an authority for records outside Peru, and approximate matches should be reviewed before being accepted in a dataset. Tied candidates and qualified or hybrid names are deliberately flagged for review rather than silently resolved.
 
-```{r}
-results <- search_avesperu(splist_typos, 
-                           max_distance = 0,
-                           return_details = TRUE)
-results
+The source is the [Lista de las aves del Perú / List of the Birds of Peru](https://sites.google.com/site/boletinunop/checklist), maintained by UNOP. This release is based on version 23-03-2026; inspect the bundled data directly with `aves_peru_2026_v1`, or run `unop_check_update()` when you intentionally want to compare the local date with the online source.
 
-# Identify unmatched species
-unmatched <- results[is.na(results$accepted_name), ]
-unmatched
-if (nrow(unmatched) > 0) {
-  cat("The following names could not be matched:\n")
-  print(unmatched$name_submitted)
-  
-  # Try with higher tolerance
-  retry <- search_avesperu(unmatched$name_submitted,
-                           max_distance = 0.15,
-                           return_details = TRUE )
-  retry
-  print(retry)
-}
+## Learn more
 
-```
+- [Package website](https://paulesantos.github.io/avesperu/)
+- [Advanced use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html)
+- [Approximate matching](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html)
+- [Report an issue](https://github.com/PaulESantos/avesperu/issues)
 
+## Citation and contact
 
-### Advanced Usage Examples 
-#### Example 1: Quality Control for Field Data
-
-```{r}
-# Simulated field observation data
-field_data <- data.frame(
-  observer = c("Observer A", "Observer B", "Observer A", "Observer C"),
-  species = c("Amazilia amazilia", "Phaetornis guy", "Metallura tyrianthina", 
-              "Tangara chilensis"),
-  count = c(2, 1, 3, 5)
-)
-
-# Validate species names and add taxonomy
-field_data_validated <- field_data  |> 
-  dplyr::mutate(
-  taxonomy = purrr::map(species, ~search_avesperu(.x, 
-                                           max_distance = 0.1, 
-                                           return_details = TRUE))) |> 
-  tidyr::unnest(taxonomy) |> 
-  dplyr::select(observer, species, accepted_name, family_name, 
-         english_name, status, count, dist)
-
-field_data_validated
-```
-
-#### Example 2: Checking Endemic Status
-
-```{r}
-# Identify endemic species from a list
-my_species <- c("Penelope albipennis", "Xenoglaux loweryi", "Grallaria ridgelyi",
-                "Falco sparverius", "Thraupis palmarum")
-
-results <- search_avesperu(my_species, return_details = TRUE)
-
-# Filter endemic species
-endemic_species <- results  |> 
-  dplyr::filter(status == "Endémico")  |> 
-  dplyr::select(scientific_name = accepted_name, english_name, family_name)
-
-print(endemic_species)
-```
-
-
-#### Example 3: Taxonomic Summary
-
-```{r}
-# Get taxonomic distribution of a species list
-my_list <- search_avesperu(splist, return_details = TRUE)
-
-# Count by family
-my_list  |> 
-  dplyr::count(family_name, sort = TRUE)
-
-# Count by order
-my_list  |> 
-  dplyr::count(order_name, sort = TRUE)
-
-# Status summary
-my_list  |> 
-  dplyr::count(status)
-```
-
-
-### Reviewing uncertain results
-
-Detailed output retains eight columns and carries row-aligned `reconciliation`,
-`execution` and `reference` attributes. `[` preserves audit alignment. Tied
-candidates have no accepted name. Qualifiers and hybrid markers always require
-review and return `NA` in the basic status vector.
-
-```{r audit-example, eval=FALSE}
-result <- search_avesperu("Falco CF. sparverius", return_details = TRUE)
-attr(result, "reconciliation")
-attr(result, "execution")
-attr(result, "reference")
-```
-
-The Shiny app uses `callr` and `later` for cancellable background jobs. File
-imports preserve source records and expose header/column settings. Closing a
-session does not stop other sessions or the application process.
+Use `citation("avesperu")` to obtain the current package and checklist citations. Please cite both the package and the UNOP checklist when it informs your work. The package is released under the MIT license; questions and bug reports are welcome through the [issue tracker](https://github.com/PaulESantos/avesperu/issues).

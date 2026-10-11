@@ -4,6 +4,14 @@ authors:
   Paul Efren Santos Andrade:
     href: https://paulefrensa.rbind.io/
 
+articles:
+  - title: Guides
+    navbar: Guides
+    contents:
+      - uso-avanzado
+      - coincidencia-aproximada
+      - comparison
+
 
 template:
   bootstrap: 5

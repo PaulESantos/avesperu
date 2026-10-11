@@ -33,12 +33,14 @@
 #' CSV/TSV source rows are record numbers, not physical lines for quoted multiline
 #' fields. Excel rows refer to worksheet rows. Downloads require a completed run
 #' for the current inputs and include review reasons and reference provenance.
+#' This function is interactive only and aborts before starting Shiny in
+#' non-interactive sessions or while pkgdown builds the package website.
 #'
 #' @return The value returned by \code{\link[shiny:runApp]{shiny::runApp}}.
 #' @export
 #'
 #' @examples
-#' if (interactive()) {
+#' if (interactive() && !identical(Sys.getenv("IN_PKGDOWN"), "true")) {
 #'   run_avesperu_app()
 #' }
 run_avesperu_app <- function(
@@ -46,6 +48,12 @@ run_avesperu_app <- function(
   port = NULL,
   launch.browser = interactive()
 ) {
+  if (!interactive() || identical(Sys.getenv("IN_PKGDOWN"), "true")) {
+    cli::cli_abort(
+      "{.fun run_avesperu_app} can only be run in an interactive R session outside a pkgdown build."
+    )
+  }
+
   check_avesperu_app_deps()
 
   shiny::runApp(
