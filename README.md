@@ -2,7 +2,7 @@
 
 
 
-# avesperu <a href="https://github.com/PaulESantos/avesperu"><img src="man/figures/avesperu.svg" align="right" height="139" alt="avesperu logo" /></a>
+# avesperu <a href="https://github.com/PaulESantos/avesperu"><img src="man/figures/avesperu.svg" alt="avesperu logo" width="139" height="139" style="float: right; width: 139px !important; height: 139px !important; max-width: 139px !important;" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
@@ -16,7 +16,7 @@
 
 The bundled `aves_peru_2026_v1` checklist contains 1,925 species and follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March 2026. It combines the checklist with exact and approximate matching for practical data cleaning.
 
-## Get started in 60 seconds
+## Get started
 
 Install the released package from CRAN:
 
