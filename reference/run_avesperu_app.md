@@ -67,12 +67,14 @@ missing values. Standard column headers are recognized automatically;
 other layouts require header/column selection. CSV/TSV source rows are
 record numbers, not physical lines for quoted multiline fields. Excel
 rows refer to worksheet rows. Downloads require a completed run for the
-current inputs and include review reasons and reference provenance.
+current inputs and include review reasons and reference provenance. This
+function is interactive only and aborts before starting Shiny in
+non-interactive sessions or while pkgdown builds the package website.
 
 ## Examples
 
 ``` r
-if (interactive()) {
+if (interactive() && !identical(Sys.getenv("IN_PKGDOWN"), "true")) {
   run_avesperu_app()
 }
 ```

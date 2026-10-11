@@ -38,7 +38,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/comparison.html">How the Peru checklist changed from 2025 to 2026</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
+    <li><a class="dropdown-item" href="articles/uso-avanzado.html">Advanced use of avesperu</a></li>
+    <li><a class="dropdown-item" href="articles/coincidencia-aproximada.html">Approximate matching of scientific names</a></li>
+    <li><a class="dropdown-item" href="articles/comparison.html">How the Peru checklist changed from 2025 to 2026</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -56,464 +60,76 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="avesperu-">avesperu <a href="https://github.com/PaulESantos/avesperu" class="external-link"><img src="reference/figures/avesperu.svg" align="right" height="200" width="200"></a>
+<div class="page-header"><h1 id="avesperu-">avesperu <a href="https://github.com/PaulESantos/avesperu" class="external-link"><img src="reference/figures/avesperu.svg" align="right" height="139" alt="avesperu logo"></a>
 <a class="anchor" aria-label="anchor" href="#avesperu-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>The <code>avesperu</code> package provides access to the most up-to-date and comprehensive dataset on Peru’s avian diversity. The current bundled checklist, <code>aves_peru_2026_v1</code>, corresponds to <strong>March 23, 2026</strong> and includes <strong>1,925</strong> bird species, reflecting recent taxonomic changes and updated validations based on scientific publications, photographs, and sound recordings deposited in accredited institutions. The classification follows the guidelines set by the South American Checklist Committee (SACC).</p>
-<p>The source checklist is maintained by the Unión de Ornitólogos del Perú (UNOP) and is available directly from the official <strong>Lista de las aves del Perú / List of the Birds of Peru</strong> page: <a href="https://sites.google.com/site/boletinunop/checklist" class="external-link uri">https://sites.google.com/site/boletinunop/checklist</a></p>
-<div class="section level3">
-<h3 id="species-categories">Species Categories<a class="anchor" aria-label="anchor" href="#species-categories"></a>
-</h3>
-<p>Each species in the dataset is classified into one of the following categories, reflecting its status in Peru:</p>
-<ul>
-<li>X Resident: 1,552 species</li>
-<li>E Endemic: 119 species</li>
-<li>NB Migratory (non-breeding): 140 species</li>
-<li>V Vagrant: 90 species</li>
-<li>IN Introduced: 3 species</li>
-<li>EX Extirpated: 0 species</li>
-<li>U Unconfirmed records: 21 species</li>
-</ul>
-<p>This results in a total of 1,925 species, showcasing Peru’s extraordinary bird diversity and the ongoing refinement of its avifaunal checklist.</p>
-</div>
-<div class="section level3">
-<h3 id="checking-for-checklist-updates">Checking for Checklist Updates<a class="anchor" aria-label="anchor" href="#checking-for-checklist-updates"></a>
-</h3>
-<p>The package includes <code><a href="reference/unop_check_update.html">unop_check_update()</a></code>, which compares the local dataset version date against the latest date published on the UNOP checklist website. This check is no longer triggered automatically on package attach; run it explicitly when you want to verify whether <code>avesperu</code> is up to date.</p>
+<p><code>avesperu</code> gives R users a local, versioned checklist of the birds of Peru and tools to find and reconcile scientific names. It supports reproducible work on field records, biodiversity databases, and taxonomic reviews without requiring an internet connection for ordinary searches.</p>
+<p>The bundled <code>aves_peru_2026_v1</code> checklist contains 1,925 species and follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March 2026. It combines the checklist with exact and approximate matching for practical data cleaning.</p>
+<div class="section level2">
+<h2 id="get-started-in-60-seconds">Get started in 60 seconds<a class="anchor" aria-label="anchor" href="#get-started-in-60-seconds"></a>
+</h2>
+<p>Install the released package from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/unop_check_update.html">unop_check_update</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
-</h2>
-<p>The <code>avesperu</code> package is designed to streamline access to this data for researchers, conservationists, and bird enthusiasts alike. It provides:</p>
-<ul>
-<li><p>A comprehensive and updated bird species dataset following the latest SACC classification.</p></li>
-<li><p>Taxonomy validation tools, ensuring consistency with international standards.</p></li>
-<li><p>Fuzzy matching capabilities for improved species name retrieval and validation.</p></li>
-<li><p>An interactive Shiny interface for batch name validation, parsing, review, and export.</p></li>
-</ul>
-<p><img src="reference/figures/README-unnamed-chunk-3-1.png" alt="" width="100%"></p>
-<div class="section level3">
-<h3 id="insights-and-trends">Insights and Trends<a class="anchor" aria-label="anchor" href="#insights-and-trends"></a>
-</h3>
-<p>The chart shows the steady increase in the number of bird species recorded in Peru from 1968 to 2026, reflecting continuous research and improvements in taxonomic resolution:</p>
-<ul>
-<li><p>A substantial jump occurred between 1968 and 1980, with 187 new species recorded.</p></li>
-<li><p>In recent years, updates have slowed but continued to increase steadily, reflecting meticulous reviews of published records and taxonomic refinements.</p></li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="suggested-citation">Suggested citation:<a class="anchor" aria-label="anchor" href="#suggested-citation"></a>
-</h2>
-<pre class="text"><code>Santos Andrade, P. E. (2026). avesperu: Access to the List of Birds Species of Peru.
-R package version 0.1.1. https://paulesantos.github.io/avesperu/
-
-The bird species checklist included in this package is based on:
-
-Plenge, M. A., &amp; Angulo, F. (2026). Lista de las aves del Perú / List of the birds
-of Peru. Version 23-03-2026. Unión de Ornitólogos del Perú.
-https://sites.google.com/site/boletinunop/checklist</code></pre>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the <code>avesperu</code> package from CRAN using:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"avesperu"</span><span class="op">)</span></span>
-<span><span class="co"># or</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"avesperu"</span><span class="op">)</span></span></code></pre></div>
-<p>Also you can install the development version of <code>avesperu</code> like so:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"avesperu"</span><span class="op">)</span></span></code></pre></div>
+<p>Or install the development version:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"PaulESantos/avesperu"</span><span class="op">)</span></span></code></pre></div>
+<p>Search a short list of submitted names:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>, <span class="st">"Tinamus osgoodi"</span><span class="op">)</span>,</span>
+<span>  return_details <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">result</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_submitted"</span>, <span class="st">"accepted_name"</span>, <span class="st">"status"</span>, <span class="st">"dist"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;     name_submitted    accepted_name    status dist</span></span>
+<span><span class="co">#&gt; 1 Falco sparverius Falco sparverius Residente    0</span></span>
+<span><span class="co">#&gt; 2  Tinamus osgoodi  Tinamus osgoodi Residente    0</span></span></code></pre></div>
+<p>The result preserves the submitted name and returns the accepted name, status, and taxonomy. For a visual workflow, launch the <a href="https://paulefrensa.shinyapps.io/avesperu/" class="external-link">interactive Shiny app</a>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/run_avesperu_app.html">run_avesperu_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="reference/figures/shiny_app.png" alt="Screenshot of the avesperu Shiny app for validating scientific names"><div class="figcaption">Screenshot of the avesperu Shiny app for validating scientific names</div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+<h2 id="what-you-can-do">What you can do<a class="anchor" aria-label="anchor" href="#what-you-can-do"></a>
 </h2>
-<div class="section level3">
-<h3 id="current-dataset">Current dataset<a class="anchor" aria-label="anchor" href="#current-dataset"></a>
-</h3>
-<p>The current checklist shipped with the package is <code>aves_peru_2026_v1</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"aves_peru_2026_v1"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="shiny-app">Shiny app<a class="anchor" aria-label="anchor" href="#shiny-app"></a>
-</h3>
-<p>The package includes an interactive Shiny application for batch scientific-name validation against the local <code>avesperu</code> checklist. The app supports pasted names, file upload (<code>TXT</code>, <code>CSV</code>, <code>TSV</code>, <code>XLS</code>, <code>XLSX</code>), exact or fuzzy matching, review tables, and export to <code>CSV</code>, <code>TSV</code>, <code>XLSX</code>, and run metadata.</p>
-<p>You can explore the live deployed app here: <a href="https://paulesantos-avesperu.share.connect.posit.cloud/" class="external-link uri">https://paulesantos-avesperu.share.connect.posit.cloud/</a></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">avesperu</span><span class="fu">::</span><span class="fu"><a href="reference/run_avesperu_app.html">run_avesperu_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/shiny_app.png"></p>
-</div>
-<div class="section level3">
-<h3 id="basic-search">Basic Search<a class="anchor" aria-label="anchor" href="#basic-search"></a>
-</h3>
-<p>The <code><a href="reference/search_avesperu.html">search_avesperu()</a></code> function accepts a character vector of species names and returns their status information from the Peru bird database. The function is fully vectorized, allowing efficient batch processing of multiple species simultaneously.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/avesperu" class="external-link">avesperu</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define species list</span></span>
-<span><span class="va">splist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco sparverius"</span>,</span>
-<span>            <span class="st">"Tinamus osgoodi"</span>,</span>
-<span>            <span class="st">"Phoenicoparrus jamesi"</span>,</span>
-<span>            <span class="st">"Crypturellus soui"</span>,</span>
-<span>            <span class="st">"Thraupis palmarum"</span>,</span>
-<span>            <span class="st">"Thamnophilus praecox"</span>,</span>
-<span>            <span class="st">"Penelope albipennis"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Search for species information</span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span>splist <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Residente"  "Residente"  "Migratorio" "Residente"  "Residente" </span></span>
-<span><span class="co">#&gt; [6] "Residente"  "Endémico"</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="integration-with-data-frames">Integration with Data Frames<a class="anchor" aria-label="anchor" href="#integration-with-data-frames"></a>
-</h3>
-<p>The function integrates seamlessly with data.frame and tibble objects, enabling efficient taxonomic validation within data processing pipelines:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a data frame with species names</span></span>
-<span><span class="va">bird_data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>species <span class="op">=</span> <span class="va">splist</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add taxonomic information</span></span>
-<span><span class="va">bird_data</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>taxonomy <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span><span class="op">)</span> </span>
-<span><span class="co">#&gt; # A tibble: 7 × 2</span></span>
-<span><span class="co">#&gt;   species               taxonomy  </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt;     </span></span>
-<span><span class="co">#&gt; 1 Falco sparverius      Residente </span></span>
-<span><span class="co">#&gt; 2 Tinamus osgoodi       Residente </span></span>
-<span><span class="co">#&gt; 3 Phoenicoparrus jamesi Migratorio</span></span>
-<span><span class="co">#&gt; 4 Crypturellus soui     Residente </span></span>
-<span><span class="co">#&gt; 5 Thraupis palmarum     Residente </span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox  Residente </span></span>
-<span><span class="co">#&gt; 7 Penelope albipennis   Endémico</span></span>
-<span></span>
-<span><span class="co"># Or extract specific fields</span></span>
-<span><span class="va">bird_data</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    status <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">status</span>,</span>
-<span>    family <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">family_name</span>,</span>
-<span>    order <span class="op">=</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">order_name</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 7 × 4</span></span>
-<span><span class="co">#&gt;   species               status     family           order              </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;              </span></span>
-<span><span class="co">#&gt; 1 Falco sparverius      Residente  Falconidae       Falconiformes      </span></span>
-<span><span class="co">#&gt; 2 Tinamus osgoodi       Residente  Tinamidae        Tinamiformes       </span></span>
-<span><span class="co">#&gt; 3 Phoenicoparrus jamesi Migratorio Phoenicopteridae Phoenicopteriformes</span></span>
-<span><span class="co">#&gt; 4 Crypturellus soui     Residente  Tinamidae        Tinamiformes       </span></span>
-<span><span class="co">#&gt; 5 Thraupis palmarum     Residente  Thraupidae       Passeriformes      </span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox  Residente  Thamnophilidae   Passeriformes      </span></span>
-<span><span class="co">#&gt; 7 Penelope albipennis   Endémico   Cracidae         Galliformes</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="fuzzy-matching-for-name-variations">Fuzzy Matching for Name Variations<a class="anchor" aria-label="anchor" href="#fuzzy-matching-for-name-variations"></a>
-</h3>
-<p>The package implements approximate string matching (fuzzy matching) to handle typographical errors, spelling variations, and incomplete names. This feature significantly improves data quality when working with field observations or legacy datasets that may contain inconsistencies.</p>
 <ul>
-<li>How Fuzzy Matching Works The max_distance parameter controls the matching tolerance:</li>
-</ul>
-<p>Values between 0 and 1 (e.g., 0.1): Interpreted as a proportion of the name length</p>
-<p>“Tinamus osgoodi” (14 chars): allows up to 1 character difference (14 × 0.1)</p>
-<p>Integer values (e.g., 2): Interpreted as absolute number of character differences allowed</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Species list with intentional typos</span></span>
-<span><span class="va">splist_typos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Falco sparverius"</span>,      <span class="co"># Correct</span></span>
-<span>  <span class="st">"Tinamus osgodi"</span>,        <span class="co"># Missing 'o' should match "Tinamus osgoodi"</span></span>
-<span>  <span class="st">"Crypturellus sooui"</span>,    <span class="co"># Extra 'o' should match "Crypturellus soui"</span></span>
-<span>  <span class="st">"Tinamus guttatus"</span>,      <span class="co"># Correct</span></span>
-<span>  <span class="st">"Tinamus guttattus"</span>,     <span class="co"># Extra 't' should match "Tinamus guttatus"</span></span>
-<span>  <span class="st">"Thamnophilus praecox"</span>,  <span class="co"># Correct</span></span>
-<span>  <span class="st">"Penelope albipenis"</span>     <span class="co"># Missing 'n' should match "Penelope albipennis"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Search with moderate tolerance (5% of name length)</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0.05</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Display matching results</span></span>
-<span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name_submitted"</span>, <span class="st">"accepted_name"</span>, <span class="st">"dist"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name dist</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius    0</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi    1</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui    1</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus    0</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus    1</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox    0</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis    1</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="understanding-the-output">Understanding the Output<a class="anchor" aria-label="anchor" href="#understanding-the-output"></a>
-</h3>
-<ul>
-<li><p>name_submitted: The original name provided by the user</p></li>
-<li><p>accepted_name: The matched species name from the database</p></li>
 <li>
-<p>dist: Levenshtein distance (number of single-character edits required to transform one string into another)</p>
+<strong>Search the current Peru checklist</strong> with <code><a href="reference/search_avesperu.html">search_avesperu()</a></code> and retrieve taxonomic details for one name or a vector of names.</li>
+<li>
+<strong>Reconcile spelling variants</strong> with controlled approximate matching; see the <a href="https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html">approximate matching guide</a>.</li>
+<li>
+<strong>Validate field-data workflows</strong> while keeping submitted values and review information; see <a href="https://paulesantos.github.io/avesperu/articles/uso-avanzado.html">advanced use</a>.</li>
+<li>
+<strong>Compare checklist releases</strong> in the existing <a href="https://paulesantos.github.io/avesperu/articles/comparison.html">2025–2026 comparison</a>.</li>
+<li>
+<strong>Review and export batches interactively</strong> with the local Shiny application.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="scope-and-source">Scope and source<a class="anchor" aria-label="anchor" href="#scope-and-source"></a>
+</h2>
+<p><code>avesperu</code> covers the bird species checklist of Peru distributed by UNOP. It is not an authority for records outside Peru, and approximate matches should be reviewed before being accepted in a dataset. Tied candidates and qualified or hybrid names are deliberately flagged for review rather than silently resolved.</p>
+<p>The source is the <a href="https://sites.google.com/site/boletinunop/checklist" class="external-link">Lista de las aves del Perú / List of the Birds of Peru</a>, maintained by UNOP. This release is based on version 23-03-2026; inspect the bundled data directly with <code>aves_peru_2026_v1</code>, or run <code><a href="reference/unop_check_update.html">unop_check_update()</a></code> when you intentionally want to compare the local date with the online source.</p>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
 <ul>
-<li>0 = exact match</li>
-<li>1 = one character difference (insertion, deletion, or substitution)</li>
-<li>Higher values indicate greater divergence</li>
+<li><a href="https://paulesantos.github.io/avesperu/">Package website</a></li>
+<li><a href="https://paulesantos.github.io/avesperu/articles/uso-avanzado.html">Advanced use</a></li>
+<li><a href="https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html">Approximate matching</a></li>
+<li><a href="https://github.com/PaulESantos/avesperu/issues" class="external-link">Report an issue</a></li>
 </ul>
-</li>
-</ul>
 </div>
-<div class="section level3">
-<h3 id="adjusting-matching-sensitivity">Adjusting Matching Sensitivity<a class="anchor" aria-label="anchor" href="#adjusting-matching-sensitivity"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Strict matching: only 1 character difference allowed</span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
-<span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
-<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
-<span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
-<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
-<span></span>
-<span><span class="co"># Proportional matching: 10% of name length</span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
-<span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
-<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
-<span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
-<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
-<span></span>
-<span><span class="co"># Lenient matching: up to 2 character differences</span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">2</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi      Tinamus osgoodi  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui    Crypturellus soui  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis  Penelope albipennis   Galliformes       Cracidae</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2          Black Tinamou              Perdiz Negra Residente    1</span></span>
-<span><span class="co">#&gt; 3         Little Tinamou              Perdiz Chica Residente    1</span></span>
-<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
-<span><span class="co">#&gt; 5 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
-<span><span class="co">#&gt; 7      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span>
-<span></span>
-<span><span class="co"># Exact matching only</span></span>
-<span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, max_distance <span class="op">=</span> <span class="fl">0</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
-<span><span class="co">#&gt; 5                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
-<span><span class="co">#&gt; 7                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="best-practices">Best Practices<a class="anchor" aria-label="anchor" href="#best-practices"></a>
-</h3>
-<p>Start conservative: Use max_distance = 0.05 (5%) for initial data cleaning Review ambiguous matches: Check entries with dist &gt; 0 to verify correctness Handle unmatched species: Names returning NA require manual verification Document your threshold: Always report the max_distance parameter used</p>
-<ul>
-<li>Handling Unmatched Names</li>
-</ul>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist_typos</span>, </span>
-<span>                           max_distance <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">results</span></span>
-<span><span class="co">#&gt;         name_submitted        accepted_name    order_name    family_name</span></span>
-<span><span class="co">#&gt; 1     Falco sparverius     Falco sparverius Falconiformes     Falconidae</span></span>
-<span><span class="co">#&gt; 2       Tinamus osgodi                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3   Crypturellus sooui                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4     Tinamus guttatus     Tinamus guttatus  Tinamiformes      Tinamidae</span></span>
-<span><span class="co">#&gt; 5    Tinamus guttattus                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6 Thamnophilus praecox Thamnophilus praecox Passeriformes Thamnophilidae</span></span>
-<span><span class="co">#&gt; 7   Penelope albipenis                 &lt;NA&gt;          &lt;NA&gt;           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1       American Kestrel       Cernícalo Americano Residente    0</span></span>
-<span><span class="co">#&gt; 2                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4 White-throated Tinamou Perdiz de Garganta Blanca Residente    0</span></span>
-<span><span class="co">#&gt; 5                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6        Cocha Antshrike           Batará de Cocha Residente    0</span></span>
-<span><span class="co">#&gt; 7                   &lt;NA&gt;                      &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
-<span></span>
-<span><span class="co"># Identify unmatched species</span></span>
-<span><span class="va">unmatched</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">accepted_name</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="va">unmatched</span></span>
-<span><span class="co">#&gt;       name_submitted accepted_name order_name family_name english_name</span></span>
-<span><span class="co">#&gt; 2     Tinamus osgodi          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3 Crypturellus sooui          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5  Tinamus guttattus          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 7 Penelope albipenis          &lt;NA&gt;       &lt;NA&gt;        &lt;NA&gt;         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   spanish_name status dist</span></span>
-<span><span class="co">#&gt; 2         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 7         &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt;</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"The following names could not be matched:\n"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">$</span><span class="va">name_submitted</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># Try with higher tolerance</span></span>
-<span>  <span class="va">retry</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">unmatched</span><span class="op">$</span><span class="va">name_submitted</span>,</span>
-<span>                           max_distance <span class="op">=</span> <span class="fl">0.15</span>,</span>
-<span>                           return_details <span class="op">=</span> <span class="cn">TRUE</span> <span class="op">)</span></span>
-<span>  <span class="va">retry</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">retry</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; The following names could not be matched:</span></span>
-<span><span class="co">#&gt; [1] "Tinamus osgodi"     "Crypturellus sooui" "Tinamus guttattus" </span></span>
-<span><span class="co">#&gt; [4] "Penelope albipenis"</span></span>
-<span><span class="co">#&gt;       name_submitted       accepted_name   order_name family_name</span></span>
-<span><span class="co">#&gt; 1     Tinamus osgodi     Tinamus osgoodi Tinamiformes   Tinamidae</span></span>
-<span><span class="co">#&gt; 2 Crypturellus sooui   Crypturellus soui Tinamiformes   Tinamidae</span></span>
-<span><span class="co">#&gt; 3  Tinamus guttattus    Tinamus guttatus Tinamiformes   Tinamidae</span></span>
-<span><span class="co">#&gt; 4 Penelope albipenis Penelope albipennis  Galliformes    Cracidae</span></span>
-<span><span class="co">#&gt;             english_name              spanish_name    status dist</span></span>
-<span><span class="co">#&gt; 1          Black Tinamou              Perdiz Negra Residente    1</span></span>
-<span><span class="co">#&gt; 2         Little Tinamou              Perdiz Chica Residente    1</span></span>
-<span><span class="co">#&gt; 3 White-throated Tinamou Perdiz de Garganta Blanca Residente    1</span></span>
-<span><span class="co">#&gt; 4      White-winged Guan        Pava de Ala Blanca  Endémico    1</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="advanced-usage-examples">Advanced Usage Examples<a class="anchor" aria-label="anchor" href="#advanced-usage-examples"></a>
-</h3>
-<div class="section level4">
-<h4 id="example-1-quality-control-for-field-data">Example 1: Quality Control for Field Data<a class="anchor" aria-label="anchor" href="#example-1-quality-control-for-field-data"></a>
-</h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Simulated field observation data</span></span>
-<span><span class="va">field_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  observer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Observer A"</span>, <span class="st">"Observer B"</span>, <span class="st">"Observer A"</span>, <span class="st">"Observer C"</span><span class="op">)</span>,</span>
-<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Amazilia amazilia"</span>, <span class="st">"Phaetornis guy"</span>, <span class="st">"Metallura tyrianthina"</span>, </span>
-<span>              <span class="st">"Tangara chilensis"</span><span class="op">)</span>,</span>
-<span>  count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Validate species names and add taxonomy</span></span>
-<span><span class="va">field_data_validated</span> <span class="op">&lt;-</span> <span class="va">field_data</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>  taxonomy <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">species</span>, <span class="op">~</span><span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">.x</span>, </span>
-<span>                                           max_distance <span class="op">=</span> <span class="fl">0.1</span>, </span>
-<span>                                           return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">taxonomy</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">observer</span>, <span class="va">species</span>, <span class="va">accepted_name</span>, <span class="va">family_name</span>, </span>
-<span>         <span class="va">english_name</span>, <span class="va">status</span>, <span class="va">count</span>, <span class="va">dist</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">field_data_validated</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 8</span></span>
-<span><span class="co">#&gt;   observer   species   accepted_name family_name english_name status count dist </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 Observer A Amazilia… Amazilis ama… Trochilidae Amazilia Hu… Resid…     2 1    </span></span>
-<span><span class="co">#&gt; 2 Observer B Phaetorn… Phaethornis … Trochilidae Green Hermit Resid…     1 1    </span></span>
-<span><span class="co">#&gt; 3 Observer A Metallur… Metallura ty… Trochilidae Tyrian Meta… Resid…     3 0    </span></span>
-<span><span class="co">#&gt; 4 Observer C Tangara … Tangara chil… Thraupidae  Paradise Ta… Resid…     5 0</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="example-2-checking-endemic-status">Example 2: Checking Endemic Status<a class="anchor" aria-label="anchor" href="#example-2-checking-endemic-status"></a>
-</h4>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Identify endemic species from a list</span></span>
-<span><span class="va">my_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Penelope albipennis"</span>, <span class="st">"Xenoglaux loweryi"</span>, <span class="st">"Grallaria ridgelyi"</span>,</span>
-<span>                <span class="st">"Falco sparverius"</span>, <span class="st">"Thraupis palmarum"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">my_species</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Filter endemic species</span></span>
-<span><span class="va">endemic_species</span> <span class="op">&lt;-</span> <span class="va">results</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Endémico"</span><span class="op">)</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="va">accepted_name</span>, <span class="va">english_name</span>, <span class="va">family_name</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">endemic_species</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       scientific_name         english_name family_name</span></span>
-<span><span class="co">#&gt; 1 Penelope albipennis    White-winged Guan    Cracidae</span></span>
-<span><span class="co">#&gt; 2   Xenoglaux loweryi Long-whiskered Owlet   Strigidae</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="example-3-taxonomic-summary">Example 3: Taxonomic Summary<a class="anchor" aria-label="anchor" href="#example-3-taxonomic-summary"></a>
-</h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get taxonomic distribution of a species list</span></span>
-<span><span class="va">my_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">splist</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Count by family</span></span>
-<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">family_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;        family_name n</span></span>
-<span><span class="co">#&gt; 1        Tinamidae 2</span></span>
-<span><span class="co">#&gt; 2         Cracidae 1</span></span>
-<span><span class="co">#&gt; 3       Falconidae 1</span></span>
-<span><span class="co">#&gt; 4 Phoenicopteridae 1</span></span>
-<span><span class="co">#&gt; 5   Thamnophilidae 1</span></span>
-<span><span class="co">#&gt; 6       Thraupidae 1</span></span>
-<span></span>
-<span><span class="co"># Count by order</span></span>
-<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">order_name</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            order_name n</span></span>
-<span><span class="co">#&gt; 1       Passeriformes 2</span></span>
-<span><span class="co">#&gt; 2        Tinamiformes 2</span></span>
-<span><span class="co">#&gt; 3       Falconiformes 1</span></span>
-<span><span class="co">#&gt; 4         Galliformes 1</span></span>
-<span><span class="co">#&gt; 5 Phoenicopteriformes 1</span></span>
-<span></span>
-<span><span class="co"># Status summary</span></span>
-<span><span class="va">my_list</span>  <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       status n</span></span>
-<span><span class="co">#&gt; 1   Endémico 1</span></span>
-<span><span class="co">#&gt; 2 Migratorio 1</span></span>
-<span><span class="co">#&gt; 3  Residente 5</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="reviewing-uncertain-results">Reviewing uncertain results<a class="anchor" aria-label="anchor" href="#reviewing-uncertain-results"></a>
-</h3>
-<p>Detailed searches preserve the eight existing columns. Their <code>reconciliation</code> attribute includes the original name, qualifiers, hybrid markers, ambiguous candidates and review reasons. The <code>avesperu_result</code> data-frame subclass keeps this information aligned during row selection with <code>[</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Falco CF. sparverius"</span>, <span class="st">"Falko sparverius"</span><span class="op">)</span>,</span>
-<span>                         return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"reconciliation"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"execution"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"reference"</span><span class="op">)</span></span></code></pre></div>
-<p>Tied best candidates are not automatically accepted. Qualified or hybrid inputs always need review and return <code>NA</code> in the basic status vector. A unique fuzzy match is a suggestion for review, not taxonomic evidence.</p>
-<p>The Shiny app retains file record numbers, accepts explicit header/column selection, and cancels background work when inputs change. It requires <code>shiny</code>, <code>DT</code>, <code>callr</code> and <code>later</code>; Excel import/export additionally uses <code>readxl</code>/<code>writexl</code>. Closing its session leaves the shared application process running. Stop a local <code>runApp()</code> process from its owning R console when it is no longer needed.</p>
-</div>
+<div class="section level2">
+<h2 id="citation-and-contact">Citation and contact<a class="anchor" aria-label="anchor" href="#citation-and-contact"></a>
+</h2>
+<p>Use <code>citation("avesperu")</code> to obtain the current package and checklist citations. Please cite both the package and the UNOP checklist when it informs your work. The package is released under the MIT license; questions and bug reports are welcome through the <a href="https://github.com/PaulESantos/avesperu/issues" class="external-link">issue tracker</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -554,8 +170,8 @@ https://sites.google.com/site/boletinunop/checklist</code></pre>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-green.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://CRAN.R-project.org/package=avesperu" class="external-link"><img src="https://www.r-pkg.org/badges/version/avesperu" alt="CRAN status"></a></li>
 <li><a href="https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green"></a></li>
-<li><a href="https://cran.r-project.org/package=avesperu" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-week/avesperu?color=green"></a></li>
+<li><a href="https://app.codecov.io/gh/PaulESantos/avesperu" class="external-link"><img src="https://codecov.io/gh/PaulESantos/avesperu/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://CRAN.R-project.org/package=avesperu" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green" alt="CRAN downloads"></a></li>
 </ul>
 </div>
 
