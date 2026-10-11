@@ -39,12 +39,42 @@ integer sets an absolute number of character edits.
 
 # Exact matching only
 search_avesperu(submitted, max_distance = 0, return_details = TRUE)
+#>       name_submitted    accepted_name    order_name family_name
+#> 1   Falco sparverius Falco sparverius Falconiformes  Falconidae
+#> 2     Tinamus osgodi             <NA>          <NA>        <NA>
+#> 3 Crypturellus sooui             <NA>          <NA>        <NA>
+#> 4 Penelope albipenis             <NA>          <NA>        <NA>
+#>       english_name        spanish_name    status dist
+#> 1 American Kestrel Cernícalo Americano Residente    0
+#> 2             <NA>                <NA>      <NA> <NA>
+#> 3             <NA>                <NA>      <NA> <NA>
+#> 4             <NA>                <NA>      <NA> <NA>
 
 # Allow up to one character edit
 search_avesperu(submitted, max_distance = 1, return_details = TRUE)
+#>       name_submitted       accepted_name    order_name family_name
+#> 1   Falco sparverius    Falco sparverius Falconiformes  Falconidae
+#> 2     Tinamus osgodi     Tinamus osgoodi  Tinamiformes   Tinamidae
+#> 3 Crypturellus sooui   Crypturellus soui  Tinamiformes   Tinamidae
+#> 4 Penelope albipenis Penelope albipennis   Galliformes    Cracidae
+#>        english_name        spanish_name    status dist
+#> 1  American Kestrel Cernícalo Americano Residente    0
+#> 2     Black Tinamou        Perdiz Negra Residente    1
+#> 3    Little Tinamou        Perdiz Chica Residente    1
+#> 4 White-winged Guan  Pava de Ala Blanca  Endémico    1
 
 # Allow 10% of the name length
 search_avesperu(submitted, max_distance = 0.1, return_details = TRUE)
+#>       name_submitted       accepted_name    order_name family_name
+#> 1   Falco sparverius    Falco sparverius Falconiformes  Falconidae
+#> 2     Tinamus osgodi     Tinamus osgoodi  Tinamiformes   Tinamidae
+#> 3 Crypturellus sooui   Crypturellus soui  Tinamiformes   Tinamidae
+#> 4 Penelope albipenis Penelope albipennis   Galliformes    Cracidae
+#>        english_name        spanish_name    status dist
+#> 1  American Kestrel Cernícalo Americano Residente    0
+#> 2     Black Tinamou        Perdiz Negra Residente    1
+#> 3    Little Tinamou        Perdiz Chica Residente    1
+#> 4 White-winged Guan  Pava de Ala Blanca  Endémico    1
 ```
 
 ## Escalate carefully
@@ -56,8 +86,32 @@ inspect each suggested match before updating source data.
 ``` r
 
 strict <- search_avesperu(submitted, max_distance = 0, return_details = TRUE)
+strict
+#>       name_submitted    accepted_name    order_name family_name
+#> 1   Falco sparverius Falco sparverius Falconiformes  Falconidae
+#> 2     Tinamus osgodi             <NA>          <NA>        <NA>
+#> 3 Crypturellus sooui             <NA>          <NA>        <NA>
+#> 4 Penelope albipenis             <NA>          <NA>        <NA>
+#>       english_name        spanish_name    status dist
+#> 1 American Kestrel Cernícalo Americano Residente    0
+#> 2             <NA>                <NA>      <NA> <NA>
+#> 3             <NA>                <NA>      <NA> <NA>
+#> 4             <NA>                <NA>      <NA> <NA>
+
 unmatched <- strict$name_submitted[is.na(strict$accepted_name)]
+unmatched
+#> [1] "Tinamus osgodi"     "Crypturellus sooui" "Penelope albipenis"
+
 retry <- search_avesperu(unmatched, max_distance = 0.1, return_details = TRUE)
+retry
+#>       name_submitted       accepted_name   order_name family_name
+#> 1     Tinamus osgodi     Tinamus osgoodi Tinamiformes   Tinamidae
+#> 2 Crypturellus sooui   Crypturellus soui Tinamiformes   Tinamidae
+#> 3 Penelope albipenis Penelope albipennis  Galliformes    Cracidae
+#>        english_name       spanish_name    status dist
+#> 1     Black Tinamou       Perdiz Negra Residente    1
+#> 2    Little Tinamou       Perdiz Chica Residente    1
+#> 3 White-winged Guan Pava de Ala Blanca  Endémico    1
 ```
 
 ## Next steps

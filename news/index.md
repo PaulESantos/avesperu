@@ -27,17 +27,17 @@
   selection and previews, exports review reasons and actual execution
   provenance, invalidates stale results, closes only the current
   session, and resolves bounded workloads in cancellable background
-  processes (H01, H02, H04, H05, H11).
+  processes.
 - [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
   reports ties as ambiguous instead of selecting by row order. Detailed
   output keeps its eight columns and adds `reconciliation`, `execution`
   and `reference` attributes; qualified/hybrid inputs require review and
-  return NA in the basic status vector (H02, H03).
+  return NA in the basic status vector.
 - [`search_avesperu()`](https://paulesantos.github.io/avesperu/reference/search_avesperu.md)
   validates finite scalar options and integer counts, normalizes
   qualifiers consistently, returns typed empty results, and applies
   sequential batches. Parallel workers use the running source and
-  failures record their sequential fallback (H06–H10).
+  failures record their sequential fallback.
 - [`unop_check_update()`](https://paulesantos.github.io/avesperu/reference/unop_check_update.md)
   tolerates one-digit days, case/spacing differences and multiple
   labelled update dates (UNOP parser follow-up).

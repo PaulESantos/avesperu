@@ -126,8 +126,37 @@ reconciliation, execution, and the checklist reference.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="st">"Falco CF. sparverius"</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"reconciliation"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         submitted_name standardized_name has_qualifier has_hybrid match_type</span></span>
+<span><span class="co">#&gt; 1 Falco CF. sparverius  Falco sparverius          TRUE      FALSE      exact</span></span>
+<span><span class="co">#&gt;   candidate_count       candidates review_reason review_flag</span></span>
+<span><span class="co">#&gt; 1               1 Falco sparverius     qualifier        TRUE</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"execution"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"reference"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; $mode</span></span>
+<span><span class="co">#&gt; [1] "sequential"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $workers</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $batches</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $fallback</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"reference"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $id</span></span>
+<span><span class="co">#&gt; [1] "aves_peru_2026_v1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $content_md5</span></span>
+<span><span class="co">#&gt; [1] "46385e0a8934db6c2b2a8e1e407e1461"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $version_date</span></span>
+<span><span class="co">#&gt; [1] "23 de marzo de 2026"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $source_url</span></span>
+<span><span class="co">#&gt; [1] "https://sites.google.com/site/boletinunop/checklist"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $package_version</span></span>
+<span><span class="co">#&gt; [1] "0.1.1.9000"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

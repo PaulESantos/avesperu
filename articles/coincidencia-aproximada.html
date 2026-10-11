@@ -107,12 +107,42 @@ while an integer sets an absolute number of character edits.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Exact matching only</span></span>
 <span><span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">submitted</span>, max_distance <span class="op">=</span> <span class="fl">0</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       name_submitted    accepted_name    order_name family_name</span></span>
+<span><span class="co">#&gt; 1   Falco sparverius Falco sparverius Falconiformes  Falconidae</span></span>
+<span><span class="co">#&gt; 2     Tinamus osgodi             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3 Crypturellus sooui             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 Penelope albipenis             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;       english_name        spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1 American Kestrel Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
 <span></span>
 <span><span class="co"># Allow up to one character edit</span></span>
 <span><span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">submitted</span>, max_distance <span class="op">=</span> <span class="fl">1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       name_submitted       accepted_name    order_name family_name</span></span>
+<span><span class="co">#&gt; 1   Falco sparverius    Falco sparverius Falconiformes  Falconidae</span></span>
+<span><span class="co">#&gt; 2     Tinamus osgodi     Tinamus osgoodi  Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 3 Crypturellus sooui   Crypturellus soui  Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 4 Penelope albipenis Penelope albipennis   Galliformes    Cracidae</span></span>
+<span><span class="co">#&gt;        english_name        spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1  American Kestrel Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2     Black Tinamou        Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 3    Little Tinamou        Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 4 White-winged Guan  Pava de Ala Blanca  Endémico    1</span></span>
 <span></span>
 <span><span class="co"># Allow 10% of the name length</span></span>
-<span><span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">submitted</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">submitted</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       name_submitted       accepted_name    order_name family_name</span></span>
+<span><span class="co">#&gt; 1   Falco sparverius    Falco sparverius Falconiformes  Falconidae</span></span>
+<span><span class="co">#&gt; 2     Tinamus osgodi     Tinamus osgoodi  Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 3 Crypturellus sooui   Crypturellus soui  Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 4 Penelope albipenis Penelope albipennis   Galliformes    Cracidae</span></span>
+<span><span class="co">#&gt;        english_name        spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1  American Kestrel Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2     Black Tinamou        Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 3    Little Tinamou        Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 4 White-winged Guan  Pava de Ala Blanca  Endémico    1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="escalate-carefully">Escalate carefully<a class="anchor" aria-label="anchor" href="#escalate-carefully"></a>
@@ -122,8 +152,32 @@ rows using a documented threshold. Preserve the original submission and
 inspect each suggested match before updating source data.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">strict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">submitted</span>, max_distance <span class="op">=</span> <span class="fl">0</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">strict</span></span>
+<span><span class="co">#&gt;       name_submitted    accepted_name    order_name family_name</span></span>
+<span><span class="co">#&gt; 1   Falco sparverius Falco sparverius Falconiformes  Falconidae</span></span>
+<span><span class="co">#&gt; 2     Tinamus osgodi             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3 Crypturellus sooui             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 Penelope albipenis             &lt;NA&gt;          &lt;NA&gt;        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;       english_name        spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1 American Kestrel Cernícalo Americano Residente    0</span></span>
+<span><span class="co">#&gt; 2             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4             &lt;NA&gt;                &lt;NA&gt;      &lt;NA&gt; &lt;NA&gt;</span></span>
+<span></span>
 <span><span class="va">unmatched</span> <span class="op">&lt;-</span> <span class="va">strict</span><span class="op">$</span><span class="va">name_submitted</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">strict</span><span class="op">$</span><span class="va">accepted_name</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">retry</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">unmatched</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">unmatched</span></span>
+<span><span class="co">#&gt; [1] "Tinamus osgodi"     "Crypturellus sooui" "Penelope albipenis"</span></span>
+<span></span>
+<span><span class="va">retry</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_avesperu.html">search_avesperu</a></span><span class="op">(</span><span class="va">unmatched</span>, max_distance <span class="op">=</span> <span class="fl">0.1</span>, return_details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">retry</span></span>
+<span><span class="co">#&gt;       name_submitted       accepted_name   order_name family_name</span></span>
+<span><span class="co">#&gt; 1     Tinamus osgodi     Tinamus osgoodi Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 2 Crypturellus sooui   Crypturellus soui Tinamiformes   Tinamidae</span></span>
+<span><span class="co">#&gt; 3 Penelope albipenis Penelope albipennis  Galliformes    Cracidae</span></span>
+<span><span class="co">#&gt;        english_name       spanish_name    status dist</span></span>
+<span><span class="co">#&gt; 1     Black Tinamou       Perdiz Negra Residente    1</span></span>
+<span><span class="co">#&gt; 2    Little Tinamou       Perdiz Chica Residente    1</span></span>
+<span><span class="co">#&gt; 3 White-winged Guan Pava de Ala Blanca  Endémico    1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

@@ -44,7 +44,7 @@ result[, c("name_submitted", "accepted_name", "status", "dist")]
 
 The result preserves the submitted name and returns the accepted name,
 status, and taxonomy. For a visual workflow, launch the [interactive
-Shiny app](https://paulefrensa.shinyapps.io/avesperu/):
+Shiny app](https://paulesantos-avesperu.share.connect.posit.cloud/):
 
 ``` r
 

@@ -59,8 +59,37 @@ reconciliation, execution, and the checklist reference.
 
 result <- search_avesperu("Falco CF. sparverius", return_details = TRUE)
 attr(result, "reconciliation")
+#>         submitted_name standardized_name has_qualifier has_hybrid match_type
+#> 1 Falco CF. sparverius  Falco sparverius          TRUE      FALSE      exact
+#>   candidate_count       candidates review_reason review_flag
+#> 1               1 Falco sparverius     qualifier        TRUE
 attr(result, "execution")
+#> $mode
+#> [1] "sequential"
+#> 
+#> $workers
+#> [1] 1
+#> 
+#> $batches
+#> [1] 1
+#> 
+#> $fallback
+#> [1] NA
 attr(result, "reference")
+#> $id
+#> [1] "aves_peru_2026_v1"
+#> 
+#> $content_md5
+#> [1] "46385e0a8934db6c2b2a8e1e407e1461"
+#> 
+#> $version_date
+#> [1] "23 de marzo de 2026"
+#> 
+#> $source_url
+#> [1] "https://sites.google.com/site/boletinunop/checklist"
+#> 
+#> $package_version
+#> [1] "0.1.1.9000"
 ```
 
 ## Next steps
