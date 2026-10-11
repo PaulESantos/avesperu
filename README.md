@@ -1,37 +1,47 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
 
 # avesperu <a href="https://github.com/PaulESantos/avesperu"><img src="man/figures/avesperu.svg" alt="avesperu logo" width="139" height="139" style="float: right; width: 139px !important; height: 139px !important; max-width: 139px !important;" /></a>
 
 <!-- badges: start -->
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![CRAN status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.org/package=avesperu)
+
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/avesperu)](https://CRAN.R-project.org/package=avesperu)
 [![R-CMD-check](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/avesperu/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/PaulESantos/avesperu/graph/badge.svg)](https://app.codecov.io/gh/PaulESantos/avesperu)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://CRAN.R-project.org/package=avesperu)
+[![Codecov test
+coverage](https://codecov.io/gh/PaulESantos/avesperu/graph/badge.svg)](https://app.codecov.io/gh/PaulESantos/avesperu)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/avesperu?color=green)](https://CRAN.R-project.org/package=avesperu)
 <!-- badges: end -->
 
-`avesperu` gives R users a local, versioned checklist of the birds of Peru and tools to find and reconcile scientific names. It supports reproducible work on field records, biodiversity databases, and taxonomic reviews without requiring an internet connection for ordinary searches.
+`avesperu` gives R users a local, versioned checklist of the birds of
+Peru and tools to find and reconcile scientific names. It supports
+reproducible work on field records, biodiversity databases, and
+taxonomic reviews without requiring an internet connection for ordinary
+searches.
 
-The bundled `aves_peru_2026_v1` checklist contains 1,925 species and follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March 2026. It combines the checklist with exact and approximate matching for practical data cleaning.
+The bundled `aves_peru_2026_v1` checklist contains 1,925 species and
+follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March
+2026. It combines the checklist with exact and approximate matching for
+practical data cleaning.
 
 ## Get started
 
 Install the released package from CRAN:
 
-```r
+``` r
 install.packages("avesperu")
 ```
 
 Or install the development version:
 
-```r
+``` r
 pak::pak("PaulESantos/avesperu")
 ```
 
 Search a short list of submitted names:
-
 
 ``` r
 library(avesperu)
@@ -45,35 +55,64 @@ result[, c("name_submitted", "accepted_name", "status", "dist")]
 #> 2  Tinamus osgoodi  Tinamus osgoodi Residente    0
 ```
 
-The result preserves the submitted name and returns the accepted name, status, and taxonomy. For a visual workflow, launch the [interactive Shiny app](https://paulefrensa.shinyapps.io/avesperu/):
+The result preserves the submitted name and returns the accepted name,
+status, and taxonomy. For a visual workflow, launch the [interactive
+Shiny app](https://paulesantos-avesperu.share.connect.posit.cloud/):
 
-```r
+``` r
 run_avesperu_app()
 ```
 
-![Screenshot of the avesperu Shiny app for validating scientific names](man/figures/shiny_app.png)
+<figure>
+<img src="man/figures/shiny_app.png"
+alt="Screenshot of the avesperu Shiny app for validating scientific names" />
+<figcaption aria-hidden="true">Screenshot of the avesperu Shiny app for
+validating scientific names</figcaption>
+</figure>
 
 ## What you can do
 
-- **Search the current Peru checklist** with `search_avesperu()` and retrieve taxonomic details for one name or a vector of names.
-- **Reconcile spelling variants** with controlled approximate matching; see the [approximate matching guide](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html).
-- **Validate field-data workflows** while keeping submitted values and review information; see [advanced use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html).
-- **Compare checklist releases** in the existing [2025–2026 comparison](https://paulesantos.github.io/avesperu/articles/comparison.html).
-- **Review and export batches interactively** with the local Shiny application.
+- **Search the current Peru checklist** with `search_avesperu()` and
+  retrieve taxonomic details for one name or a vector of names.
+- **Reconcile spelling variants** with controlled approximate matching;
+  see the [approximate matching
+  guide](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html).
+- **Validate field-data workflows** while keeping submitted values and
+  review information; see [advanced
+  use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html).
+- **Compare checklist releases** in the existing [2025–2026
+  comparison](https://paulesantos.github.io/avesperu/articles/comparison.html).
+- **Review and export batches interactively** with the local Shiny
+  application.
 
 ## Scope and source
 
-`avesperu` covers the bird species checklist of Peru distributed by UNOP. It is not an authority for records outside Peru, and approximate matches should be reviewed before being accepted in a dataset. Tied candidates and qualified or hybrid names are deliberately flagged for review rather than silently resolved.
+`avesperu` covers the bird species checklist of Peru distributed by
+UNOP. It is not an authority for records outside Peru, and approximate
+matches should be reviewed before being accepted in a dataset. Tied
+candidates and qualified or hybrid names are deliberately flagged for
+review rather than silently resolved.
 
-The source is the [Lista de las aves del Perú / List of the Birds of Peru](https://sites.google.com/site/boletinunop/checklist), maintained by UNOP. This release is based on version 23-03-2026; inspect the bundled data directly with `aves_peru_2026_v1`, or run `unop_check_update()` when you intentionally want to compare the local date with the online source.
+The source is the [Lista de las aves del Perú / List of the Birds of
+Peru](https://sites.google.com/site/boletinunop/checklist), maintained
+by UNOP. This release is based on version 23-03-2026; inspect the
+bundled data directly with `aves_peru_2026_v1`, or run
+`unop_check_update()` when you intentionally want to compare the local
+date with the online source.
 
 ## Learn more
 
 - [Package website](https://paulesantos.github.io/avesperu/)
-- [Advanced use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html)
-- [Approximate matching](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html)
+- [Advanced
+  use](https://paulesantos.github.io/avesperu/articles/uso-avanzado.html)
+- [Approximate
+  matching](https://paulesantos.github.io/avesperu/articles/coincidencia-aproximada.html)
 - [Report an issue](https://github.com/PaulESantos/avesperu/issues)
 
 ## Citation and contact
 
-Use `citation("avesperu")` to obtain the current package and checklist citations. Please cite both the package and the UNOP checklist when it informs your work. The package is released under the MIT license; questions and bug reports are welcome through the [issue tracker](https://github.com/PaulESantos/avesperu/issues).
+Use `citation("avesperu")` to obtain the current package and checklist
+citations. Please cite both the package and the UNOP checklist when it
+informs your work. The package is released under the MIT license;
+questions and bug reports are welcome through the [issue
+tracker](https://github.com/PaulESantos/avesperu/issues).

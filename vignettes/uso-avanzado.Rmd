@@ -45,7 +45,7 @@ This pattern is useful for filtering a submitted list, not for replacing a proje
 
 Qualified and hybrid inputs, as well as tied candidates, are retained for review. Detailed output includes audit attributes that describe reconciliation, execution, and the checklist reference.
 
-```{r audit-example, eval = FALSE}
+```{r audit-example}
 result <- search_avesperu("Falco CF. sparverius", return_details = TRUE)
 attr(result, "reconciliation")
 attr(result, "execution")

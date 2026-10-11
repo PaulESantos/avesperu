@@ -32,7 +32,7 @@ matches[, c("name_submitted", "accepted_name", "dist")]
 
 `max_distance` accepts either a proportion between zero and one or a nonnegative integer. A proportion scales with name length, while an integer sets an absolute number of character edits.
 
-```{r, eval = FALSE}
+```{r }
 # Exact matching only
 search_avesperu(submitted, max_distance = 0, return_details = TRUE)
 
@@ -47,10 +47,15 @@ search_avesperu(submitted, max_distance = 0.1, return_details = TRUE)
 
 First identify names that remain unmatched, then retry only those rows using a documented threshold. Preserve the original submission and inspect each suggested match before updating source data.
 
-```{r, eval = FALSE}
+```{r }
 strict <- search_avesperu(submitted, max_distance = 0, return_details = TRUE)
+strict
+
 unmatched <- strict$name_submitted[is.na(strict$accepted_name)]
+unmatched
+
 retry <- search_avesperu(unmatched, max_distance = 0.1, return_details = TRUE)
+retry
 ```
 
 ## Next steps
