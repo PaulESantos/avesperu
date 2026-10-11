@@ -11,7 +11,7 @@ follows the Unión de Ornitólogos del Perú (UNOP) list dated 23 March
 2026. It combines the checklist with exact and approximate matching for
 practical data cleaning.
 
-## Get started in 60 seconds
+## Get started
 
 Install the released package from CRAN:
 
